@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .perspective-grid {
+    background-size: 40px 40px;
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    transform: perspective(500px) rotateX(60deg);
+    transform-origin: top center;
+  }
+  
+  .holo-card {
+    @apply transition-all duration-300 relative overflow-hidden;
+  }
+  
+  .holo-card::before {
+    content: "";
+    @apply absolute -top-0 -left-full w-[200%] h-full opacity-0 pointer-events-none z-20;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      transparent 40%,
+      rgba(255, 255, 255, 0.05) 45%,
+      rgba(0, 176, 111, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 55%,
+      transparent 60%,
+      transparent 100%
+    );
+    transition: all 0.5s;
+    transform: skewX(-20deg);
+  }
+  
+  .holo-card:hover::before {
+    @apply opacity-100 left-full transition-all duration-700 ease-in-out;
+  }
+
+  .holo-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px -10px rgba(0, 176, 111, 0.3);
+    border-color: rgba(0, 176, 111, 0.4);
+  }
+
+  .skeleton {
+    background: linear-gradient(90deg, rgba(31, 41, 55, 0.5) 25%, rgba(55, 65, 81, 0.5) 50%, rgba(31, 41, 55, 0.5) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  @keyframes rotate {
+    to {
+      --angle: 360deg;
+    }
+  }
+
+  .mythic-card {
+    border: 1px solid transparent; 
+    background: 
+      linear-gradient(#1f2937, #1f2937) padding-box,
+      conic-gradient(from var(--angle), #c084fc, #ec4899, #c084fc) border-box;
+    animation: rotate 3s linear infinite;
+    box-shadow: 0 0 15px rgba(192, 132, 252, 0.2);
+  }
+
+  .legendary-card {
+    border: 1px solid rgba(250, 204, 21, 0.5);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.1);
+    animation: goldPulse 3s infinite;
+  }
+
+  @keyframes goldPulse {
+    0% { box-shadow: 0 0 5px rgba(250, 204, 21, 0.1); border-color: rgba(250, 204, 21, 0.3); }
+    50% { box-shadow: 0 0 15px rgba(250, 204, 21, 0.3); border-color: rgba(250, 204, 21, 0.8); }
+    100% { box-shadow: 0 0 5px rgba(250, 204, 21, 0.1); border-color: rgba(250, 204, 21, 0.3); }
+  }
+
+  .blog-article-content {
+    @apply text-gray-300 text-lg leading-loose;
+  }
+
+  .blog-article-content p {
+    @apply mb-7;
+  }
+
+  .blog-article-content h2 {
+    @apply text-3xl font-extrabold text-white mt-12 mb-4 leading-tight border-b border-gray-600/50 pb-2;
+  }
+
+  .blog-article-content h3 {
+    @apply text-2xl font-bold text-roblox-accent mt-8 mb-3;
+  }
+  
+  .blog-article-content h4 {
+    @apply text-xl font-semibold text-gray-200 mt-6 mb-2;
+  }
+
+  .blog-article-content ul, .blog-article-content ol {
+    @apply mb-8 pl-6;
+  }
+
+  .blog-article-content ul {
+    @apply list-disc;
+  }
+  
+  .blog-article-content ol {
+    @apply list-decimal;
+  }
+
+  .blog-article-content li {
+    @apply mb-3 pl-2 marker:text-roblox-accent;
+  }
+
+  .blog-article-content blockquote {
+    @apply bg-gray-900/50 border-l-4 border-roblox-accent py-6 px-8 my-10 rounded-r-2xl italic text-gray-200;
+  }
+  
+  .blog-article-content a {
+    @apply text-roblox-accent no-underline border-b border-roblox-accent/30 transition-all duration-200 font-medium hover:text-emerald-400 hover:border-emerald-400;
+  }
+  
+  .blog-article-content strong {
+    @apply text-white font-bold;
+  }
+  
+  /* Scrollbar Styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #111827;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #374151; 
+    border-radius: 4px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #4b5563; 
+  }
+}

@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /?view=privacy
+Disallow: /?view=terms
+Disallow: /?view=contact
+Allow: /
+
+Sitemap: https://bloxname.com/sitemap.xml
