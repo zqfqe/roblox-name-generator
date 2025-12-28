@@ -1,0 +1,16 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cubeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="darkSide" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#065f46" /> 
+      <stop offset="100%" stop-color="#064e3b" /> 
+    </linearGradient>
+  </defs>
+  <path d="M4 16 L32 32 V60 L4 44 Z" fill="url(#darkSide)" />
+  <path d="M32 32 L60 16 V44 L32 60 Z" fill="#10b981" />
+  <path d="M4 16 L32 0 L60 16 L32 32 Z" fill="url(#cubeGradient)" />
+  <path d="M32 8 L48 16 L32 24 L16 16 Z" fill="#ecfdf5" fill-opacity="0.8" />
+</svg>
