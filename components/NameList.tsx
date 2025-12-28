@@ -156,7 +156,7 @@ export const NameList: React.FC<NameListProps> = ({
          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 mt-8 gap-4">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-roblox-accent" />
-              {title} <span className="text-gray-500 text-sm font-normal">({names.length})</span>
+              {title} <span className="text-gray-400 text-sm font-normal">({names.length})</span>
             </h2>
             
             <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
@@ -167,6 +167,7 @@ export const NameList: React.FC<NameListProps> = ({
                   <select 
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value as SortOption)}
+                    aria-label="Sort names"
                     className="bg-transparent text-xs font-bold text-white outline-none appearance-none cursor-pointer pr-4"
                   >
                     <option value="default">Default</option>
@@ -182,6 +183,7 @@ export const NameList: React.FC<NameListProps> = ({
                   onClick={() => setViewMode('grid')}
                   className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'}`}
                   title="Grid View"
+                  aria-label="Grid view"
                 >
                   <LayoutGrid className="w-4 h-4" />
                 </button>
@@ -189,6 +191,7 @@ export const NameList: React.FC<NameListProps> = ({
                   onClick={() => setViewMode('list')}
                   className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'}`}
                   title="List View"
+                  aria-label="List view"
                 >
                   <ListIcon className="w-4 h-4" />
                 </button>

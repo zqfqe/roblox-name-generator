@@ -55,6 +55,7 @@ const GamingSelect = ({ value, onChange }: { value: NameStyle, onChange: (val: N
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as NameStyle)}
+        aria-label="Select Name Style"
         className="w-full h-full pl-4 pr-10 py-4 bg-gray-900/50 border border-gray-700 rounded-xl outline-none text-white font-medium transition-all duration-200 focus:ring-2 focus:ring-roblox-accent border-transparent hover:border-gray-500 appearance-none cursor-pointer"
       >
          {Object.values(NameStyle).map((styleOption) => (
@@ -64,7 +65,7 @@ const GamingSelect = ({ value, onChange }: { value: NameStyle, onChange: (val: N
          ))}
       </select>
       <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-        <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
       </div>
     </div>
   );
@@ -143,7 +144,7 @@ const RelatedKeywords = ({ keyword, style, onSelect }: { keyword: string, style:
 
   return (
     <div className="mt-8 pt-6 border-t border-gray-700/30">
-      <div className="flex items-center gap-2 mb-3 text-xs font-bold text-gray-500 uppercase tracking-widest">
+      <div className="flex items-center gap-2 mb-3 text-xs font-bold text-gray-400 uppercase tracking-widest">
         <Info className="w-3 h-3" /> Related Searches
       </div>
       <div className="flex flex-wrap gap-2">
@@ -379,9 +380,10 @@ export const Home: React.FC = () => {
                 <input 
                   type="text" 
                   value={keyword}
+                  aria-label="Enter keyword"
                   onChange={(e) => setKeyword(e.target.value)}
                   placeholder="Enter a keyword (e.g. 'Shadow', 'Vibe')"
-                  className="w-full pl-12 pr-4 py-4 bg-gray-900/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-roblox-accent focus:border-transparent outline-none text-white font-medium placeholder-gray-600 transition-all shadow-[0_0_0_0_rgba(0,176,111,0)] focus:shadow-[0_0_20px_rgba(0,176,111,0.2)]"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-900/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-roblox-accent focus:border-transparent outline-none text-white font-medium placeholder-gray-400 transition-all shadow-[0_0_0_0_rgba(0,176,111,0)] focus:shadow-[0_0_20px_rgba(0,176,111,0.2)]"
                   onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
                 />
                 
@@ -444,7 +446,7 @@ export const Home: React.FC = () => {
 
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
+                      <label className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">
                         <Filter className="w-3 h-3" /> Max Length
                       </label>
                       <div className="flex bg-gray-800 p-1 rounded-lg border border-gray-700/50">
@@ -466,27 +468,29 @@ export const Home: React.FC = () => {
 
                     <div className="flex gap-4">
                       <div className="flex-1">
-                        <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                        <label className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                           <AlignLeft className="w-3 h-3" /> Prefix
                         </label>
                         <input 
                           type="text" 
                           value={prefix} 
+                          aria-label="Prefix"
                           onChange={(e) => setPrefix(e.target.value)}
                           placeholder="e.g. Itz"
-                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:ring-1 focus:ring-roblox-accent outline-none transition-colors"
+                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-1 focus:ring-roblox-accent outline-none transition-colors"
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+                        <label className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">
                           <AlignRight className="w-3 h-3" /> Suffix
                         </label>
                         <input 
                           type="text" 
                           value={suffix} 
+                          aria-label="Suffix"
                           onChange={(e) => setSuffix(e.target.value)}
                           placeholder="e.g. Sz"
-                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-600 focus:ring-1 focus:ring-roblox-accent outline-none transition-colors"
+                          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-400 focus:ring-1 focus:ring-roblox-accent outline-none transition-colors"
                         />
                       </div>
                     </div>
@@ -565,10 +569,11 @@ export const Home: React.FC = () => {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-3.5 h-3.5" />
                     <input 
                       type="text" 
+                      aria-label="Filter names"
                       placeholder="Filter list..."
                       value={filterText}
                       onChange={(e) => setFilterText(e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-gray-900/50 border border-gray-700 rounded-lg text-xs text-white focus:ring-1 focus:ring-roblox-accent outline-none placeholder-gray-600"
+                      className="w-full pl-9 pr-3 py-1.5 bg-gray-900/50 border border-gray-700 rounded-lg text-xs text-white focus:ring-1 focus:ring-roblox-accent outline-none placeholder-gray-400"
                     />
                   </div>
                   <button onClick={() => setFilterHideNumbers(!filterHideNumbers)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors border ${filterHideNumbers ? 'bg-roblox-accent/20 text-roblox-accent border-roblox-accent/50' : 'bg-gray-900/50 text-gray-400 border-gray-700 hover:text-white'}`}><EyeOff className="w-3.5 h-3.5" /> No Numbers</button>
@@ -717,7 +722,7 @@ export const Home: React.FC = () => {
              {Object.entries(STATIC_POPULAR_NAMES).map(([styleKey, names]) => (
                <div key={styleKey}>
                   <h4 className="text-roblox-accent font-bold mb-4 text-sm">{styleKey} Names</h4>
-                  <ul className="space-y-2 text-sm text-gray-500">
+                  <ul className="space-y-2 text-sm text-gray-400">
                      {names.map(n => <li key={n} className="hover:text-white transition-colors">{n}</li>)}
                   </ul>
                </div>
