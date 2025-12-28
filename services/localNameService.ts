@@ -2,7 +2,7 @@ import { GeneratorOptions, NameStyle, LengthPreference } from "../types";
 import { 
   ADJECTIVES, NOUNS, VERBS, ACCOUNT_STATUS, COLORS, PVP_TERMS, TITLES, LEET_MAP, 
   JAPANESE_TERMS, FOODS, ANIMALS, ELEMENTS, WEAPONS, Y2K_SUFFIXES, EMOTIONS,
-  MYTHICAL, TECH, ASTRO, SYNONYMS
+  MYTHICAL, TECH, ASTRO, SYNONYMS, CLEAN_SUFFIXES
 } from "../data/wordLists";
 
 // --- Utility Functions ---
@@ -99,7 +99,7 @@ const repeatEndChar = (str: string, count: number = 1): string => {
 type TemplateFn = (
   k: string, a: string, n: string, v: string, s: string, c: string, p: string, t: string, 
   j: string, f: string, an: string, e: string, w: string, y: string, em: string,
-  myth: string, tech: string, astro: string
+  myth: string, tech: string, astro: string, suff: string
 ) => string;
 
 interface StyleStrategy {
@@ -128,6 +128,7 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n) => k ? `${k}Fn` : `${n}Fn`,
       (k, a, n) => k ? `${k}Sz` : `${n}Sz`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech) => k ? `${k}${tech}` : `${n}${tech}`, // NebulaSystem
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff) => k ? `${k}${suff}` : `${n}${suff}`, // NEW: NebulaMode / BeautyFlow
 
       // Sweaty/PVP
       (k, a, n, v, s, c, p) => k ? `${k}${p}` : `${n}${p}`, // NebulaClutch
@@ -171,6 +172,7 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n, v, s, c, p, t, j, f) => k ? `${f}${k}` : `${f}${n}`, // Food
       (k, a, n, v, s, c, p, t, j, f, an) => k ? `${k}${an}` : `${n}${an}`, // Keyword + Animal
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro) => k ? `${astro}${k}` : `${astro}${n}`,
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff) => k ? `${k}${suff}` : `${n}${suff}`,
     ],
     transform: (name) => name 
   },
@@ -212,6 +214,7 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n) => k ? `not${k}` : `not${n}`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y) => k ? `${k}${y}` : `${n}${y}`, // Keyword + Y2K Suffix
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro) => k ? `${astro}${k}` : `${astro}${n}`,
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff) => k ? `${k}${suff}` : `${n}${suff}`,
     ],
     transform: (name) => name.toLowerCase()
   },
@@ -296,7 +299,7 @@ export const generateRobloxNames = async (options: GeneratorOptions): Promise<st
         getRandom(ACCOUNT_STATUS), getRandom(COLORS), getRandom(PVP_TERMS), getRandom(TITLES),
         getRandom(JAPANESE_TERMS), getRandom(FOODS), getRandom(ANIMALS), getRandom(ELEMENTS),
         getRandom(WEAPONS), getRandom(Y2K_SUFFIXES), getRandom(EMOTIONS), getRandom(MYTHICAL),
-        getRandom(TECH), getRandom(ASTRO)
+        getRandom(TECH), getRandom(ASTRO), getRandom(CLEAN_SUFFIXES)
     ] as const;
 
     let name = template(...args);
