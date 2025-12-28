@@ -16,10 +16,11 @@ const capitalize = (str: string) => {
 };
 
 // Modern Roblox "Sweat" capitalization (e.g., "vIper", "nINJA")
+// UPDATED: Now preserves the case of the rest of the string to keep suffixes like 'Sz' or 'PvP' intact.
 const sweatCapitalize = (str: string) => {
   if (str.length < 2) return str.toLowerCase();
-  // Pattern: vIper
-  return str.charAt(0).toLowerCase() + str.charAt(1).toUpperCase() + str.slice(2).toLowerCase();
+  // Pattern: vIper (Lowers first char, Uppers second char, PRESERVES the rest)
+  return str.charAt(0).toLowerCase() + str.charAt(1).toUpperCase() + str.slice(2);
 };
 
 const applyLeetSpeak = (str: string): string => {
@@ -67,11 +68,16 @@ const replaceSwithZ = (str: string): string => {
 };
 
 // Repeat the last character (e.g., "Darkkk")
-const repeatEndChar = (str: string, count: number = 2): string => {
+// UPDATED: Only repeat "Cool" letters to avoid looking like a typo (e.g. "Godd" looks bad, "Darkzz" looks cool)
+const repeatEndChar = (str: string, count: number = 1): string => {
   if (str.length === 0) return str;
   const lastChar = str.charAt(str.length - 1);
-  if (/[0-9]/.test(lastChar)) return str;
-  return str + lastChar.repeat(count);
+  
+  // Only repeat z, x, s, or vowels. Repeating 'd', 't', 'r' usually looks like a mistake.
+  if (/[zxsZXSaeiou]/.test(lastChar)) {
+     return str + lastChar.repeat(count);
+  }
+  return str;
 };
 
 // --- Template Engine tailored for Roblox Archetypes ---
@@ -116,9 +122,11 @@ const STRATEGIES: Record<string, StyleStrategy> = {
     ],
     transform: (name) => {
       let n = name;
-      if (oneIn(8) && n.length > 3) n = sweatCapitalize(n);
+      // Reduced frequency of full-name sweat capitalization to avoid ruining suffixes
+      if (oneIn(10) && n.length > 3) n = sweatCapitalize(n);
       else if (oneIn(4)) n = replaceSwithZ(n); 
-      else if (oneIn(5)) n = repeatEndChar(n, 1);
+      // Reduced frequency of repetition and count
+      else if (oneIn(8)) n = repeatEndChar(n, 1);
       return n;
     }
   },
