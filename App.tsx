@@ -31,7 +31,7 @@ const ScrollToTop = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-6 right-6 p-4 rounded-full bg-roblox-accent hover:bg-emerald-400 shadow-glow text-black transition-all duration-300 z-40 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}
+      className={`fixed bottom-8 right-8 p-4 rounded-full bg-roblox-accent text-black shadow-neon hover:shadow-neon-hover transition-all duration-500 z-50 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}
       aria-label="Scroll to top"
     >
       <ArrowUp className="w-5 h-5" />
@@ -46,10 +46,10 @@ const Breadcrumbs = () => {
   if (location.pathname === '/') return null;
 
   return (
-    <nav aria-label="Breadcrumb" className="max-w-6xl mx-auto px-6 mb-8 mt-4 animate-fade-in-up">
-      <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-500 font-medium">
+    <nav aria-label="Breadcrumb" className="max-w-7xl mx-auto px-6 mb-8 mt-4 animate-slide-up">
+      <ol className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-widest text-gray-500">
         <li className="flex items-center gap-2">
-          <Link to="/" className="hover:text-white transition-colors flex items-center gap-1">
+          <Link to="/" className="hover:text-roblox-accent transition-colors flex items-center gap-1">
             <HomeIcon className="w-3 h-3" /> Home
           </Link>
         </li>
@@ -64,9 +64,9 @@ const Breadcrumbs = () => {
             <li key={to} className="flex items-center gap-2">
               <ChevronRight className="w-3 h-3 text-gray-700" />
               {isLast ? (
-                <span className="text-roblox-accent">{label}</span>
+                <span className="text-white">{label}</span>
               ) : (
-                <Link to={to} className="hover:text-white transition-colors">
+                <Link to={to} className="hover:text-roblox-accent transition-colors">
                   {label}
                 </Link>
               )}
@@ -114,10 +114,10 @@ const App: React.FC = () => {
   const meta = getPageMeta();
 
   return (
-    <div className="min-h-screen text-white font-sans overflow-x-hidden relative">
-      {/* Background Decor */}
-      <div className="fixed top-0 left-0 w-full h-[500px] perspective-grid opacity-30 pointer-events-none z-0"></div>
-
+    <div className="min-h-screen text-white font-sans overflow-x-hidden relative bg-roblox-dark selection:bg-roblox-accent selection:text-black">
+      {/* Background FX */}
+      <div className="fixed inset-0 bg-grid-pattern opacity-20 pointer-events-none z-0"></div>
+      
       <SEOHead 
         title={meta.title}
         description={meta.description}
@@ -125,34 +125,34 @@ const App: React.FC = () => {
         image={meta.image}
       />
 
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-roblox-accent text-black px-4 py-2 rounded-lg z-50 font-bold shadow-xl transition-all">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-roblox-accent text-black px-4 py-2 rounded-lg z-50 font-bold shadow-neon">
         Skip to content
       </a>
 
       {/* Floating Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-roblox-dark/80 backdrop-blur-md border-b border-white/5 py-2' : 'bg-transparent py-4'}`}>
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 cursor-pointer">
+          <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 cursor-pointer group">
             <Logo size="sm" />
           </Link>
 
-          <div className="flex items-center gap-2 sm:gap-8">
-            <Link to="/" className={`text-sm font-medium transition-colors hover:text-roblox-accent ${location.pathname === '/' ? 'text-white' : 'text-gray-400'}`}>Generator</Link>
-            <Link to="/analyzer" className={`text-sm font-medium transition-colors hover:text-roblox-accent ${location.pathname === '/analyzer' ? 'text-white' : 'text-gray-400'}`}>Rater</Link>
-            <Link to="/blog" className={`text-sm font-medium transition-colors hover:text-roblox-accent ${location.pathname.startsWith('/blog') ? 'text-white' : 'text-gray-400'}`}>Blog</Link>
-            
-            <button 
-              onClick={() => setSoundEnabled(!soundEnabled)}
-              className="p-2 rounded-full hover:bg-white/5 text-gray-400 hover:text-white transition-colors hidden sm:block"
-              title={soundEnabled ? "Mute Sounds" : "Enable Sounds"}
-            >
-              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
+          <div className="flex items-center gap-1 sm:gap-6 bg-black/20 backdrop-blur-md rounded-full px-2 py-1 border border-white/5">
+            <Link to="/" className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${location.pathname === '/' ? 'bg-white/10 text-white shadow-inner' : 'text-gray-400 hover:text-white'}`}>Create</Link>
+            <Link to="/analyzer" className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${location.pathname === '/analyzer' ? 'bg-white/10 text-white shadow-inner' : 'text-gray-400 hover:text-white'}`}>Rate</Link>
+            <Link to="/blog" className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${location.pathname.startsWith('/blog') ? 'bg-white/10 text-white shadow-inner' : 'text-gray-400 hover:text-white'}`}>Guide</Link>
           </div>
+
+          <button 
+            onClick={() => setSoundEnabled(!soundEnabled)}
+            className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white transition-colors hidden sm:block"
+            title={soundEnabled ? "Mute Sounds" : "Enable Sounds"}
+          >
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+          </button>
         </div>
       </nav>
 
-      <div className="pt-24">
+      <div className="pt-32">
         <Breadcrumbs />
 
         <main id="main-content" className="pb-20 relative z-10">
@@ -177,14 +177,14 @@ const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl py-16 mt-20">
+      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl py-20 mt-20">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
               <Logo size="sm" />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-              The premier destination for Roblox identity creation. Precision engineered algorithms for the modern metaverse.
+              Precision engineered algorithms for the modern metaverse. Create your legacy.
             </p>
             <p className="text-gray-700 text-xs font-mono">
               © {CURRENT_YEAR} BloxName.
@@ -192,28 +192,28 @@ const App: React.FC = () => {
           </div>
           
           <div>
-            <h4 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Generators</h4>
-            <ul className="space-y-3 text-sm text-gray-400">
-              <li><Link to="/sweaty-roblox-names" className="hover:text-roblox-accent transition-colors">Sweaty Names</Link></li>
-              <li><Link to="/aesthetic-roblox-usernames" className="hover:text-roblox-accent transition-colors">Aesthetic Usernames</Link></li>
-              <li><Link to="/rare-og-roblox-names" className="hover:text-roblox-accent transition-colors">Rare/OG Names</Link></li>
-              <li><Link to="/cute-roblox-names" className="hover:text-roblox-accent transition-colors">Cute Names</Link></li>
+            <h4 className="font-bold text-white mb-6 text-xs uppercase tracking-[0.2em] text-roblox-accent">Tools</h4>
+            <ul className="space-y-3 text-sm text-gray-400 font-medium">
+              <li><Link to="/sweaty-roblox-names" className="hover:text-white transition-colors">Sweaty Generator</Link></li>
+              <li><Link to="/aesthetic-roblox-usernames" className="hover:text-white transition-colors">Aesthetic Generator</Link></li>
+              <li><Link to="/rare-og-roblox-names" className="hover:text-white transition-colors">OG Name Generator</Link></li>
+              <li><Link to="/analyzer" className="hover:text-white transition-colors">Name Rater</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Trending</h4>
-            <ul className="space-y-3 text-sm text-gray-400">
+            <h4 className="font-bold text-white mb-6 text-xs uppercase tracking-[0.2em] text-roblox-accent">Trending</h4>
+            <ul className="space-y-3 text-sm text-gray-400 font-medium">
               {[
-                { label: 'Da Hood Names', key: 'Da Hood' },
-                { label: 'BedWars Names', key: 'BedWars' },
-                { label: 'Blox Fruits Names', key: 'Blox Fruits' },
-                { label: 'Pet Sim 99 Names', key: 'Pet Sim' }
+                { label: 'Da Hood', key: 'Da Hood' },
+                { label: 'BedWars', key: 'BedWars' },
+                { label: 'Blox Fruits', key: 'Blox Fruits' },
+                { label: 'Pet Sim 99', key: 'Pet Sim' }
               ].map(game => (
                 <li key={game.key}>
                   <Link 
                     to={`/sweaty-roblox-names?keyword=${encodeURIComponent(game.key)}`}
-                    className="hover:text-roblox-accent transition-colors"
+                    className="hover:text-white transition-colors"
                   >
                     {game.label}
                   </Link>
@@ -223,12 +223,12 @@ const App: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Legal</h4>
-            <ul className="space-y-3 text-sm text-gray-400">
-              <li><Link to="/about" className="hover:text-roblox-accent transition-colors">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-roblox-accent transition-colors">Support</Link></li>
-              <li><Link to="/privacy" className="hover:text-roblox-accent transition-colors">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-roblox-accent transition-colors">Terms of Service</Link></li>
+            <h4 className="font-bold text-white mb-6 text-xs uppercase tracking-[0.2em] text-roblox-accent">Legal</h4>
+            <ul className="space-y-3 text-sm text-gray-400 font-medium">
+              <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
+              <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+              <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
+              <li><Link to="/terms" className="hover:text-white transition-colors">Terms</Link></li>
             </ul>
           </div>
         </div>

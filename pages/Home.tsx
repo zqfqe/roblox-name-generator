@@ -29,13 +29,13 @@ const PRESET_CATEGORIES = [
 ];
 
 const STYLE_DESCRIPTIONS: Record<NameStyle, React.ReactNode> = {
-  [NameStyle.COOL]: "Generate sweaty, intense, and competitive names perfect for PvP games like BedWars and Da Hood.",
-  [NameStyle.AESTHETIC]: "Create soft, dreamy, and minimalist usernames with a y2k or cottagecore vibe.",
-  [NameStyle.EDGY]: "Find dark, mysterious, and emo-style names for a unique online persona.",
-  [NameStyle.FUNNY]: "Make people laugh with meme-worthy, troll, and hilarious username combinations.",
-  [NameStyle.CUTE]: "Sweet, adorable, and charming names featuring animals, foods, and happy vibes.",
-  [NameStyle.OG]: "Get that rare, original account look with short, clean, and classic word combinations.",
-  [NameStyle.MIXED]: "Can't decide? Generate a chaotic mix of all styles at once to find your unique vibe."
+  [NameStyle.COOL]: "Sweaty, intense, competitive.",
+  [NameStyle.AESTHETIC]: "Soft, dreamy, minimalist.",
+  [NameStyle.EDGY]: "Dark, mysterious, emo.",
+  [NameStyle.FUNNY]: "Meme-worthy, troll, hilarious.",
+  [NameStyle.CUTE]: "Sweet, adorable, charming.",
+  [NameStyle.OG]: "Short, clean, rare.",
+  [NameStyle.MIXED]: "Chaos mode. All styles."
 };
 
 const STATIC_POPULAR_NAMES = {
@@ -47,28 +47,26 @@ const STATIC_POPULAR_NAMES = {
 
 const getRandom = <T extends unknown>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-// Reusable Components inside Home
+// High-End Select Component
 const GamingSelect = ({ value, onChange, disabled }: { value: NameStyle, onChange: (val: NameStyle) => void, disabled?: boolean }) => {
   return (
-    <div className="relative h-full w-full">
+    <div className="relative w-full">
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as NameStyle)}
         disabled={disabled}
         aria-label="Select Name Style"
-        className={`w-full h-full pl-4 pr-10 py-4 bg-transparent border-l border-white/10 outline-none text-white font-medium transition-all appearance-none cursor-pointer hover:bg-white/5 focus:bg-white/10 text-sm sm:text-base ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`w-full appearance-none bg-black/40 border border-white/10 text-white text-sm font-bold uppercase tracking-wider py-3 px-4 pr-8 rounded-lg outline-none focus:border-roblox-accent/50 transition-all cursor-pointer hover:bg-white/5 disabled:opacity-50`}
       >
          {Object.values(NameStyle).map((styleOption) => (
-            <option key={styleOption} value={styleOption} className="bg-gray-900 text-white py-2">
-               {styleOption === NameStyle.MIXED ? 'Mixed Mode' : `${styleOption} Mode`}
+            <option key={styleOption} value={styleOption} className="bg-gray-900 text-white">
+               {styleOption}
             </option>
          ))}
       </select>
-      {!disabled && (
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-        </div>
-      )}
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+        <ChevronRight className="w-4 h-4 text-roblox-accent rotate-90" />
+      </div>
     </div>
   );
 };
@@ -77,7 +75,7 @@ const GamingSelect = ({ value, onChange, disabled }: { value: NameStyle, onChang
 const StyleSpecificContent = ({ style }: { style: NameStyle }) => {
   if (style === NameStyle.COOL) {
     return (
-      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-white/10 pt-12">
+      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-white/5 pt-12">
         <h2 className="text-3xl font-bold text-white mb-6">Sweaty Roblox Names for Da Hood & PvP</h2>
         <p>
           In the competitive world of Roblox PvP games like <em>BedWars</em>, <em>Da Hood</em>, and <em>The Streets</em>, your username is your first weapon. A "sweaty" name typically features clean formatting, specific suffixes (like <strong>Sz</strong>, <strong>Fn</strong>, <strong>Ly</strong>), and intimidating words.
@@ -91,7 +89,7 @@ const StyleSpecificContent = ({ style }: { style: NameStyle }) => {
   
   if (style === NameStyle.AESTHETIC) {
     return (
-      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-white/10 pt-12">
+      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-white/5 pt-12">
         <h2 className="text-3xl font-bold text-white mb-6">Aesthetic Roblox Usernames for 2026</h2>
         <p>
           Aesthetic usernames are all about vibes. Whether you are into <strong>Cottagecore</strong>, <strong>Y2K</strong>, <strong>Grunge</strong>, or <strong>Soft</strong> aesthetics, your name should reflect your style. Popular games like <em>Royale High</em>, <em>Berry Avenue</em>, and <em>Brookhaven</em> are filled with players sporting names like <em>cloud.tear</em> or <em>lunar.bby</em>.
@@ -105,7 +103,7 @@ const StyleSpecificContent = ({ style }: { style: NameStyle }) => {
 
   if (style === NameStyle.OG) {
     return (
-      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-white/10 pt-12">
+      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-white/5 pt-12">
         <h2 className="text-3xl font-bold text-white mb-6">Rare & OG Roblox Name Generator</h2>
         <p>
           "OG" (Original Gangster) names are short, simple, and look like they were made in 2008. Since most 3-letter and 4-letter dictionary words are taken, finding a name that <em>looks</em> rare is an art form.
@@ -189,8 +187,8 @@ const RelatedKeywords = ({ keyword, style, onSelect }: { keyword: string, style:
   }
 
   return (
-    <div className="mt-8 pt-6 border-t border-white/10">
-      <div className="flex items-center gap-2 mb-3 text-xs font-bold text-gray-500 uppercase tracking-widest">
+    <div className="mt-8 pt-6 border-t border-white/5">
+      <div className="flex items-center gap-2 mb-3 text-[10px] font-bold text-roblox-accent uppercase tracking-widest">
         <Info className="w-3 h-3" /> Related Searches
       </div>
       <div className="flex flex-wrap gap-2">
@@ -198,7 +196,7 @@ const RelatedKeywords = ({ keyword, style, onSelect }: { keyword: string, style:
           <button 
             key={term}
             onClick={() => onSelect(term)}
-            className="px-3 py-1.5 text-xs font-medium text-gray-300 bg-white/5 hover:bg-white/10 hover:text-white rounded-full border border-white/5 transition-colors"
+            className="px-3 py-1.5 text-xs font-bold text-gray-400 bg-white/[0.02] hover:bg-white/[0.05] hover:text-white rounded border border-white/5 hover:border-white/20 transition-all uppercase tracking-wide"
           >
             {term} Names
           </button>
@@ -283,10 +281,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
   useEffect(() => {
     const params: any = {};
     if (keyword) params.keyword = keyword;
-    
-    // Only set style param if NOT on a forced route
     if (!forcedStyle && internalStyle !== NameStyle.COOL) params.style = internalStyle;
-    
     if (length !== LengthPreference.ANY) params.length = length;
     if (includeNumbers) params.numbers = 'true';
     if (includeUnderscore) params.underscore = 'true';
@@ -321,8 +316,8 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
     const s = overrideStyle !== undefined ? overrideStyle : style;
 
     if (k && BAD_WORDS.some(bad => k.toLowerCase().includes(bad))) {
-      setError("Let's keep it appropriate! 🚫");
-      setToastMsg("Restricted keyword detected.");
+      setError("System Warning: Restricted keyword detected.");
+      setToastMsg("Inappropriate Keyword");
       setIsToastVisible(true);
       return;
     }
@@ -365,7 +360,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
 
     } catch (err) {
       console.error(err);
-      setError("Failed to generate names.");
+      setError("Generation failed. System reboot required.");
     } finally {
       setIsLoading(false);
     }
@@ -374,7 +369,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
   const handleRemix = (name: string) => {
     let clean = name.replace(/[0-9]+$/, '').replace(/_+$/, '').replace(/^_+/, ''); 
     setKeyword(clean);
-    setToastMsg(`Remixing "${clean}"...`);
+    setToastMsg(`Re-rolling: ${clean}`);
     setIsToastVisible(true);
     handleGenerate(clean);
     window.scrollTo(0, 0); 
@@ -383,10 +378,10 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
   const handleFavoriteToggle = (name: GeneratedName) => {
     if (favorites.some(f => f.id === name.id)) {
       setFavorites(prev => prev.filter(f => f.id !== name.id));
-      setToastMsg("Removed from favorites");
+      setToastMsg("Removed from Database");
     } else {
       setFavorites(prev => [name, ...prev]);
-      setToastMsg("Saved to favorites");
+      setToastMsg("Saved to Database");
     }
     setIsToastVisible(true);
   };
@@ -429,130 +424,126 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
        <SchemaMarkup data={appSchema} />
 
        {/* Hero Section */}
-       <div className="text-center mb-12 animate-fade-in-up">
+       <div className="text-center mb-16 animate-fade-in-up">
           <div className="flex justify-center mb-8">
              <Logo size="lg" />
           </div>
           
-          <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight drop-shadow-[0_0_15px_rgba(0,214,134,0.3)]">
+          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight drop-shadow-lg">
             {forcedStyle ? (
               <>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-roblox-accent to-emerald-300">{forcedStyle}</span> Roblox Names
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-roblox-accent to-emerald-300">{forcedStyle}</span> Names
               </>
             ) : (
-              <>Roblox Name Generator</>
+              <>Identity Generator</>
             )}
           </h1>
           
           <div className="mb-8 flex justify-center">
-             <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm text-gray-300 backdrop-blur-md shadow-lg">
-               <Info className="w-4 h-4 text-roblox-accent" />
+             <div className="inline-flex items-center gap-2 px-6 py-2 bg-white/[0.03] border border-white/10 rounded-full text-sm font-medium text-gray-300 backdrop-blur-md">
+               <span className="w-2 h-2 rounded-full bg-roblox-accent animate-pulse"></span>
                <span>{STYLE_DESCRIPTIONS[style]}</span>
              </div>
           </div>
-          
-          <p className="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto font-light leading-relaxed">
-            The most advanced <strong>roblox name generator</strong> and <strong>roblox username generator</strong> on the web. Create rare, sweaty, and aesthetic usernames instantly.
-          </p>
        </div>
 
        {/* Main Glass Interface */}
-       <div className="glass-panel rounded-3xl p-1 md:p-2 mb-16 relative overflow-visible animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+       <div className="glass-panel rounded-3xl p-1 mb-20 relative animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
           
-          {/* Glowing Backlight */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-roblox-accent/10 blur-[100px] rounded-full pointer-events-none"></div>
+          <div className="bg-[#0A0A0A]/90 backdrop-blur-md rounded-[22px] p-8 md:p-12 border border-white/5 relative z-10 overflow-hidden">
+            {/* Decoration Background */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-roblox-accent/5 blur-[100px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
 
-          <div className="bg-[#0A0A0A]/80 backdrop-blur-md rounded-2xl p-6 md:p-10 border border-white/5 relative z-10">
-            {/* Input Group */}
-            <div className="flex flex-col md:flex-row gap-4 mb-8">
-               <div className="flex-grow relative group">
-                  <div className="absolute inset-0 bg-roblox-accent/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-xl"></div>
-                  <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500 group-focus-within:text-roblox-accent transition-colors z-20 w-5 h-5" />
+            {/* Input Group - The "Command Bar" */}
+            <div className="flex flex-col gap-6 mb-10">
+               <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-roblox-accent/30 to-roblox-secondary/30 rounded-xl blur opacity-20 group-hover:opacity-50 transition duration-500"></div>
                   
-                  <input 
-                    type="text" 
-                    value={keyword}
-                    aria-label="Enter keyword"
-                    onChange={(e) => setKeyword(e.target.value)}
-                    placeholder="Enter keyword (e.g. Viper, Cloud)..."
-                    className="w-full pl-14 pr-4 py-5 bg-black/40 border border-white/10 rounded-xl focus:border-roblox-accent/50 outline-none text-white font-medium placeholder-gray-500 transition-all text-lg relative z-10 hover:border-white/20 focus:shadow-[0_0_30px_rgba(0,214,134,0.1)]"
-                    onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
-                  />
-                  
-                  {suggestions.length > 0 && (
-                    <div className="absolute top-full left-0 right-0 mt-3 flex flex-wrap gap-2 px-1 animate-fade-in-down z-30">
-                      <div className="flex items-center gap-1 text-[10px] uppercase font-bold text-gray-500 mr-2 bg-black/50 px-2 rounded">
-                        <IdeaIcon className="w-3 h-3 text-yellow-400" /> Ideas:
-                      </div>
-                      {suggestions.map(s => (
-                        <button
-                          key={s}
-                          onClick={() => {
-                            setKeyword(s);
-                            handleGenerate(s); 
-                          }}
-                          className="px-3 py-1 bg-gray-800/80 border border-white/10 hover:border-roblox-accent text-gray-300 hover:text-white rounded-full text-xs transition-colors backdrop-blur-sm"
-                        >
-                          {s}
-                        </button>
-                      ))}
+                  <div className="relative flex items-center bg-black border border-white/10 rounded-xl p-2 transition-all group-focus-within:border-white/20">
+                    <div className="pl-4 pr-3 text-gray-500">
+                      <Search className="w-6 h-6" />
                     </div>
-                  )}
-               </div>
-               <div className="md:w-1/3 relative z-20 h-[68px]">
-                  <div className="absolute inset-0 bg-white/5 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition-colors">
-                    <GamingSelect 
-                      value={style} 
-                      onChange={(val) => {
-                        if (forcedStyle) {
-                          navigate('/');
-                          setTimeout(() => setInternalStyle(val), 50);
-                        } else {
-                          setInternalStyle(val);
-                        }
-                      }} 
-                      disabled={!!forcedStyle}
+                    
+                    <input 
+                      type="text" 
+                      value={keyword}
+                      aria-label="Enter keyword"
+                      onChange={(e) => setKeyword(e.target.value)}
+                      placeholder="ENTER KEYWORD (e.g. Viper, Cloud)..."
+                      className="w-full bg-transparent outline-none text-white font-bold text-lg placeholder-gray-700 py-4 font-mono tracking-wide"
+                      onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
                     />
+
+                    <div className="hidden md:flex items-center gap-2 pr-2">
+                      <div className="h-8 w-px bg-white/10 mx-2"></div>
+                      <div className="w-48">
+                        <GamingSelect 
+                          value={style} 
+                          onChange={(val) => {
+                            if (forcedStyle) {
+                              navigate('/');
+                              setTimeout(() => setInternalStyle(val), 50);
+                            } else {
+                              setInternalStyle(val);
+                            }
+                          }} 
+                          disabled={!!forcedStyle}
+                        />
+                      </div>
+                    </div>
                   </div>
+               </div>
+
+               {/* Mobile Style Selector */}
+               <div className="md:hidden">
+                  <GamingSelect 
+                    value={style} 
+                    onChange={(val) => {
+                      if (forcedStyle) {
+                        navigate('/');
+                        setTimeout(() => setInternalStyle(val), 50);
+                      } else {
+                        setInternalStyle(val);
+                      }
+                    }} 
+                    disabled={!!forcedStyle}
+                  />
                </div>
             </div>
 
             {/* Advanced Toggle */}
-            <div className="mb-8">
+            <div className="mb-10">
                <button 
                  onClick={() => setShowAdvanced(!showAdvanced)}
-                 className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-white transition-colors mb-4 focus:outline-none uppercase tracking-wider group"
+                 className="flex items-center gap-2 text-[10px] font-bold text-gray-500 hover:text-white transition-colors mb-4 focus:outline-none uppercase tracking-[0.2em] group"
                >
-                 <Settings2 className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
-                 {showAdvanced ? 'Hide Options' : 'Advanced Options'}
+                 <Settings2 className="w-3 h-3 group-hover:rotate-90 transition-transform duration-300" />
+                 {showAdvanced ? 'Collapse Config' : 'System Config'}
                </button>
                
                {showAdvanced && (
-                 <div className="space-y-6 p-6 bg-white/5 border border-white/5 rounded-2xl animate-fade-in-up">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {[{l: 'Include Numbers', s: setIncludeNumbers, v: includeNumbers}, 
-                        {l: 'Underscore (_)', s: setIncludeUnderscore, v: includeUnderscore},
-                        {l: 'Leet Speak', s: setUseLeet, v: useLeet},
+                 <div className="p-6 bg-white/[0.02] border border-white/5 rounded-xl animate-slide-up">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                      {[{l: 'Numbers', s: setIncludeNumbers, v: includeNumbers}, 
+                        {l: 'Underscore', s: setIncludeUnderscore, v: includeUnderscore},
+                        {l: 'Leet Mode', s: setUseLeet, v: useLeet},
                         {l: 'Display Name', s: setForDisplayName, v: forDisplayName}
                       ].map((opt, i) => (
-                        <label key={i} className="flex items-center gap-3 cursor-pointer group p-2 rounded-lg hover:bg-white/5 transition-colors">
-                          <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${opt.v ? 'bg-roblox-accent border-roblox-accent' : 'border-gray-600 bg-transparent'}`}>
-                             {opt.v && <Zap className="w-3 h-3 text-black fill-current" />}
-                          </div>
-                          <input type="checkbox" checked={opt.v} onChange={(e) => opt.s(e.target.checked)} className="hidden" />
-                          <span className="text-sm text-gray-400 group-hover:text-white font-medium transition-colors">{opt.l}</span>
-                        </label>
+                        <button 
+                          key={i} 
+                          onClick={() => opt.s(!opt.v)}
+                          className={`flex items-center justify-between px-4 py-3 rounded-lg border text-xs font-bold uppercase tracking-wider transition-all ${opt.v ? 'bg-roblox-accent/10 border-roblox-accent/50 text-roblox-accent' : 'bg-black/40 border-white/10 text-gray-500 hover:bg-white/5 hover:text-gray-300'}`}
+                        >
+                          {opt.l}
+                          <div className={`w-2 h-2 rounded-full ${opt.v ? 'bg-roblox-accent shadow-[0_0_8px_currentColor]' : 'bg-gray-700'}`}></div>
+                        </button>
                       ))}
                     </div>
 
-                    <div className="h-px bg-white/5"></div>
-
                     <div className="grid md:grid-cols-2 gap-8">
                       <div>
-                        <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">
-                          <Filter className="w-3 h-3" /> Max Length
-                        </label>
-                        <div className="flex bg-black/40 p-1 rounded-xl border border-white/10">
+                        <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-3">Length constraint</label>
+                        <div className="flex bg-black/40 p-1 rounded-lg border border-white/10">
                           {([LengthPreference.ANY, LengthPreference.SHORT, LengthPreference.MEDIUM, LengthPreference.LONG]).map((opt) => {
                             let label = opt.split(' ')[0];
                             if (opt === LengthPreference.ANY) label = "Any";
@@ -560,7 +551,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
                               <button
                                 key={opt}
                                 onClick={() => setLength(opt)}
-                                className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${length === opt ? 'bg-gray-800 text-white shadow-sm border border-white/10' : 'text-gray-500 hover:text-gray-300'}`}
+                                className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded transition-all ${length === opt ? 'bg-gray-800 text-white shadow-sm' : 'text-gray-600 hover:text-gray-400'}`}
                               >
                                 {label}
                               </button>
@@ -571,27 +562,23 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
 
                       <div className="flex gap-4">
                         <div className="flex-1">
-                          <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                            <AlignLeft className="w-3 h-3" /> Prefix
-                          </label>
+                          <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Prefix</label>
                           <input 
                             type="text" 
                             value={prefix} 
                             onChange={(e) => setPrefix(e.target.value)}
-                            placeholder="e.g. Itz"
-                            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:border-roblox-accent/50 outline-none transition-colors"
+                            placeholder="ITZ"
+                            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-xs font-mono text-white placeholder-gray-700 focus:border-roblox-accent/50 outline-none uppercase"
                           />
                         </div>
                         <div className="flex-1">
-                          <label className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
-                            <AlignRight className="w-3 h-3" /> Suffix
-                          </label>
+                          <label className="block text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-2">Suffix</label>
                           <input 
                             type="text" 
                             value={suffix} 
                             onChange={(e) => setSuffix(e.target.value)}
-                            placeholder="e.g. Sz"
-                            className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-gray-600 focus:border-roblox-accent/50 outline-none transition-colors"
+                            placeholder="SZ"
+                            className="w-full bg-black/40 border border-white/10 rounded-lg px-4 py-2 text-xs font-mono text-white placeholder-gray-700 focus:border-roblox-accent/50 outline-none uppercase"
                           />
                         </div>
                       </div>
@@ -605,16 +592,16 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
                <Button 
                  onClick={() => handleGenerate()} 
                  isLoading={isLoading} 
-                 className="flex-grow text-lg h-16 rounded-xl shadow-[0_0_20px_rgba(0,214,134,0.2)] hover:shadow-[0_0_30px_rgba(0,214,134,0.4)] transition-all duration-300"
+                 className="flex-grow h-14 md:h-16 text-base md:text-lg rounded-xl shadow-neon hover:shadow-neon-hover"
                >
                  <Wand2 className="w-5 h-5 mr-3" />
-                 Generate Identity
+                 INITIALIZE
                </Button>
                <Button 
                  variant="secondary"
                  onClick={() => handleGenerate(undefined, undefined)} 
                  disabled={isLoading}
-                 className="md:w-auto h-16 px-8 rounded-xl bg-gray-800/50 hover:bg-gray-700 border border-white/10"
+                 className="md:w-auto h-14 md:h-16 px-8 rounded-xl"
                  title="Randomize"
                >
                  <Dices className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" />
@@ -622,7 +609,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
             </div>
             
             {error && (
-              <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-center gap-2 text-red-400 text-sm animate-fade-in-up">
+              <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center justify-center gap-2 text-red-400 text-sm animate-slide-up">
                 <AlertTriangle className="w-4 h-4" />
                 {error}
               </div>
@@ -631,61 +618,56 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
        </div>
 
        {relatedPost && !isLoading && generatedNames.length > 0 && activeTab === 'results' && (
-         <div className="mb-12 max-w-3xl mx-auto animate-fade-in-up">
-            <div className="glass-panel p-1 rounded-2xl">
-              <div className="bg-gray-900/80 rounded-xl p-4 flex items-start sm:items-center gap-4 hover:bg-gray-800/80 transition-colors">
-                 <div className="bg-roblox-accent/10 p-2.5 rounded-full shrink-0 border border-roblox-accent/20">
-                   <Lightbulb className="w-5 h-5 text-roblox-accent" />
+         <div className="mb-12 max-w-3xl mx-auto animate-slide-up">
+            <div className="glass-panel p-px rounded-xl">
+              <div className="bg-black/60 rounded-xl p-4 flex items-center gap-4">
+                 <div className="bg-roblox-accent/10 p-2 rounded-lg border border-roblox-accent/20">
+                   <Lightbulb className="w-4 h-4 text-roblox-accent" />
                  </div>
                  <div className="flex-1">
-                   <h4 className="font-bold text-white text-sm uppercase tracking-wide mb-1">Pro Tip: Mastering {style} Names</h4>
-                   <p className="text-gray-400 text-sm font-light">
-                     Want to learn more about {style.toLowerCase()} trends? Read our guide: <span className="text-gray-200 font-medium border-b border-gray-600">{relatedPost.title.split(':')[0]}</span>.
+                   <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-1">Database Insight</h4>
+                   <p className="text-gray-400 text-xs">
+                     Learn more about {style.toLowerCase()} naming conventions in our <Link to={`/blog/${relatedPost.slug}`} className="text-roblox-accent hover:underline">latest guide</Link>.
                    </p>
                  </div>
-                 <Link 
-                   to={`/blog/${relatedPost.slug}`}
-                   className="hidden sm:flex items-center gap-1 text-xs font-bold text-roblox-accent hover:text-white transition-colors whitespace-nowrap bg-roblox-accent/10 px-3 py-1.5 rounded-lg border border-roblox-accent/20"
-                 >
-                   Read Guide <ChevronRight className="w-3 h-3" />
-                 </Link>
               </div>
             </div>
          </div>
        )}
 
        <div id="results-section" className="min-h-[400px]">
-          <div className="flex flex-col items-center justify-center mb-8 gap-6">
-             <div className="bg-black/40 p-1.5 rounded-2xl flex gap-1 border border-white/10 backdrop-blur-sm">
+          {/* Tabs */}
+          <div className="flex justify-center mb-10">
+             <div className="inline-flex bg-black/40 p-1 rounded-xl border border-white/10 backdrop-blur-sm">
                {(['results', 'history', 'favorites'] as const).map(tab => (
                  <button
                    key={tab}
                    onClick={() => setActiveTab(tab)}
-                   className={`px-8 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 ${activeTab === tab ? 'bg-gray-800 text-white shadow-lg border border-white/5' : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'}`}
+                   className={`px-6 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-300 ${activeTab === tab ? 'bg-white/10 text-white shadow-inner border border-white/5' : 'text-gray-600 hover:text-gray-300'}`}
                  >
-                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                   {tab}
                  </button>
                ))}
              </div>
-
-             {(generatedNames.length > 0 || history.length > 0 || favorites.length > 0) && (
-               <div className="w-full max-w-2xl flex flex-wrap items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/5 animate-fade-in-up">
-                  <div className="relative flex-grow min-w-[150px]">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
-                    <input 
-                      type="text" 
-                      aria-label="Filter names"
-                      placeholder="Filter list..."
-                      value={filterText}
-                      onChange={(e) => setFilterText(e.target.value)}
-                      className="w-full pl-10 pr-3 py-2 bg-black/40 border border-white/10 rounded-xl text-sm text-white focus:border-roblox-accent/50 outline-none placeholder-gray-600 transition-colors"
-                    />
-                  </div>
-                  <button onClick={() => setFilterHideNumbers(!filterHideNumbers)} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors border ${filterHideNumbers ? 'bg-roblox-accent/20 text-roblox-accent border-roblox-accent/50' : 'bg-black/40 text-gray-400 border-white/10 hover:text-white'}`}><EyeOff className="w-3.5 h-3.5" /> No Numbers</button>
-                  <button onClick={() => setFilterShortOnly(!filterShortOnly)} className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-colors border ${filterShortOnly ? 'bg-roblox-accent/20 text-roblox-accent border-roblox-accent/50' : 'bg-black/40 text-gray-400 border-white/10 hover:text-white'}`}><Ruler className="w-3.5 h-3.5" /> &lt; 10 Chars</button>
-               </div>
-             )}
           </div>
+
+          {(generatedNames.length > 0 || history.length > 0 || favorites.length > 0) && (
+             <div className="mb-6 flex flex-wrap items-center gap-3">
+                <div className="relative flex-grow min-w-[200px]">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600 w-4 h-4" />
+                  <input 
+                    type="text" 
+                    aria-label="Filter names"
+                    placeholder="Filter results..."
+                    value={filterText}
+                    onChange={(e) => setFilterText(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 bg-black/20 border border-white/5 rounded-lg text-xs font-mono text-white focus:border-white/20 outline-none placeholder-gray-700 transition-colors"
+                  />
+                </div>
+                <button onClick={() => setFilterHideNumbers(!filterHideNumbers)} className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-colors ${filterHideNumbers ? 'bg-roblox-accent/10 text-roblox-accent border-roblox-accent/30' : 'bg-transparent text-gray-600 border-white/5 hover:text-white'}`}>No Digits</button>
+                <button onClick={() => setFilterShortOnly(!filterShortOnly)} className={`px-3 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider border transition-colors ${filterShortOnly ? 'bg-roblox-accent/10 text-roblox-accent border-roblox-accent/30' : 'bg-transparent text-gray-600 border-white/5 hover:text-white'}`}>Short</button>
+             </div>
+          )}
 
           <NameList 
             names={filteredNames.length > 0 ? filteredNames : (filterText || filterHideNumbers || filterShortOnly) ? [] : FEATURED_EXAMPLES} 
@@ -694,11 +676,11 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
             onPreview={(name) => setPreviewName(name)}
             onDecorate={(name) => setDecoratorName(name)}
             isLoading={isLoading}
-            title={activeTab === 'favorites' ? "Your Favorites" : activeTab === 'history' ? "History" : "Generated Results"}
+            title={activeTab === 'favorites' ? "DATABASE // SAVED" : activeTab === 'history' ? "DATABASE // HISTORY" : "GENERATED OUTPUT"}
             onCopyAll={() => {
               const allNames = filteredNames.map(n => n.name).join('\n');
               navigator.clipboard.writeText(allNames);
-              setToastMsg("All names copied!");
+              setToastMsg("Clipboard Updated");
               setIsToastVisible(true);
             }}
             allowDelete={activeTab === 'history'}
@@ -706,17 +688,17 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
           />
           
           {filteredNames.length > 0 && activeTab === 'results' && (
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center mt-12">
                <button
                   onClick={() => {
                      const list = filteredNames.map((n, i) => `${i + 1}. ${n.name}`).join('\n');
-                     navigator.clipboard.writeText(`🔥 BloxName Results:\n${list}\n\nGen yours at: bloxname.com`);
-                     setToastMsg("List copied!");
+                     navigator.clipboard.writeText(`🔥 BloxName Output:\n${list}\n\nGen yours at: bloxname.com`);
+                     setToastMsg("Formatted list copied");
                      setIsToastVisible(true);
                   }}
-                  className="flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-roblox-accent transition-colors bg-white/5 px-6 py-3 rounded-xl border border-white/5 hover:border-roblox-accent/30"
+                  className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-roblox-accent transition-colors bg-white/[0.02] px-6 py-3 rounded-xl border border-white/5 hover:border-roblox-accent/30 uppercase tracking-widest"
                 >
-                  <Share2 className="w-4 h-4" /> Share formatted list
+                  <Share2 className="w-4 h-4" /> Export List
                 </button>
             </div>
           )}
@@ -726,20 +708,20 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
           </div>
        </div>
 
-       <div className="mt-24">
-          <h3 className="text-xl font-bold text-white mb-8 flex items-center gap-2">
-            <Tag className="w-5 h-5 text-roblox-accent" />
-            Quick Presets
+       <div className="mt-32">
+          <h3 className="text-xs font-bold text-gray-500 mb-8 flex items-center gap-2 uppercase tracking-[0.2em]">
+            <Tag className="w-4 h-4 text-roblox-accent" />
+            Rapid Access
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
              {PRESET_CATEGORIES.map((preset, idx) => (
                <Link
                  key={idx}
                  to={preset.link}
-                 className="relative group p-5 rounded-2xl border border-white/5 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-glow-sm bg-gradient-to-b from-white/5 to-transparent hover:border-roblox-accent/30"
+                 className="group p-4 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-roblox-accent/30 transition-all duration-300"
                >
-                 <span className="text-3xl mb-3 block filter drop-shadow-md group-hover:scale-110 transition-transform duration-200">{preset.emoji}</span>
-                 <span className="font-bold text-gray-400 text-sm group-hover:text-white block relative z-10 transition-colors">{preset.label}</span>
+                 <span className="text-2xl mb-3 block group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg">{preset.emoji}</span>
+                 <span className="font-bold text-gray-400 text-xs group-hover:text-white transition-colors uppercase tracking-wide">{preset.label}</span>
                </Link>
              ))}
           </div>
@@ -752,27 +734,25 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
        <RarityGuide />
        
        {/* SEO Content Block */}
-       <div className="mt-16 prose prose-invert max-w-none text-gray-400">
-           <section className="space-y-12 mt-16">
-              <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+       <div className="mt-24 prose prose-invert max-w-none text-gray-400">
+           <section className="space-y-12">
+              <div className="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
                 <HelpCircle className="text-roblox-accent w-6 h-6" />
-                <h3 className="text-2xl font-bold text-white m-0">Frequently Asked Questions</h3>
+                <h3 className="text-2xl font-bold text-white m-0">FAQ Protocol</h3>
               </div>
               <div className="grid md:grid-cols-2 gap-8">
                 {generateFAQs(style, keyword).map((item, index) => (
-                  <div key={index} className="space-y-4">
-                    <div className="bg-white/[0.03] border border-white/5 p-6 rounded-2xl h-full hover:bg-white/[0.05] transition-colors">
-                      <h4 className="font-bold text-white mb-3 text-lg">{item.question}</h4>
-                      <p className="text-sm text-gray-400 leading-relaxed font-light">
-                        {item.answer}
-                      </p>
-                    </div>
+                  <div key={index} className="bg-white/[0.02] border border-white/5 p-6 rounded-2xl">
+                    <h4 className="font-bold text-white mb-3 text-sm uppercase tracking-wide">{item.question}</h4>
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      {item.answer}
+                    </p>
                   </div>
                 ))}
               </div>
            </section>
            
-           <div className="mt-24 border-t border-white/10 pt-16">
+           <div className="mt-24 border-t border-white/5 pt-16">
               <h2 className="text-4xl font-black text-white mb-10 tracking-tight">The #1 Roblox Name Generator for 2026</h2>
               <div className="space-y-8 text-base md:text-lg leading-loose text-gray-400 font-light">
                 <p>
@@ -799,17 +779,17 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
            </div>
        </div>
 
-       <div className="mt-24 border-t border-white/10 pt-16">
+       <div className="mt-24 border-t border-white/5 pt-16">
           <div className="flex items-center gap-3 mb-10">
              <BookOpen className="text-roblox-accent w-6 h-6" />
-             <h3 className="text-2xl font-bold text-white">Latest Guides & Tips</h3>
+             <h3 className="text-2xl font-bold text-white">Latest Intel</h3>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
              {BLOG_POSTS.slice(0, 3).map((post) => (
                <Link 
                  key={post.slug}
                  to={`/blog/${post.slug}`}
-                 className="group block bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden hover:border-roblox-accent/30 transition-all hover:-translate-y-1 hover:shadow-xl"
+                 className="group block bg-black/40 border border-white/5 rounded-2xl overflow-hidden hover:border-roblox-accent/30 transition-all hover:-translate-y-1 hover:shadow-neon"
                >
                  <div className="h-40 overflow-hidden relative">
                    <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors z-10"></div>
@@ -820,8 +800,8 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
                    />
                  </div>
                  <div className="p-6">
-                   <h4 className="font-bold text-white text-lg mb-3 group-hover:text-roblox-accent transition-colors line-clamp-2 leading-snug">{post.title}</h4>
-                   <div className="flex items-center gap-2 text-xs text-gray-500 uppercase tracking-wide font-bold">
+                   <h4 className="font-bold text-white text-base mb-3 group-hover:text-roblox-accent transition-colors line-clamp-2">{post.title}</h4>
+                   <div className="flex items-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-bold">
                      <Clock className="w-3 h-3" /> {post.readTime}
                    </div>
                  </div>
@@ -831,12 +811,12 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
        </div>
 
        <div className="mt-32 pt-16 border-t border-white/5">
-          <h3 className="text-sm font-bold text-gray-500 mb-10 text-center uppercase tracking-[0.2em]">Popular Roblox Name Ideas {CURRENT_YEAR}</h3>
+          <h3 className="text-xs font-bold text-gray-600 mb-10 text-center uppercase tracking-[0.3em]">Popular Examples {CURRENT_YEAR}</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 text-center md:text-left">
              {Object.entries(STATIC_POPULAR_NAMES).map(([styleKey, names]) => (
                <div key={styleKey} className="space-y-4">
-                  <h4 className="text-roblox-accent font-bold text-sm uppercase tracking-wide border-b border-white/5 pb-2">{styleKey} Names</h4>
-                  <ul className="space-y-2 text-sm text-gray-400">
+                  <h4 className="text-roblox-accent font-bold text-[10px] uppercase tracking-widest border-b border-white/5 pb-2">{styleKey}</h4>
+                  <ul className="space-y-2 text-xs text-gray-500 font-mono">
                      {names.map(n => <li key={n} className="hover:text-white transition-colors cursor-default">{n}</li>)}
                   </ul>
                </div>

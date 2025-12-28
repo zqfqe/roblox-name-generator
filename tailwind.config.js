@@ -12,40 +12,36 @@ export default {
       },
       colors: {
         roblox: {
-          dark: '#050505', // Much darker base
-          card: '#0F0F11',
-          accent: '#00D686', // Brighter, more electric green
-          secondary: '#1A1D21',
+          dark: '#020202', // True black base
+          card: '#0A0A0A', // Slightly lighter for cards
+          accent: '#00FFA3', // High-voltage neon green
+          secondary: '#7000FF', // Deep electric purple
+          surface: '#121212',
         }
       },
       backgroundImage: {
-        'void-gradient': 'radial-gradient(circle at 50% 0%, #1a2e26 0%, #050505 60%)',
-        'glass-gradient': 'linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)',
+        'void-gradient': 'radial-gradient(circle at 50% 0%, #111827 0%, #020202 70%)',
+        'aurora-glow': 'conic-gradient(from 180deg at 50% 50%, #00FFA3 0deg, #7000FF 180deg, #00FFA3 360deg)',
       },
       boxShadow: {
-        'glow': '0 0 20px rgba(0, 214, 134, 0.3)',
-        'glow-sm': '0 0 10px rgba(0, 214, 134, 0.2)',
-        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+        'neon': '0 0 20px rgba(0, 255, 163, 0.15)',
+        'neon-hover': '0 0 40px rgba(0, 255, 163, 0.3)',
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
       },
       animation: {
-        'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-        'fade-in-down': 'fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'fade-in': 'fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'shimmer': 'shimmer 2s linear infinite',
         'float': 'float 6s ease-in-out infinite',
       },
       keyframes: {
-        fadeInUp: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        slideUp: {
           '0%': { opacity: '0', transform: 'translateY(20px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        fadeInDown: {
-          '0%': { opacity: '0', transform: 'translateY(-20px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        shimmer: {
-          'from': { backgroundPosition: '0 0' },
-          'to': { backgroundPosition: '-200% 0' }
         },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
@@ -63,7 +59,8 @@ export default {
             a: { color: theme('colors.roblox.accent') },
             blockquote: { 
               borderLeftColor: theme('colors.roblox.accent'),
-              color: theme('colors.gray.300')
+              color: theme('colors.gray.300'),
+              backgroundColor: 'rgba(255,255,255,0.02)'
             }
           },
         },
