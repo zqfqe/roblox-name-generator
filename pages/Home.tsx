@@ -169,7 +169,11 @@ export const Home: React.FC = () => {
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
   const [style, setStyle] = useState<NameStyle>((searchParams.get('style') as NameStyle) || NameStyle.COOL);
   const [length, setLength] = useState<LengthPreference>((searchParams.get('length') as LengthPreference) || LengthPreference.ANY);
-  const [includeNumbers, setIncludeNumbers] = useState(searchParams.get('numbers') !== 'false');
+  
+  // CHANGED: Default 'includeNumbers' to false. Most users want clean names.
+  // It only becomes true if specifically requested in URL or toggled.
+  const [includeNumbers, setIncludeNumbers] = useState(searchParams.get('numbers') === 'true');
+  
   const [includeUnderscore, setIncludeUnderscore] = useState(searchParams.get('underscore') === 'true');
   const [useExactMatch, setUseExactMatch] = useState(searchParams.get('exact') === 'true');
   const [useLeet, setUseLeet] = useState(searchParams.get('leet') === 'true');
@@ -231,7 +235,10 @@ export const Home: React.FC = () => {
     if (keyword) params.keyword = keyword;
     if (style !== NameStyle.COOL) params.style = style;
     if (length !== LengthPreference.ANY) params.length = length;
-    if (!includeNumbers) params.numbers = 'false';
+    
+    // CHANGED: Only add numbers param if true, since default is now false (cleaner URL)
+    if (includeNumbers) params.numbers = 'true';
+    
     if (includeUnderscore) params.underscore = 'true';
     if (useExactMatch) params.exact = 'true';
     if (useLeet) params.leet = 'true';
@@ -426,7 +433,7 @@ export const Home: React.FC = () => {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <label className="flex items-center gap-2 cursor-pointer group">
                       <input type="checkbox" checked={includeNumbers} onChange={(e) => setIncludeNumbers(e.target.checked)} className="rounded border-gray-700 bg-gray-800 text-roblox-accent focus:ring-offset-gray-900" />
-                      <span className="text-sm text-gray-300 group-hover:text-white font-medium">Numbers</span>
+                      <span className="text-sm text-gray-300 group-hover:text-white font-medium">Include Numbers</span>
                     </label>
                     <label className="flex items-center gap-2 cursor-pointer group">
                       <input type="checkbox" checked={includeUnderscore} onChange={(e) => setIncludeUnderscore(e.target.checked)} className="rounded border-gray-700 bg-gray-800 text-roblox-accent focus:ring-offset-gray-900" />
