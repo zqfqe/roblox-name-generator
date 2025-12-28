@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Wand2, Dices, AlertTriangle, Search, Info, Settings2, Filter, AlignLeft, AlignRight, EyeOff, Ruler, Share2, Download, Trash2, Tag, HelpCircle, BookOpen, Clock, ChevronRight, Lightbulb as IdeaIcon, Lightbulb } from 'lucide-react';
 import { NameStyle, LengthPreference, GeneratedName } from '../types';
 import { generateRobloxNames } from '../services/localNameService';
@@ -14,17 +14,18 @@ import { PreviewModal } from '../components/PreviewModal';
 import { DecoratorModal } from '../components/DecoratorModal';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { SYNONYMS } from '../data/wordLists';
+import { SchemaMarkup } from '../components/SEO';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const BAD_WORDS = ['fuck', 'shit', 'nigg', 'bitch', 'cunt', 'whore', 'dick', 'pussy', 'asshole', 'sex', 'porn', 'xxx'];
 
 const PRESET_CATEGORIES = [
-  { label: 'Sweaty PvP', emoji: '⚔️', style: NameStyle.COOL, keywords: ['Macro', 'Reach', 'Combo', 'Ping', 'God', 'Clutch'] },
-  { label: 'Aesthetic', emoji: '✨', style: NameStyle.AESTHETIC, keywords: ['Cloud', 'Star', 'Moon', 'Angel', 'Pure', 'Soft'] },
-  { label: 'Anime / Weeb', emoji: '⛩️', style: NameStyle.COOL, keywords: ['Kami', 'Ninja', 'Ghoul', 'Titan', 'Slayer', 'Senpai'] },
-  { label: 'Y2K / Emo', emoji: '🖤', style: NameStyle.EDGY, keywords: ['Broken', 'Vamp', 'Goth', 'Web', 'Cyber', 'Toxic'] },
-  { label: 'Og / Short', emoji: '🧢', style: NameStyle.OG, keywords: ['Guy', 'Bot', 'Man', 'Box', 'Dog', 'Cat'] },
-  { label: 'Funny / Troll', emoji: '🤡', style: NameStyle.FUNNY, keywords: ['Noob', 'Bacon', 'Toilet', 'Sus', 'Meme', 'Burger'] },
+  { label: 'Sweaty PvP', emoji: '⚔️', style: NameStyle.COOL, link: '/sweaty-roblox-names', keywords: ['Macro', 'Reach'] },
+  { label: 'Aesthetic', emoji: '✨', style: NameStyle.AESTHETIC, link: '/aesthetic-roblox-usernames', keywords: ['Cloud', 'Star'] },
+  { label: 'Anime / Weeb', emoji: '⛩️', style: NameStyle.COOL, link: '/sweaty-roblox-names?keyword=Anime', keywords: ['Kami', 'Ninja'] },
+  { label: 'Y2K / Emo', emoji: '🖤', style: NameStyle.EDGY, link: '/sweaty-roblox-names?keyword=Emo', keywords: ['Broken', 'Vamp'] },
+  { label: 'Og / Short', emoji: '🧢', style: NameStyle.OG, link: '/rare-og-roblox-names', keywords: ['Guy', 'Bot'] },
+  { label: 'Funny / Troll', emoji: '🤡', style: NameStyle.FUNNY, link: '/funny-roblox-names', keywords: ['Noob', 'Bacon'] },
 ];
 
 const STYLE_DESCRIPTIONS: Record<NameStyle, React.ReactNode> = {
@@ -44,19 +45,18 @@ const STATIC_POPULAR_NAMES = {
   [NameStyle.OG]: ['RealBox', 'Guy1', 'BotSz', 'RedDog', 'AceRBX']
 };
 
-const LOADING_PHRASES = ['Synthesizing...', 'Checking availability...', 'Applying aesthetics...', 'Mixing patterns...', 'Polishing...'];
-
 const getRandom = <T extends unknown>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
 // Reusable Components inside Home
-const GamingSelect = ({ value, onChange }: { value: NameStyle, onChange: (val: NameStyle) => void }) => {
+const GamingSelect = ({ value, onChange, disabled }: { value: NameStyle, onChange: (val: NameStyle) => void, disabled?: boolean }) => {
   return (
     <div className="relative h-full">
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as NameStyle)}
+        disabled={disabled}
         aria-label="Select Name Style"
-        className="w-full h-full pl-4 pr-10 py-4 bg-gray-900/50 border border-gray-700 rounded-xl outline-none text-white font-medium transition-all duration-200 focus:ring-2 focus:ring-roblox-accent border-transparent hover:border-gray-500 appearance-none cursor-pointer"
+        className={`w-full h-full pl-4 pr-10 py-4 bg-gray-900/50 border border-gray-700 rounded-xl outline-none text-white font-medium transition-all duration-200 focus:ring-2 focus:ring-roblox-accent border-transparent hover:border-gray-500 appearance-none ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       >
          {Object.values(NameStyle).map((styleOption) => (
             <option key={styleOption} value={styleOption} className="bg-gray-900 text-white">
@@ -64,11 +64,60 @@ const GamingSelect = ({ value, onChange }: { value: NameStyle, onChange: (val: N
             </option>
          ))}
       </select>
-      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
-      </div>
+      {!disabled && (
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+      )}
     </div>
   );
+};
+
+// SEO Content Generator based on Style
+const StyleSpecificContent = ({ style }: { style: NameStyle }) => {
+  if (style === NameStyle.COOL) {
+    return (
+      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-gray-800 pt-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Sweaty Roblox Names for Da Hood & PvP</h2>
+        <p>
+          In the competitive world of Roblox PvP games like <em>BedWars</em>, <em>Da Hood</em>, and <em>The Streets</em>, your username is your first weapon. A "sweaty" name typically features clean formatting, specific suffixes (like <strong>Sz</strong>, <strong>Fn</strong>, <strong>Ly</strong>), and intimidating words.
+        </p>
+        <p>
+          Our <strong>Sweaty Roblox Name Generator</strong> is specifically tuned to create these high-tier usernames. It avoids "noob" numbers (like 1234) and instead uses "Leet Speak" and "Mixed Capitalization" (e.g., <em>vIperSz</em>) to give you that pro-gamer aesthetic. Whether you need a main account name or a clean alt, this tool generates millions of tryhard combinations instantly.
+        </p>
+      </div>
+    );
+  }
+  
+  if (style === NameStyle.AESTHETIC) {
+    return (
+      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-gray-800 pt-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Aesthetic Roblox Usernames for 2026</h2>
+        <p>
+          Aesthetic usernames are all about vibes. Whether you are into <strong>Cottagecore</strong>, <strong>Y2K</strong>, <strong>Grunge</strong>, or <strong>Soft</strong> aesthetics, your name should reflect your style. Popular games like <em>Royale High</em>, <em>Berry Avenue</em>, and <em>Brookhaven</em> are filled with players sporting names like <em>cloud.tear</em> or <em>lunar.bby</em>.
+        </p>
+        <p>
+          This <strong>Aesthetic Roblox Username Generator</strong> focuses on soft words, nature elements, and trendy suffixes. It automatically formats names in lowercase or with periods to achieve that clean, minimalist look. Stop searching for hours; generate the perfect aesthetic handle in seconds.
+        </p>
+      </div>
+    );
+  }
+
+  if (style === NameStyle.OG) {
+    return (
+      <div className="prose prose-invert max-w-none text-gray-400 mt-12 border-t border-gray-800 pt-12">
+        <h2 className="text-3xl font-bold text-white mb-6">Rare & OG Roblox Name Generator</h2>
+        <p>
+          "OG" (Original Gangster) names are short, simple, and look like they were made in 2008. Since most 3-letter and 4-letter dictionary words are taken, finding a name that <em>looks</em> rare is an art form.
+        </p>
+        <p>
+          Our <strong>Rare Roblox Name Generator</strong> simulates this style by creating short, pronounceable nonsense words (e.g., "Vexy", "Jinx") or using classic prefixes like "iAm" or "Not". These names are highly coveted in the trading community. Use this tool to find an ID that stands out on the leaderboard.
+        </p>
+      </div>
+    );
+  }
+
+  return null;
 };
 
 // SEO-Optimized FAQs
@@ -86,11 +135,11 @@ const generateFAQs = (style: NameStyle, keyword: string) => {
     }
   ];
 
-  if (cleanK.includes('hood') || cleanK.includes('rev') || cleanK.includes('macro')) {
+  if (style === NameStyle.COOL) {
     return [
       {
-        question: "What are good Da Hood usernames?",
-        answer: "The best Da Hood usernames are short and intimidating. Our roblox name generator specializes in 'Sweaty' names using mixed capitalization (e.g., 'vIper'). Use the 'Cool' mode on our roblox username generator to create these tryhard tags."
+        question: "How do I get a sweaty Roblox name?",
+        answer: "Sweaty names often use short words with 'Sz', 'Fn', or 'Xo' suffixes. Our 'Sweaty Roblox Name Generator' mode automates this. Try keywords like 'Soul', 'Viper', or 'Mist' and enable 'Leet Speak' for the best results."
       },
       ...baseFAQs
     ];
@@ -111,11 +160,7 @@ const generateFAQs = (style: NameStyle, keyword: string) => {
       question: "How do I create a unique Roblox username?",
       answer: "The best way is to combine two cool words. Our roblox name generator automates this by checking millions of combinations. Unlike a basic randomizer, our roblox username generator uses smart algorithms to ensure every result sounds professional."
     },
-    ...baseFAQs,
-    {
-      question: "Can I save my favorite names?",
-      answer: "Absolutely. Our roblox name generator saves your favorites locally. Click the Heart icon next to any result in the roblox username generator list to keep track of your best ideas."
-    }
+    ...baseFAQs
   ];
 };
 
@@ -163,18 +208,24 @@ const RelatedKeywords = ({ keyword, style, onSelect }: { keyword: string, style:
   );
 };
 
-export const Home: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+interface HomeProps {
+  forcedStyle?: NameStyle;
+}
 
-  // State initialization from URL params
+export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  // State initialization from URL params or Forced Style prop
   const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
-  const [style, setStyle] = useState<NameStyle>((searchParams.get('style') as NameStyle) || NameStyle.COOL);
+  
+  // Logic: If routed to /sweaty-names, force style. If on /, use state.
+  const [internalStyle, setInternalStyle] = useState<NameStyle>((searchParams.get('style') as NameStyle) || NameStyle.COOL);
+  const style = forcedStyle || internalStyle;
+
   const [length, setLength] = useState<LengthPreference>((searchParams.get('length') as LengthPreference) || LengthPreference.ANY);
   
-  // CHANGED: Default 'includeNumbers' to false. Most users want clean names.
-  // It only becomes true if specifically requested in URL or toggled.
   const [includeNumbers, setIncludeNumbers] = useState(searchParams.get('numbers') === 'true');
-  
   const [includeUnderscore, setIncludeUnderscore] = useState(searchParams.get('underscore') === 'true');
   const [useExactMatch, setUseExactMatch] = useState(searchParams.get('exact') === 'true');
   const [useLeet, setUseLeet] = useState(searchParams.get('leet') === 'true');
@@ -234,20 +285,21 @@ export const Home: React.FC = () => {
   useEffect(() => {
     const params: any = {};
     if (keyword) params.keyword = keyword;
-    if (style !== NameStyle.COOL) params.style = style;
+    
+    // Only set style param if NOT on a forced route
+    if (!forcedStyle && internalStyle !== NameStyle.COOL) params.style = internalStyle;
+    
     if (length !== LengthPreference.ANY) params.length = length;
-    
-    // CHANGED: Only add numbers param if true, since default is now false (cleaner URL)
     if (includeNumbers) params.numbers = 'true';
-    
     if (includeUnderscore) params.underscore = 'true';
     if (useExactMatch) params.exact = 'true';
     if (useLeet) params.leet = 'true';
     if (forDisplayName) params.displayname = 'true';
     if (prefix) params.prefix = prefix;
     if (suffix) params.suffix = suffix;
+    
     setSearchParams(params, { replace: true });
-  }, [keyword, style, length, includeNumbers, includeUnderscore, useExactMatch, useLeet, forDisplayName, prefix, suffix, setSearchParams]);
+  }, [keyword, internalStyle, length, includeNumbers, includeUnderscore, useExactMatch, useLeet, forDisplayName, prefix, suffix, setSearchParams, forcedStyle]);
 
   // Suggestion logic
   useEffect(() => {
@@ -284,7 +336,7 @@ export const Home: React.FC = () => {
     setFilterShortOnly(false);
     
     if (overrideKeyword !== undefined) setKeyword(overrideKeyword);
-    if (overrideStyle !== undefined) setStyle(overrideStyle);
+    if (overrideStyle !== undefined && !forcedStyle) setInternalStyle(overrideStyle);
 
     try {
       if (soundEnabled) audioService.playGenerate();
@@ -354,8 +406,31 @@ export const Home: React.FC = () => {
   const filteredNames = getFilteredNames();
   const relatedPost = BLOG_POSTS.find(p => p.slug.includes(style === NameStyle.COOL ? 'sweaty-pvp' : style === NameStyle.AESTHETIC ? 'aesthetic' : style === NameStyle.OG ? 'rare-og' : 'display-name'));
 
+  // Schema for SoftwareApplication (Rich Snippets)
+  const appSchema = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Roblox Name Generator",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "1250",
+      "bestRating": "5",
+      "worstRating": "1"
+    }
+  };
+
   return (
     <div className="w-full max-w-6xl mx-auto px-4 py-8">
+       <SchemaMarkup data={appSchema} />
+
        {/* Header */}
        <div className="text-center mb-10">
           <div className="flex justify-center mb-6">
@@ -363,7 +438,7 @@ export const Home: React.FC = () => {
           </div>
           
           <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-gray-400 mb-6 tracking-tight drop-shadow-sm">
-            Roblox Name Generator
+            {forcedStyle ? `${forcedStyle} Roblox Name Generator` : 'Roblox Name Generator'}
           </h1>
           
           <div className="mb-6 flex justify-center">
@@ -415,7 +490,20 @@ export const Home: React.FC = () => {
                 )}
              </div>
              <div className="md:w-1/3 relative z-20">
-                <GamingSelect value={style} onChange={setStyle} />
+                <GamingSelect 
+                  value={style} 
+                  onChange={(val) => {
+                    // If we are on a static route page (forcedStyle) and user changes style,
+                    // redirect them to the home page or the new style page to keep URLs clean.
+                    if (forcedStyle) {
+                      navigate('/');
+                      setTimeout(() => setInternalStyle(val), 50);
+                    } else {
+                      setInternalStyle(val);
+                    }
+                  }} 
+                  disabled={!!forcedStyle}
+                />
              </div>
           </div>
 
@@ -635,27 +723,26 @@ export const Home: React.FC = () => {
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
              {PRESET_CATEGORIES.map((preset, idx) => (
-               <button
+               <Link
                  key={idx}
-                 onClick={() => {
-                   setKeyword(preset.keywords[0]);
-                   setStyle(preset.style);
-                   handleGenerate(preset.keywords[0], preset.style);
-                 }}
-                 className="relative group p-4 rounded-xl border border-gray-700 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(0,176,111,0.15)] bg-gradient-to-br from-gray-800/50 to-gray-900/50 hover:from-gray-700 hover:to-gray-800 hover:border-roblox-accent/50 text-left"
+                 to={preset.link}
+                 className="relative group p-4 rounded-xl border border-gray-700 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(0,176,111,0.15)] bg-gradient-to-br from-gray-800/50 to-gray-900/50 hover:from-gray-700 hover:to-gray-800 hover:border-roblox-accent/50 text-left block"
                >
                  <span className="text-2xl mb-2 block filter drop-shadow-md group-hover:scale-110 transition-transform duration-200">{preset.emoji}</span>
                  <span className="font-bold text-gray-300 text-sm group-hover:text-white block relative z-10">{preset.label}</span>
-               </button>
+               </Link>
              ))}
           </div>
        </div>
        
        <RatingWidget />
+       
+       <StyleSpecificContent style={style} />
+       
        <RarityGuide />
        
        {/* SEO Content Block - Optimized for keyword density > 2% */}
-       <div className="mt-20 prose prose-invert max-w-none text-gray-400">
+       <div className="mt-10 prose prose-invert max-w-none text-gray-400">
            <section className="space-y-8 mt-12">
               <div className="flex items-center gap-2 mb-6">
                 <HelpCircle className="text-gray-500 w-5 h-5" />

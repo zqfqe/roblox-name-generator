@@ -15,7 +15,6 @@
     <meta name="keywords" content="roblox name generator, roblox username generator, sweaty roblox names, aesthetic roblox usernames, roblox name checker, cool gaming names, username ideas for roblox" />
     
     <!-- Favicons & App Icons -->
-    <!-- Updated to use relative paths so they load on any domain -->
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
@@ -76,7 +75,6 @@
   <body class="bg-gray-900 text-white antialiased overflow-x-hidden" style="background-color: #111827;">
     <div id="root">
         <!-- Loading Animation / Splash Screen -->
-        <!-- This content is replaced by React once loaded. Styled inline to ensure immediate render without FOUC. -->
         <style>
           .initial-loader {
             display: flex;
@@ -122,6 +120,7 @@
       </div>
     </noscript>
 
-    <script type="module" src="./index.tsx"></script>
+    <!-- Use absolute path for index.tsx to support nested routes -->
+    <script type="module" src="/index.tsx"></script>
   </body>
 </html>

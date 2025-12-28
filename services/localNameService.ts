@@ -153,9 +153,12 @@ const STRATEGIES: Record<string, StyleStrategy> = {
   [NameStyle.EDGY]: {
     templates: [
       (k, a, n) => {
-        // Smart handling to avoid "BrokenBroken"
-        if (k && k.toLowerCase().includes('broken')) return `${k}Heart`;
-        if (k && k.toLowerCase().includes('dead')) return `${k}Soul`;
+        // Fix for "BrokeBroken" -> Check if suffix already exists in keyword
+        const lowerK = k.toLowerCase();
+        if (lowerK.endsWith('broken') || lowerK.endsWith('broke')) return k; // Don't append
+        
+        if (lowerK.includes('broken')) return `${k}Heart`;
+        if (lowerK.includes('dead')) return `${k}Soul`;
         return k ? `${k}Broken` : `${n}Broken`;
       },
       (k, a, n) => k ? `DontTalkTo${k}` : `DontTalkTo${n}`,
@@ -168,7 +171,8 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em) => k ? `${em}${k}` : `${em}${n}`,
     ],
     transform: (name) => {
-      if (oneIn(2)) return name.toLowerCase();
+      // Standardized to lower case for Edgy to look cleaner, mixed caps looks messy often
+      if (Math.random() > 0.3) return name.toLowerCase(); 
       if (oneIn(3)) return name.replace(/[aeiou]/gi, 'x');
       return name;
     }
