@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Volume2, VolumeX, ArrowUp, Home as HomeIcon, ChevronRight } from 'lucide-react';
+import { Volume2, VolumeX, ArrowUp } from 'lucide-react';
 import { NameStyle } from './types';
 import { Logo } from './components/Logo';
 import { SEOHead, SchemaMarkup } from './components/SEO';
@@ -12,8 +12,6 @@ import { Sitemap } from './components/Sitemap';
 import { BLOG_POSTS } from './data/blogPosts';
 
 const CURRENT_YEAR = new Date().getFullYear();
-
-// --- Layout Components ---
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -31,50 +29,11 @@ const ScrollToTop = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-8 right-8 p-4 rounded-full bg-roblox-accent text-black shadow-neon hover:shadow-neon-hover transition-all duration-500 z-50 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}
+      className={`fixed bottom-8 right-8 p-4 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10 shadow-lg transition-all duration-300 z-50 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}
       aria-label="Scroll to top"
     >
       <ArrowUp className="w-5 h-5" />
     </button>
-  );
-};
-
-const Breadcrumbs = () => {
-  const location = useLocation();
-  const pathnames = location.pathname.split('/').filter((x) => x);
-  
-  if (location.pathname === '/') return null;
-
-  return (
-    <nav aria-label="Breadcrumb" className="max-w-7xl mx-auto px-6 mb-8 mt-4 animate-slide-up">
-      <ol className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-widest text-gray-500">
-        <li className="flex items-center gap-2">
-          <Link to="/" className="hover:text-roblox-accent transition-colors flex items-center gap-1">
-            <HomeIcon className="w-3 h-3" /> Home
-          </Link>
-        </li>
-        {pathnames.map((value, index) => {
-          const to = `/${pathnames.slice(0, index + 1).join('/')}`;
-          const isLast = index === pathnames.length - 1;
-          
-          let label = value.replace(/-/g, ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
-          if (label.includes('Roblox')) label = label.replace('Roblox Usernames', 'Names').replace('Roblox Names', 'Names');
-
-          return (
-            <li key={to} className="flex items-center gap-2">
-              <ChevronRight className="w-3 h-3 text-gray-700" />
-              {isLast ? (
-                <span className="text-white">{label}</span>
-              ) : (
-                <Link to={to} className="hover:text-roblox-accent transition-colors">
-                  {label}
-                </Link>
-              )}
-            </li>
-          );
-        })}
-      </ol>
-    </nav>
   );
 };
 
@@ -89,7 +48,6 @@ const App: React.FC = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
-  // Dynamic SEO Logic based on Route
   const getPageMeta = () => {
     const path = location.pathname;
     
@@ -101,7 +59,6 @@ const App: React.FC = () => {
     if (path === '/blog') return { title: 'Roblox Username Guides & Blog - BloxName', description: 'Read our latest guides on Roblox naming trends, display name hacks, and aesthetic ideas.' };
     if (path === '/analyzer') return { title: 'Roblox Name Rater & Analyzer - Is Your Name Rare?', description: 'Check if your Roblox username is rare, sweaty, or OG. Get a rarity score instantly.' };
     
-    // SEO Landing Pages
     if (path === '/sweaty-roblox-names') return { title: `Sweaty Roblox Name Generator (2026) - Cool PvP Usernames`, description: `Generate sweaty, tryhard, and cool Roblox usernames instantly. Perfect for Da Hood and BedWars players.` };
     if (path === '/aesthetic-roblox-usernames') return { title: `Aesthetic Roblox Username Generator (2026) - Soft & Y2K`, description: `Create soft, dreamy, and aesthetic Roblox usernames. The best aesthetic name generator for cottagecore and y2k styles.` };
     if (path === '/rare-og-roblox-names') return { title: `Rare OG Roblox Name Generator - Short 4 Letter Usernames`, description: `Generate rare, short, and OG style Roblox names. Find available 4 letter and 5 letter username ideas.` };
@@ -114,9 +71,13 @@ const App: React.FC = () => {
   const meta = getPageMeta();
 
   return (
-    <div className="min-h-screen text-white font-sans overflow-x-hidden relative bg-roblox-dark selection:bg-roblox-accent selection:text-black">
-      {/* Background FX */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-20 pointer-events-none z-0"></div>
+    <div className="min-h-screen text-white font-sans overflow-x-hidden relative">
+      {/* Dynamic Background */}
+      <div className="mesh-bg">
+        <div className="mesh-orb orb-1"></div>
+        <div className="mesh-orb orb-2"></div>
+        <div className="mesh-orb orb-3"></div>
+      </div>
       
       <SEOHead 
         title={meta.title}
@@ -125,26 +86,42 @@ const App: React.FC = () => {
         image={meta.image}
       />
 
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-roblox-accent text-black px-4 py-2 rounded-lg z-50 font-bold shadow-neon">
-        Skip to content
-      </a>
-
-      {/* Floating Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent py-6'}`}>
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 cursor-pointer group">
+      {/* Floating Modern Navbar */}
+      <nav className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4">
+        <div className={`
+          flex items-center gap-2 sm:gap-8 px-6 py-3 rounded-full 
+          backdrop-blur-xl border border-white/10 transition-all duration-500
+          ${scrolled ? 'bg-black/60 shadow-glass' : 'bg-white/5'}
+        `}>
+          <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 mr-2">
             <Logo size="sm" />
           </Link>
 
-          <div className="flex items-center gap-1 sm:gap-6 bg-black/20 backdrop-blur-md rounded-full px-2 py-1 border border-white/5">
-            <Link to="/" className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${location.pathname === '/' ? 'bg-white/10 text-white shadow-inner' : 'text-gray-400 hover:text-white'}`}>Create</Link>
-            <Link to="/analyzer" className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${location.pathname === '/analyzer' ? 'bg-white/10 text-white shadow-inner' : 'text-gray-400 hover:text-white'}`}>Rate</Link>
-            <Link to="/blog" className={`px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${location.pathname.startsWith('/blog') ? 'bg-white/10 text-white shadow-inner' : 'text-gray-400 hover:text-white'}`}>Guide</Link>
+          <div className="flex items-center gap-1 sm:gap-2">
+            {[
+              { to: '/', label: 'Generator' },
+              { to: '/analyzer', label: 'Rater' },
+              { to: '/blog', label: 'Blog' },
+            ].map(link => (
+              <Link 
+                key={link.to}
+                to={link.to} 
+                className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                  location.pathname === link.to 
+                    ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.3)]' 
+                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
+
+          <div className="h-6 w-px bg-white/10 hidden sm:block"></div>
 
           <button 
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white transition-colors hidden sm:block"
+            className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors hidden sm:block"
             title={soundEnabled ? "Mute Sounds" : "Enable Sounds"}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -153,9 +130,7 @@ const App: React.FC = () => {
       </nav>
 
       <div className="pt-32">
-        <Breadcrumbs />
-
-        <main id="main-content" className="pb-20 relative z-10">
+        <main id="main-content" className="relative z-10 pb-24">
           <Routes>
             <Route path="/" element={<Home />} />
             
@@ -177,59 +152,41 @@ const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl py-20 mt-20">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          <div className="space-y-6">
-            <Link to="/" className="flex items-center gap-2">
+      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl py-16">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10">
+          <div className="col-span-2 md:col-span-1">
+            <Link to="/" className="flex items-center gap-2 mb-4">
               <Logo size="sm" />
             </Link>
-            <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-              Precision engineered algorithms for the modern metaverse. Create your legacy.
-            </p>
-            <p className="text-gray-700 text-xs font-mono">
-              © {CURRENT_YEAR} BloxName.
+            <p className="text-gray-500 text-xs leading-relaxed">
+              &copy; {CURRENT_YEAR} BloxName.<br/>
+              Next-gen identity tools for the Metaverse.
             </p>
           </div>
           
           <div>
-            <h4 className="font-bold text-white mb-6 text-xs uppercase tracking-[0.2em] text-roblox-accent">Tools</h4>
-            <ul className="space-y-3 text-sm text-gray-400 font-medium">
-              <li><Link to="/sweaty-roblox-names" className="hover:text-white transition-colors">Sweaty Generator</Link></li>
-              <li><Link to="/aesthetic-roblox-usernames" className="hover:text-white transition-colors">Aesthetic Generator</Link></li>
-              <li><Link to="/rare-og-roblox-names" className="hover:text-white transition-colors">OG Name Generator</Link></li>
-              <li><Link to="/analyzer" className="hover:text-white transition-colors">Name Rater</Link></li>
+            <h4 className="font-bold text-white mb-4 text-xs uppercase tracking-wider">Tools</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
+              <li><Link to="/sweaty-roblox-names" className="hover:text-white transition-colors">Sweaty Gen</Link></li>
+              <li><Link to="/aesthetic-roblox-usernames" className="hover:text-white transition-colors">Aesthetic Gen</Link></li>
+              <li><Link to="/rare-og-roblox-names" className="hover:text-white transition-colors">OG Names</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-6 text-xs uppercase tracking-[0.2em] text-roblox-accent">Trending</h4>
-            <ul className="space-y-3 text-sm text-gray-400 font-medium">
-              {[
-                { label: 'Da Hood', key: 'Da Hood' },
-                { label: 'BedWars', key: 'BedWars' },
-                { label: 'Blox Fruits', key: 'Blox Fruits' },
-                { label: 'Pet Sim 99', key: 'Pet Sim' }
-              ].map(game => (
-                <li key={game.key}>
-                  <Link 
-                    to={`/sweaty-roblox-names?keyword=${encodeURIComponent(game.key)}`}
-                    className="hover:text-white transition-colors"
-                  >
-                    {game.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-white mb-6 text-xs uppercase tracking-[0.2em] text-roblox-accent">Legal</h4>
-            <ul className="space-y-3 text-sm text-gray-400 font-medium">
+            <h4 className="font-bold text-white mb-4 text-xs uppercase tracking-wider">Legal</h4>
+            <ul className="space-y-2 text-sm text-gray-400">
               <li><Link to="/about" className="hover:text-white transition-colors">About</Link></li>
-              <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
               <li><Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link></li>
               <li><Link to="/terms" className="hover:text-white transition-colors">Terms</Link></li>
             </ul>
+          </div>
+          
+          <div>
+             <h4 className="font-bold text-white mb-4 text-xs uppercase tracking-wider">Support</h4>
+             <ul className="space-y-2 text-sm text-gray-400">
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+             </ul>
           </div>
         </div>
       </footer>
