@@ -50,21 +50,21 @@ const FEATURED_EXAMPLES: GeneratedName[] = [
 const generateFAQs = (style: NameStyle, keyword: string) => {
   if (style === NameStyle.COOL) {
     return [
-      { question: "Are these names actually 'Sweaty'?", answer: "Yes. Our algorithm prioritizes 'clean' naming conventions (no excessive numbers) and uses competitive vocabulary (e.g. 'Soul', 'Viper', 'Void') popular in BedWars and Da Hood." },
-      { question: "How do I check availability?", answer: "Click on any generated name to check if it's taken on Roblox. If it is, try using the 'Leet Speak' toggle in Advanced Options to find a variation." },
-      { question: "What if the name gets tagged?", answer: "We filter out inappropriate words, but Roblox's filter is strict. If a name turns into hashtags (###), try a different variation or add an underscore." }
+      { question: "Are these names actually 'Sweaty'?", answer: "Yes. Our roblox name generator specifically prioritizes 'clean' naming conventions (no excessive numbers) and uses competitive vocabulary (e.g. 'Soul', 'Viper', 'Void') popular in BedWars and Da Hood." },
+      { question: "How do I check availability?", answer: "Click on any name created by our roblox username generator to check if it's taken. If it is, try using the 'Leet Speak' toggle in Advanced Options to find a unique variation." },
+      { question: "What if the name gets tagged?", answer: "We filter out inappropriate words, but Roblox's filter is strict. If a result from the name generator gets hashtagged (###), try adding an underscore or changing the suffix." }
     ];
   }
   if (style === NameStyle.AESTHETIC) {
     return [
-      { question: "Can I use these for Display Names?", answer: "Absolutely! Since Display Names don't need to be unique, you can pick any aesthetic name (like 'soft.cloud') even if the username is taken." },
-      { question: "What makes a name 'Aesthetic'?", answer: "Aesthetic names often use lowercase letters, periods, or nature-themed words. Enable the 'Aesthetic' preset to generate these styles automatically." },
+      { question: "Can I use these for Display Names?", answer: "Absolutely! Since Display Names don't need to be unique, you can pick any idea from our roblox name generator (like 'soft.cloud') even if the actual username is taken." },
+      { question: "What makes a name 'Aesthetic'?", answer: "Aesthetic names often use lowercase letters, periods, or nature-themed words. Our roblox username generator has a dedicated 'Aesthetic' preset to create these soft, dreamy styles automatically." },
     ];
   }
   return [
-    { question: "Is this tool safe to use?", answer: "Yes. This generator runs 100% in your browser. We do not ask for your password or personal info." },
-    { question: "Why generate a random name?", answer: "Using a random name protects your real identity. It prevents online predators from knowing your name, age, or location." },
-    { question: "Does it cost Robux?", answer: "Generating names is free! However, changing your Roblox username costs 1,000 Robux. Changing your Display Name is free." }
+    { question: "Is this roblox name generator safe?", answer: "Yes. This tool runs 100% in your browser. Unlike other roblox username generators, we do not ask for your password or personal info." },
+    { question: "Why use a roblox username generator?", answer: "Using a generated name protects your real identity. A good roblox name generator creates a cool alias that prevents online predators from knowing your name, age, or location." },
+    { question: "Does it cost Robux?", answer: "Generating names is free! However, changing your actual Roblox username costs 1,000 Robux. Changing your Display Name is free." }
   ];
 };
 
@@ -268,8 +268,8 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
             ) : "BloxName"}
           </h1>
           <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed mb-12">
-            The next-generation <strong className="text-white">Roblox Name Generator</strong>. <br className="hidden md:block" />
-            Craft rare, sweaty, and aesthetic identities in milliseconds.
+            The #1 <strong className="text-white">Roblox Name Generator</strong> and <strong className="text-white">Roblox Username Generator</strong>. <br className="hidden md:block" />
+            Craft rare, sweaty, and aesthetic identities instantly.
           </p>
 
           {/* MAIN INTERFACE CARD */}
@@ -468,7 +468,40 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
        <RarityGuide />
 
        {/* SEO Content */}
-       <div className="mt-32 max-w-4xl mx-auto prose prose-invert prose-lg text-gray-400">
+       <div className="mt-24 max-w-4xl mx-auto prose prose-invert prose-lg text-gray-400">
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-white mb-6">The Best Roblox Name Generator for 2026</h2>
+            <p>
+              Welcome to BloxName, the ultimate <strong>roblox name generator</strong> designed for serious gamers. 
+              Whether you are looking for a sweaty PvP tag for <em>Da Hood</em> or a soft aesthetic handle for <em>Royale High</em>, 
+              our tool is the most advanced <strong>roblox username generator</strong> on the web.
+            </p>
+            <p>
+              With over 200 million active users, finding a unique name is difficult. Most simple words are taken. 
+              That is why you need a smart <strong>roblox name generator</strong> that understands gaming culture. 
+              Our <strong>roblox username generator</strong> doesn't just combine random words; it uses logic to create 
+              names that command respect.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 mb-16">
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
+               <h3 className="text-xl font-bold text-white mb-3">Why use a Roblox Username Generator?</h3>
+               <p className="text-sm leading-relaxed">
+                 A <strong>roblox username generator</strong> helps you bypass the frustration of "Username Taken" errors. 
+                 By using advanced prefixes, suffixes, and "Leet Speak", our <strong>roblox name generator</strong> 
+                 finds available variations of your favorite keywords instantly.
+               </p>
+            </div>
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
+               <h3 className="text-xl font-bold text-white mb-3">Features of our Roblox Name Generator</h3>
+               <p className="text-sm leading-relaxed">
+                 From "Og" short names to "Sweaty" competitive tags, this <strong>roblox name generator</strong> covers every style. 
+                 It is the only <strong>roblox username generator</strong> with specific modes for Anime, Y2K, and Glitch aesthetics.
+               </p>
+            </div>
+          </div>
+
           <section className="text-center mb-16">
              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Frequently Asked Questions</h2>
              <div className="grid md:grid-cols-2 gap-6 text-left">
