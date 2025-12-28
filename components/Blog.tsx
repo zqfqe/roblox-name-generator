@@ -1,14 +1,11 @@
 import React, { useMemo } from 'react';
-import { ArrowLeft, Calendar, User, Clock, Tag, BookOpen, ChevronRight, Share2, Twitter, List, Zap } from 'lucide-react';
-import { BLOG_POSTS, BlogPost } from '../data/blogPosts';
+import { ArrowLeft, Calendar, User, Clock, BookOpen, ChevronRight, Share2, Twitter, List, Zap } from 'lucide-react';
+import { Link, useParams } from 'react-router-dom';
+import { BLOG_POSTS } from '../data/blogPosts';
 
-interface BlogProps {
-  currentSlug: string | null;
-  onNavigate: (slug: string | null) => void;
-}
-
-export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
-  const activePost = currentSlug ? BLOG_POSTS.find(p => p.slug === currentSlug) : null;
+export const Blog: React.FC = () => {
+  const { slug } = useParams();
+  const activePost = slug ? BLOG_POSTS.find(p => p.slug === slug) : null;
 
   // Process content to inject IDs for Table of Contents
   const { processedContent, toc } = useMemo(() => {
@@ -46,14 +43,13 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
       <div className="min-h-screen pb-20 animate-fade-in-up">
         {/* Navigation */}
         <div className="max-w-4xl mx-auto px-4 py-8">
-          <a 
-            href="?view=blog"
-            onClick={(e) => { e.preventDefault(); onNavigate(null); }}
+          <Link 
+            to="/blog"
             className="group inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors px-4 py-2 rounded-full hover:bg-gray-800/50"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back to Articles</span>
-          </a>
+          </Link>
         </div>
 
         <article className="max-w-4xl mx-auto px-4">
@@ -82,7 +78,7 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
               <div className="w-1.5 h-1.5 rounded-full bg-gray-700"></div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
-                <time datetime={dateTimeStr}>{activePost.date}</time>
+                <time dateTime={dateTimeStr}>{activePost.date}</time>
               </div>
               <div className="w-1.5 h-1.5 rounded-full bg-gray-700"></div>
               <div className="flex items-center gap-2">
@@ -185,12 +181,12 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
                     <p className="text-sm text-gray-300 mb-4">
                       Inspired by this guide? Generate <strong>{activePost.relatedPreset.keyword}</strong> names instantly!
                     </p>
-                    <a 
-                      href={`/?style=${activePost.relatedPreset.style}&keyword=${activePost.relatedPreset.keyword}`}
+                    <Link 
+                      to={`/?style=${activePost.relatedPreset.style}&keyword=${activePost.relatedPreset.keyword}`}
                       className="block w-full py-3 text-center bg-roblox-accent hover:bg-emerald-600 text-white font-bold rounded-xl transition-all shadow-lg hover:scale-105"
                     >
                       {activePost.relatedPreset.ctaText}
-                    </a>
+                    </Link>
                   </div>
                 )}
 
@@ -235,10 +231,10 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
              {BLOG_POSTS.filter(p => p.slug !== activePost.slug).slice(0, 3).map(post => {
                 const thumbUrl = post.imageUrl ? `${post.imageUrl.replace('w=1200', 'w=400')}&fm=webp` : '';
                 return (
-                  <a 
+                  <Link 
                     key={post.slug}
-                    href={`?view=blog&slug=${post.slug}`}
-                    onClick={(e) => { e.preventDefault(); onNavigate(post.slug); window.scrollTo(0,0); }}
+                    to={`/blog/${post.slug}`}
+                    onClick={() => window.scrollTo(0,0)}
                     className="group block bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden cursor-pointer hover:border-roblox-accent/30 transition-all hover:transform hover:-translate-y-1 hover:shadow-xl"
                   >
                     {post.imageUrl && (
@@ -263,7 +259,7 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
                       <h4 className="font-bold text-white text-lg mb-2 group-hover:text-roblox-accent transition-colors line-clamp-2 leading-snug">{post.title}</h4>
                       <p className="text-gray-500 text-sm line-clamp-2">{post.excerpt}</p>
                     </div>
-                  </a>
+                  </Link>
                 );
              })}
           </div>
@@ -295,11 +291,10 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
           const thumbUrl = post.imageUrl ? `${post.imageUrl.replace('w=1200', 'w=500')}&fm=webp` : '';
 
           return (
-            <a 
+            <Link 
               key={post.slug}
-              href={`?view=blog&slug=${post.slug}`}
+              to={`/blog/${post.slug}`}
               className="group flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-3xl overflow-hidden hover:border-roblox-accent/50 hover:bg-gray-800/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl cursor-pointer"
-              onClick={(e) => { e.preventDefault(); onNavigate(post.slug); }}
             >
               {/* List Item Image */}
               {post.imageUrl && (
@@ -316,7 +311,7 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
                   
                   {/* Date Overlay */}
                   <div className="absolute top-4 left-4 z-20 bg-gray-900/80 backdrop-blur text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10">
-                    <time datetime={dateTimeStr}>{post.date}</time>
+                    <time dateTime={dateTimeStr}>{post.date}</time>
                   </div>
                 </div>
               )}
@@ -347,7 +342,7 @@ export const Blog: React.FC<BlogProps> = ({ currentSlug, onNavigate }) => {
                    </span>
                 </div>
               </div>
-            </a>
+            </Link>
           );
         })}
       </div>

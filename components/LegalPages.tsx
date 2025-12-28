@@ -1,15 +1,15 @@
 import React from 'react';
 import { Shield, Mail, FileText, Info, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Logo } from './Logo';
 
 type PageType = 'about' | 'contact' | 'privacy' | 'terms';
 
 interface LegalPageProps {
   type: PageType;
-  onBack: () => void;
 }
 
-export const LegalPage: React.FC<LegalPageProps> = ({ type, onBack }) => {
+export const LegalPage: React.FC<LegalPageProps> = ({ type }) => {
   const renderContent = () => {
     switch (type) {
       case 'about':
@@ -172,13 +172,13 @@ export const LegalPage: React.FC<LegalPageProps> = ({ type, onBack }) => {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4 animate-fade-in-up min-h-[60vh]">
-      <button 
-        onClick={onBack}
+      <Link 
+        to="/"
         className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group"
       >
         <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
         Back to Generator
-      </button>
+      </Link>
       
       <div className="bg-gray-800/70 backdrop-blur-md border border-gray-700 rounded-3xl p-8 shadow-2xl">
         {renderContent()}
