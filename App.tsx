@@ -126,7 +126,7 @@ const App: React.FC = () => {
       <SEOHead 
         title={meta.title}
         description={meta.description}
-        url={`https://bloxname.com${location.pathname}`}
+        url={`https://robloxnamegenerator.org${location.pathname}`}
         image={meta.image}
       />
       <SchemaMarkup data={getSchema()} />

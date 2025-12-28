@@ -2,19 +2,25 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Core Pages -->
   <url>
-    <loc>https://bloxname.com/</loc>
+    <loc>https://robloxnamegenerator.org/</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=about</loc>
+    <loc>https://robloxnamegenerator.org/about</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog</loc>
+    <loc>https://robloxnamegenerator.org/blog</loc>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://robloxnamegenerator.org/analyzer</loc>
     <lastmod>2026-01-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -22,96 +28,96 @@
 
   <!-- Popular Generator Queries (High SEO Value) -->
   <url>
-    <loc>https://bloxname.com/?style=Cool&amp;keyword=Sweaty</loc>
+    <loc>https://robloxnamegenerator.org/?style=Cool&amp;keyword=Sweaty</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?style=Aesthetic&amp;keyword=Aesthetic</loc>
+    <loc>https://robloxnamegenerator.org/?style=Aesthetic&amp;keyword=Aesthetic</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?style=Cool&amp;keyword=Anime</loc>
+    <loc>https://robloxnamegenerator.org/?style=Cool&amp;keyword=Anime</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?style=Short/OG&amp;keyword=Og</loc>
+    <loc>https://robloxnamegenerator.org/?style=Short/OG&amp;keyword=Og</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <!-- Game Specific Landing Pages -->
   <url>
-    <loc>https://bloxname.com/?style=Cool&amp;keyword=Da%20Hood</loc>
+    <loc>https://robloxnamegenerator.org/?style=Cool&amp;keyword=Da%20Hood</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?style=Cool&amp;keyword=BedWars</loc>
+    <loc>https://robloxnamegenerator.org/?style=Cool&amp;keyword=BedWars</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?style=Cool&amp;keyword=Blox%20Fruits</loc>
+    <loc>https://robloxnamegenerator.org/?style=Cool&amp;keyword=Blox%20Fruits</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?style=Cool&amp;keyword=Murder%20Mystery%202</loc>
+    <loc>https://robloxnamegenerator.org/?style=Cool&amp;keyword=Murder%20Mystery%202</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
 
   <!-- Blog Posts -->
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=ultimate-roblox-name-generator-guide-2026</loc>
+    <loc>https://robloxnamegenerator.org/blog/ultimate-roblox-name-generator-guide-2026</loc>
     <lastmod>2026-01-12</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=roblox-display-name-vs-username-aesthetic-guide</loc>
+    <loc>https://robloxnamegenerator.org/blog/roblox-display-name-vs-username-aesthetic-guide</loc>
     <lastmod>2026-01-08</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=privacy-safety-random-roblox-username-generator</loc>
+    <loc>https://robloxnamegenerator.org/blog/privacy-safety-random-roblox-username-generator</loc>
     <lastmod>2026-01-05</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=roblox-username-generator-guide-sweaty-pvp-names</loc>
+    <loc>https://robloxnamegenerator.org/blog/roblox-username-generator-guide-sweaty-pvp-names</loc>
     <lastmod>2026-02-02</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=2026-roblox-aesthetic-trends-display-name-generator</loc>
+    <loc>https://robloxnamegenerator.org/blog/2026-roblox-aesthetic-trends-display-name-generator</loc>
     <lastmod>2026-02-05</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=random-roblox-username-generator-safety-privacy-guide</loc>
+    <loc>https://robloxnamegenerator.org/blog/random-roblox-username-generator-safety-privacy-guide</loc>
     <lastmod>2026-02-10</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=finding-untaken-usernames-username-generator-roblox</loc>
+    <loc>https://robloxnamegenerator.org/blog/finding-untaken-usernames-username-generator-roblox</loc>
     <lastmod>2026-02-15</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=matching-duo-names-roblox-name-generator</loc>
+    <loc>https://robloxnamegenerator.org/blog/matching-duo-names-roblox-name-generator</loc>
     <lastmod>2026-02-18</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=roleplay-character-names-random-roblox-name-generator</loc>
+    <loc>https://robloxnamegenerator.org/blog/roleplay-character-names-random-roblox-name-generator</loc>
     <lastmod>2026-02-22</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://bloxname.com/?view=blog&amp;slug=history-evolution-roblox-usernames-generator</loc>
+    <loc>https://robloxnamegenerator.org/blog/history-evolution-roblox-usernames-generator</loc>
     <lastmod>2026-02-25</lastmod>
     <priority>0.7</priority>
   </url>

@@ -1,7 +1,7 @@
 User-agent: *
-Disallow: /?view=privacy
-Disallow: /?view=terms
-Disallow: /?view=contact
+Disallow: /privacy
+Disallow: /terms
+Disallow: /contact
 Allow: /
 
-Sitemap: https://bloxname.com/sitemap.xml
+Sitemap: https://robloxnamegenerator.org/sitemap.xml

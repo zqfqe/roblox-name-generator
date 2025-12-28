@@ -24,7 +24,7 @@ export const SEOHead = ({ title, description, url, image }: { title: string, des
     updateMeta('twitter:description', description, 'property');
     
     // Default fallback image if none provided
-    const ogImage = image || 'https://bloxname.com/apple-touch-icon.png';
+    const ogImage = image || 'https://robloxnamegenerator.org/apple-touch-icon.png';
     updateMeta('og:image', ogImage, 'property');
     updateMeta('twitter:image', ogImage, 'property');
 
