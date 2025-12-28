@@ -31,10 +31,10 @@ const ScrollToTop = () => {
   return (
     <button
       onClick={scrollToTop}
-      className={`fixed bottom-6 right-6 p-4 rounded-full bg-roblox-accent shadow-lg text-white transition-all duration-300 z-40 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}
+      className={`fixed bottom-6 right-6 p-4 rounded-full bg-roblox-accent hover:bg-emerald-400 shadow-glow text-black transition-all duration-300 z-40 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}
       aria-label="Scroll to top"
     >
-      <ArrowUp className="w-6 h-6" />
+      <ArrowUp className="w-5 h-5" />
     </button>
   );
 };
@@ -46,8 +46,8 @@ const Breadcrumbs = () => {
   if (location.pathname === '/') return null;
 
   return (
-    <nav aria-label="Breadcrumb" className="max-w-4xl mx-auto px-4 mb-6 mt-4">
-      <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-400">
+    <nav aria-label="Breadcrumb" className="max-w-6xl mx-auto px-6 mb-8 mt-4 animate-fade-in-up">
+      <ol className="flex flex-wrap items-center gap-2 text-sm text-gray-500 font-medium">
         <li className="flex items-center gap-2">
           <Link to="/" className="hover:text-white transition-colors flex items-center gap-1">
             <HomeIcon className="w-3 h-3" /> Home
@@ -57,15 +57,14 @@ const Breadcrumbs = () => {
           const to = `/${pathnames.slice(0, index + 1).join('/')}`;
           const isLast = index === pathnames.length - 1;
           
-          // Prettify labels (e.g., 'aesthetic-roblox-usernames' -> 'Aesthetic Names')
           let label = value.replace(/-/g, ' ').replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
           if (label.includes('Roblox')) label = label.replace('Roblox Usernames', 'Names').replace('Roblox Names', 'Names');
 
           return (
             <li key={to} className="flex items-center gap-2">
-              <ChevronRight className="w-4 h-4 text-gray-600" />
+              <ChevronRight className="w-3 h-3 text-gray-700" />
               {isLast ? (
-                <span className="text-roblox-accent font-medium truncate max-w-[200px]">{label}</span>
+                <span className="text-roblox-accent">{label}</span>
               ) : (
                 <Link to={to} className="hover:text-white transition-colors">
                   {label}
@@ -82,6 +81,13 @@ const Breadcrumbs = () => {
 const App: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   // Dynamic SEO Logic based on Route
   const getPageMeta = () => {
@@ -108,92 +114,96 @@ const App: React.FC = () => {
   const meta = getPageMeta();
 
   return (
-    <div className="min-h-screen bg-[#0f1115] text-white font-sans selection:bg-[#00b06f] selection:text-white overflow-x-hidden">
+    <div className="min-h-screen text-white font-sans overflow-x-hidden relative">
+      {/* Background Decor */}
+      <div className="fixed top-0 left-0 w-full h-[500px] perspective-grid opacity-30 pointer-events-none z-0"></div>
+
       <SEOHead 
         title={meta.title}
         description={meta.description}
         url={`https://robloxnamegenerator.org${location.pathname}`}
         image={meta.image}
       />
-      {/* Schema is now handled in Home.tsx for specific generator types */}
 
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-roblox-accent text-white px-4 py-2 rounded-lg z-50 font-bold shadow-xl transition-all">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-roblox-accent text-black px-4 py-2 rounded-lg z-50 font-bold shadow-xl transition-all">
         Skip to content
       </a>
 
-      <nav className="border-b border-gray-800 bg-[#0f1115]/80 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      {/* Floating Navbar */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-roblox-dark/80 backdrop-blur-md border-b border-white/5 py-2' : 'bg-transparent py-4'}`}>
+        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 cursor-pointer">
             <Logo size="sm" />
           </Link>
 
-          <div className="flex items-center gap-1 sm:gap-6">
-            <Link to="/" className={`px-3 py-2 text-sm font-medium transition-colors ${location.pathname === '/' ? 'text-white' : 'text-gray-400 hover:text-white'}`}>Generator</Link>
-            <Link to="/analyzer" className={`px-3 py-2 text-sm font-medium transition-colors ${location.pathname === '/analyzer' ? 'text-white' : 'text-gray-400 hover:text-white'}`}>Rate Name</Link>
-            <Link to="/blog" className={`px-3 py-2 text-sm font-medium transition-colors ${location.pathname.startsWith('/blog') ? 'text-white' : 'text-gray-400 hover:text-white'}`}>Blog</Link>
+          <div className="flex items-center gap-2 sm:gap-8">
+            <Link to="/" className={`text-sm font-medium transition-colors hover:text-roblox-accent ${location.pathname === '/' ? 'text-white' : 'text-gray-400'}`}>Generator</Link>
+            <Link to="/analyzer" className={`text-sm font-medium transition-colors hover:text-roblox-accent ${location.pathname === '/analyzer' ? 'text-white' : 'text-gray-400'}`}>Rater</Link>
+            <Link to="/blog" className={`text-sm font-medium transition-colors hover:text-roblox-accent ${location.pathname.startsWith('/blog') ? 'text-white' : 'text-gray-400'}`}>Blog</Link>
             
             <button 
               onClick={() => setSoundEnabled(!soundEnabled)}
-              className="p-2 rounded-full hover:bg-gray-800 text-gray-400 transition-colors ml-2 hidden sm:block"
+              className="p-2 rounded-full hover:bg-white/5 text-gray-400 hover:text-white transition-colors hidden sm:block"
               title={soundEnabled ? "Mute Sounds" : "Enable Sounds"}
             >
-              {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
           </div>
         </div>
       </nav>
 
-      <Breadcrumbs />
+      <div className="pt-24">
+        <Breadcrumbs />
 
-      <main id="main-content" className="pb-20">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          
-          {/* SEO Landing Pages mapped to specific styles */}
-          <Route path="/sweaty-roblox-names" element={<Home forcedStyle={NameStyle.COOL} />} />
-          <Route path="/aesthetic-roblox-usernames" element={<Home forcedStyle={NameStyle.AESTHETIC} />} />
-          <Route path="/rare-og-roblox-names" element={<Home forcedStyle={NameStyle.OG} />} />
-          <Route path="/cute-roblox-names" element={<Home forcedStyle={NameStyle.CUTE} />} />
-          <Route path="/funny-roblox-names" element={<Home forcedStyle={NameStyle.FUNNY} />} />
-          
-          <Route path="/analyzer" element={<NameAnalyzer />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<Blog />} />
-          <Route path="/about" element={<LegalPage type="about" />} />
-          <Route path="/contact" element={<LegalPage type="contact" />} />
-          <Route path="/privacy" element={<LegalPage type="privacy" />} />
-          <Route path="/terms" element={<LegalPage type="terms" />} />
-          <Route path="/sitemap" element={<Sitemap />} />
-        </Routes>
-      </main>
+        <main id="main-content" className="pb-20 relative z-10">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            
+            <Route path="/sweaty-roblox-names" element={<Home forcedStyle={NameStyle.COOL} />} />
+            <Route path="/aesthetic-roblox-usernames" element={<Home forcedStyle={NameStyle.AESTHETIC} />} />
+            <Route path="/rare-og-roblox-names" element={<Home forcedStyle={NameStyle.OG} />} />
+            <Route path="/cute-roblox-names" element={<Home forcedStyle={NameStyle.CUTE} />} />
+            <Route path="/funny-roblox-names" element={<Home forcedStyle={NameStyle.FUNNY} />} />
+            
+            <Route path="/analyzer" element={<NameAnalyzer />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<Blog />} />
+            <Route path="/about" element={<LegalPage type="about" />} />
+            <Route path="/contact" element={<LegalPage type="contact" />} />
+            <Route path="/privacy" element={<LegalPage type="privacy" />} />
+            <Route path="/terms" element={<LegalPage type="terms" />} />
+            <Route path="/sitemap" element={<Sitemap />} />
+          </Routes>
+        </main>
+      </div>
 
-      <footer className="border-t border-gray-800 bg-[#0a0c0f] py-12">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="space-y-4">
+      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl py-16 mt-20">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2">
               <Logo size="sm" />
             </Link>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              The #1 Roblox Username Generator. Create aesthetic, sweaty, and rare names instantly. Not affiliated with Roblox Corporation.
+            <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
+              The premier destination for Roblox identity creation. Precision engineered algorithms for the modern metaverse.
             </p>
-            <p className="text-gray-600 text-xs pt-2">
-              © {CURRENT_YEAR} BloxName. All rights reserved.
+            <p className="text-gray-700 text-xs font-mono">
+              © {CURRENT_YEAR} BloxName.
             </p>
           </div>
           
           <div>
-            <h4 className="font-bold text-white mb-4">Generators</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link to="/sweaty-roblox-names" className="hover:text-roblox-accent transition-colors block">Sweaty Names</Link></li>
-              <li><Link to="/aesthetic-roblox-usernames" className="hover:text-roblox-accent transition-colors block">Aesthetic Usernames</Link></li>
-              <li><Link to="/rare-og-roblox-names" className="hover:text-roblox-accent transition-colors block">Rare/OG Names</Link></li>
-              <li><Link to="/cute-roblox-names" className="hover:text-roblox-accent transition-colors block">Cute Names</Link></li>
+            <h4 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Generators</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              <li><Link to="/sweaty-roblox-names" className="hover:text-roblox-accent transition-colors">Sweaty Names</Link></li>
+              <li><Link to="/aesthetic-roblox-usernames" className="hover:text-roblox-accent transition-colors">Aesthetic Usernames</Link></li>
+              <li><Link to="/rare-og-roblox-names" className="hover:text-roblox-accent transition-colors">Rare/OG Names</Link></li>
+              <li><Link to="/cute-roblox-names" className="hover:text-roblox-accent transition-colors">Cute Names</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-4">Popular Games</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
+            <h4 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Trending</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
               {[
                 { label: 'Da Hood Names', key: 'Da Hood' },
                 { label: 'BedWars Names', key: 'BedWars' },
@@ -203,7 +213,7 @@ const App: React.FC = () => {
                 <li key={game.key}>
                   <Link 
                     to={`/sweaty-roblox-names?keyword=${encodeURIComponent(game.key)}`}
-                    className="hover:text-roblox-accent transition-colors block"
+                    className="hover:text-roblox-accent transition-colors"
                   >
                     {game.label}
                   </Link>
@@ -213,13 +223,12 @@ const App: React.FC = () => {
           </div>
 
           <div>
-            <h4 className="font-bold text-white mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link to="/about" className="hover:text-roblox-accent transition-colors block">About Us</Link></li>
-              <li><Link to="/contact" className="hover:text-roblox-accent transition-colors block">Contact Support</Link></li>
-              <li><Link to="/privacy" className="hover:text-roblox-accent transition-colors block">Privacy Policy</Link></li>
-              <li><Link to="/terms" className="hover:text-roblox-accent transition-colors block">Terms of Service</Link></li>
-              <li><Link to="/sitemap" className="hover:text-roblox-accent transition-colors block">Sitemap</Link></li>
+            <h4 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Legal</h4>
+            <ul className="space-y-3 text-sm text-gray-400">
+              <li><Link to="/about" className="hover:text-roblox-accent transition-colors">About Us</Link></li>
+              <li><Link to="/contact" className="hover:text-roblox-accent transition-colors">Support</Link></li>
+              <li><Link to="/privacy" className="hover:text-roblox-accent transition-colors">Privacy Policy</Link></li>
+              <li><Link to="/terms" className="hover:text-roblox-accent transition-colors">Terms of Service</Link></li>
             </ul>
           </div>
         </div>

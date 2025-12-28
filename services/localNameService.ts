@@ -122,10 +122,13 @@ const STRATEGIES: Record<string, StyleStrategy> = {
     ],
     transform: (name) => {
       let n = name;
-      // Reduced frequency of full-name sweat capitalization to avoid ruining suffixes
-      if (oneIn(10) && n.length > 3) n = sweatCapitalize(n);
+      // UPDATED: Logic to prevent 'aLphaNerf' scenarios.
+      // Only apply sweat capitalization to SHORTER names (<= 8 chars) where it looks stylistic (e.g. vIper, vIperSz).
+      // For longer compound names (e.g. DemonShuriken), keep CamelCase for readability.
+      if (oneIn(8) && n.length > 3 && n.length <= 8) {
+         n = sweatCapitalize(n);
+      }
       else if (oneIn(4)) n = replaceSwithZ(n); 
-      // Reduced frequency of repetition and count
       else if (oneIn(8)) n = repeatEndChar(n, 1);
       return n;
     }

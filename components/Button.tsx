@@ -14,12 +14,12 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props 
 }) => {
-  const baseStyles = "relative flex items-center justify-center px-6 py-3 text-sm font-bold tracking-wide transition-all duration-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed";
+  const baseStyles = "relative flex items-center justify-center px-6 py-3 text-sm font-bold tracking-wide transition-all duration-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed";
   
   const variants = {
-    primary: "bg-roblox-accent hover:bg-[#009e63] text-white shadow-lg shadow-green-900/20 focus:ring-green-500",
-    secondary: "bg-gray-700 hover:bg-gray-600 text-white focus:ring-gray-500",
-    outline: "border-2 border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white bg-transparent focus:ring-gray-500"
+    primary: "bg-roblox-accent hover:bg-emerald-400 text-black shadow-glow hover:shadow-[0_0_30px_rgba(0,214,134,0.5)] border border-transparent",
+    secondary: "bg-white/5 hover:bg-white/10 text-white border border-white/10 hover:border-white/20 backdrop-blur-sm",
+    outline: "border-2 border-white/20 hover:border-white/40 text-gray-300 hover:text-white bg-transparent"
   };
 
   return (

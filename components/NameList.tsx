@@ -153,54 +153,54 @@ export const NameList: React.FC<NameListProps> = ({
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
       {names.length > 0 && (
-         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 mt-8 gap-4">
+         <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 mt-8 gap-4 animate-fade-in-up">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-roblox-accent" />
-              {title} <span className="text-gray-400 text-sm font-normal">({names.length})</span>
+              {title} <span className="text-gray-500 text-sm font-mono">[{names.length}]</span>
             </h2>
             
             <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
               {/* Sort Dropdown */}
               <div className="relative group">
-                <div className="flex items-center bg-gray-800/50 border border-gray-700 rounded-lg px-2 py-1.5">
-                  <SortAsc className="w-4 h-4 text-gray-400 mr-2" />
+                <div className="flex items-center bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 hover:bg-white/10 transition-colors">
+                  <SortAsc className="w-3 h-3 text-gray-400 mr-2" />
                   <select 
                     value={sortOption}
                     onChange={(e) => setSortOption(e.target.value as SortOption)}
                     aria-label="Sort names"
-                    className="bg-transparent text-xs font-bold text-white outline-none appearance-none cursor-pointer pr-4"
+                    className="bg-transparent text-xs font-bold text-gray-300 outline-none appearance-none cursor-pointer pr-4"
                   >
-                    <option value="default">Default</option>
-                    <option value="shortest">Shortest First</option>
-                    <option value="rarity">Rarity (Best)</option>
+                    <option value="default" className="bg-gray-900">Default</option>
+                    <option value="shortest" className="bg-gray-900">Shortest First</option>
+                    <option value="rarity" className="bg-gray-900">Rarity (Best)</option>
                   </select>
                 </div>
               </div>
 
               {/* View Toggle */}
-              <div className="flex bg-gray-800/50 border border-gray-700 rounded-lg p-0.5">
+              <div className="flex bg-white/5 border border-white/10 rounded-lg p-0.5">
                 <button 
                   onClick={() => setViewMode('grid')}
-                  className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'}`}
+                  className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
                   title="Grid View"
                   aria-label="Grid view"
                 >
-                  <LayoutGrid className="w-4 h-4" />
+                  <LayoutGrid className="w-3.5 h-3.5" />
                 </button>
                 <button 
                   onClick={() => setViewMode('list')}
-                  className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-400 hover:text-gray-200'}`}
+                  className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-gray-700 text-white shadow-sm' : 'text-gray-500 hover:text-gray-300'}`}
                   title="List View"
                   aria-label="List view"
                 >
-                  <ListIcon className="w-4 h-4" />
+                  <ListIcon className="w-3.5 h-3.5" />
                 </button>
               </div>
 
               {onCopyAll && (
                 <button 
                   onClick={onCopyAll}
-                  className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white transition-colors bg-gray-800/50 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700 ml-auto md:ml-0"
+                  className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 ml-auto md:ml-0"
                 >
                   <ClipboardCheck className="w-3.5 h-3.5" />
                   Copy All
@@ -225,13 +225,13 @@ export const NameList: React.FC<NameListProps> = ({
             return (
               <div 
                 key={item.id}
-                className={`group relative flex items-center justify-between p-3 bg-gray-800/30 border border-gray-700/50 hover:border-gray-500 rounded-lg transition-all ${isEdit ? 'ring-1 ring-roblox-accent' : ''}`}
+                className={`group relative flex items-center justify-between p-3 bg-white/[0.02] border border-white/5 hover:border-white/20 rounded-xl transition-all hover:bg-white/[0.04] ${isEdit ? 'ring-1 ring-roblox-accent' : ''}`}
                 onClick={() => handleCopy(item.id, item.name)}
                 role="button"
                 tabIndex={0}
               >
-                <div className="flex items-center gap-3 flex-grow min-w-0">
-                  <div className={`w-1 h-8 rounded-full ${rarity ? rarity.color.split(' ')[0].replace('text-', 'bg-') : 'bg-gray-600'}`}></div>
+                <div className="flex items-center gap-4 flex-grow min-w-0">
+                  <div className={`w-1 h-8 rounded-full ${rarity ? rarity.color.split(' ')[0].replace('text-', 'bg-') : 'bg-gray-700'}`}></div>
                   
                   {isEdit ? (
                     <div className="flex items-center gap-2 flex-grow">
@@ -242,16 +242,16 @@ export const NameList: React.FC<NameListProps> = ({
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => setEditValue(e.target.value)}
                         onKeyDown={handleInputKeyDown}
-                        className="w-full bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white font-mono text-sm outline-none"
+                        className="w-full bg-black/50 border border-gray-600 rounded px-2 py-1 text-white font-mono text-sm outline-none"
                       />
                       <button onClick={saveEdit} className="text-green-400"><Check className="w-4 h-4" /></button>
                       <button onClick={cancelEdit} className="text-red-400"><X className="w-4 h-4" /></button>
                     </div>
                   ) : (
                     <div className="flex items-center gap-3">
-                      <span className="font-mono font-bold text-white text-lg truncate">{item.name}</span>
+                      <span className="font-mono font-bold text-white text-lg truncate tracking-tight">{item.name}</span>
                       {rarity && (
-                        <span className={`text-[10px] font-bold uppercase px-1.5 py-0.5 rounded border hidden sm:inline-block ${rarity.color}`}>
+                        <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded border hidden sm:inline-block tracking-widest opacity-80 ${rarity.color}`}>
                           {rarity.label}
                         </span>
                       )}
@@ -260,18 +260,18 @@ export const NameList: React.FC<NameListProps> = ({
                 </div>
 
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity">
-                   <button onClick={(e) => handleDecorateClick(e, item.name)} className="p-1.5 text-purple-400 hover:bg-purple-900/30 rounded"><Wand2 className="w-3.5 h-3.5" /></button>
-                   <button onClick={(e) => handlePreviewClick(e, item)} className="p-1.5 text-blue-400 hover:bg-blue-900/30 rounded"><User className="w-3.5 h-3.5" /></button>
-                   <a href={`https://www.roblox.com/search/users?keyword=${item.name}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="p-1.5 text-gray-400 hover:text-white hover:bg-gray-700 rounded"><ExternalLink className="w-3.5 h-3.5" /></a>
+                   <button onClick={(e) => handleDecorateClick(e, item.name)} className="p-1.5 text-purple-400 hover:bg-white/10 rounded-lg"><Wand2 className="w-3.5 h-3.5" /></button>
+                   <button onClick={(e) => handlePreviewClick(e, item)} className="p-1.5 text-blue-400 hover:bg-white/10 rounded-lg"><User className="w-3.5 h-3.5" /></button>
+                   <a href={`https://www.roblox.com/search/users?keyword=${item.name}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="p-1.5 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg"><ExternalLink className="w-3.5 h-3.5" /></a>
                    {onFavoriteToggle && (
-                    <button onClick={(e) => { e.stopPropagation(); onFavoriteToggle(item); }} className={`p-1.5 rounded ${favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-400'}`}>
+                    <button onClick={(e) => { e.stopPropagation(); onFavoriteToggle(item); }} className={`p-1.5 rounded-lg ${favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-400 hover:bg-white/10'}`}>
                       <Heart className={`w-3.5 h-3.5 ${favorited ? 'fill-current' : ''}`} />
                     </button>
                    )}
                 </div>
                 
                 {isCopied && (
-                  <div className="absolute right-4 bg-roblox-accent text-white text-xs font-bold px-2 py-1 rounded animate-fade-in-up flex items-center gap-1">
+                  <div className="absolute right-4 bg-roblox-accent text-black text-xs font-bold px-2 py-1 rounded animate-fade-in-up flex items-center gap-1 shadow-glow-sm">
                     <Check className="w-3 h-3" /> Copied
                   </div>
                 )}
@@ -279,12 +279,12 @@ export const NameList: React.FC<NameListProps> = ({
             );
           }
 
-          // Grid View Render (Existing Card Style)
+          // Grid View Render (Refined Holo Card)
           return (
             <div 
               key={item.id}
-              className={`holo-card group relative bg-gray-800/40 border transition-all duration-300 rounded-xl overflow-visible
-                ${isEdit ? 'ring-2 ring-roblox-accent border-transparent z-10' : 'border-gray-700/50 hover:border-gray-500'}
+              className={`holo-card group relative rounded-2xl overflow-visible backdrop-blur-sm
+                ${isEdit ? 'ring-2 ring-roblox-accent border-transparent z-10' : ''}
                 ${rarity?.cardClass || ''}
               `}
               onClick={() => handleCopy(item.id, item.name)}
@@ -294,24 +294,24 @@ export const NameList: React.FC<NameListProps> = ({
               onKeyDown={(e) => handleCardKeyDown(e, item.id, item.name)}
               style={{ animationDelay: `${index * 50}ms` }}
             >
-              <div className="relative p-4 flex items-center justify-between gap-3">
+              <div className="relative p-5 flex items-center justify-between gap-3">
                 
                 {/* Visual Indicator Line (Left) */}
-                <div className={`absolute left-0 top-3 bottom-3 w-1 rounded-r-full ${rarity ? rarity.color.split(' ')[0].replace('text-', 'bg-') : 'bg-gray-600'}`}></div>
+                <div className={`absolute left-0 top-4 bottom-4 w-1 rounded-r-full shadow-[0_0_10px_currentColor] opacity-70 ${rarity ? rarity.color.split(' ')[0].replace('text-', 'bg-') : 'bg-gray-600'}`}></div>
 
                 {/* Content Area */}
                 <div className="flex-grow min-w-0 pl-3">
                   {/* Tags / Rarity / Availability */}
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
                     {rarity && (
-                      <span className={`text-[10px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border ${rarity.color}`}>
+                      <span className={`text-[9px] font-black uppercase tracking-[0.1em] px-1.5 py-0.5 rounded border backdrop-blur-md ${rarity.color}`}>
                         {rarity.label}
                       </span>
                     )}
                     {/* Availability Dot & Tooltip */}
                     <div className="group/tooltip relative flex items-center">
-                        <div className={`w-2 h-2 rounded-full ${availability.color}`}></div>
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-black text-white text-[10px] px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
+                        <div className={`w-1.5 h-1.5 rounded-full shadow-[0_0_5px_currentColor] ${availability.color}`}></div>
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/90 border border-white/10 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-50">
                             {availability.text}
                         </div>
                     </div>
@@ -327,14 +327,13 @@ export const NameList: React.FC<NameListProps> = ({
                         onClick={(e) => e.stopPropagation()}
                         onChange={(e) => setEditValue(e.target.value)}
                         onKeyDown={handleInputKeyDown}
-                        className="w-full bg-gray-900 border border-gray-600 rounded px-2 py-1 text-white font-mono text-lg outline-none focus:border-roblox-accent"
+                        className="w-full bg-black/60 border border-white/20 rounded-lg px-2 py-1 text-white font-mono text-xl outline-none focus:border-roblox-accent shadow-inner"
                       />
                       <button onClick={saveEdit} className="p-1 text-green-400 hover:text-green-300"><Check className="w-4 h-4" /></button>
                       <button onClick={cancelEdit} className="p-1 text-red-400 hover:text-red-300"><X className="w-4 h-4" /></button>
                     </div>
                   ) : (
-                    <div className="font-mono text-xl md:text-2xl font-bold text-white tracking-tight truncate group-hover:text-roblox-accent transition-colors flex items-center gap-2">
-                       {/* Only animate text on initial load if loading prop is true, otherwise static */}
+                    <div className="font-mono text-xl md:text-2xl font-bold text-white tracking-tight truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all duration-300 flex items-center gap-2 drop-shadow-md">
                        {isLoading ? (
                           <DecryptText text={item.name} speed={30} className={rarity ? rarity.color.split(' ')[0] : ''} />
                        ) : (
@@ -345,12 +344,12 @@ export const NameList: React.FC<NameListProps> = ({
                 </div>
 
                 {/* Actions Toolbar (Visible on Hover/Focus) */}
-                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-opacity duration-200">
+                <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-within:opacity-100 transition-all duration-300 transform sm:translate-x-4 sm:group-hover:translate-x-0">
                   
                   {/* Decorate */}
                   <button
                     onClick={(e) => handleDecorateClick(e, item.name)}
-                    className="p-2 rounded-lg text-purple-400 hover:bg-purple-900/30 hover:text-purple-300 transition-colors"
+                    className="p-2 rounded-lg text-purple-400 hover:bg-purple-500/10 hover:text-purple-300 transition-colors"
                     title="Decorate Display Name"
                   >
                     <Wand2 className="w-4 h-4" />
@@ -359,7 +358,7 @@ export const NameList: React.FC<NameListProps> = ({
                   {/* Preview */}
                   <button
                     onClick={(e) => handlePreviewClick(e, item)}
-                    className="p-2 rounded-lg text-blue-400 hover:bg-blue-900/30 hover:text-blue-300 transition-colors"
+                    className="p-2 rounded-lg text-blue-400 hover:bg-blue-500/10 hover:text-blue-300 transition-colors"
                     title="Preview Profile"
                   >
                     <User className="w-4 h-4" />
@@ -368,7 +367,7 @@ export const NameList: React.FC<NameListProps> = ({
                   {/* Remix */}
                   <button
                     onClick={(e) => handleRemixClick(e, item.name)}
-                    className="p-2 rounded-lg text-yellow-400 hover:bg-yellow-900/30 hover:text-yellow-300 transition-colors"
+                    className="p-2 rounded-lg text-yellow-400 hover:bg-yellow-500/10 hover:text-yellow-300 transition-colors"
                     title="Remix this name"
                   >
                     <RefreshCw className="w-4 h-4" />
@@ -380,7 +379,7 @@ export const NameList: React.FC<NameListProps> = ({
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="p-2 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
+                    className="p-2 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white transition-colors"
                     title="Check on Roblox"
                   >
                     <ExternalLink className="w-4 h-4" />
@@ -390,7 +389,7 @@ export const NameList: React.FC<NameListProps> = ({
                   {onUpdateName && (
                     <button
                       onClick={(e) => startEditing(e, item)}
-                      className="p-2 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition-colors"
+                      className="p-2 rounded-lg text-gray-400 hover:bg-white/10 hover:text-white transition-colors"
                       title="Edit Name"
                     >
                       <Pencil className="w-4 h-4" />
@@ -401,7 +400,7 @@ export const NameList: React.FC<NameListProps> = ({
                   {allowDelete && (
                     <button
                       onClick={(e) => handleDelete(e, item.id)}
-                      className="p-2 rounded-lg text-red-400 hover:bg-red-900/30 hover:text-red-300 transition-colors"
+                      className="p-2 rounded-lg text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
                       title="Remove"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -418,8 +417,8 @@ export const NameList: React.FC<NameListProps> = ({
                       }}
                       className={`p-2 rounded-lg transition-colors ${
                         favorited 
-                          ? 'text-red-500 bg-red-500/10' 
-                          : 'text-gray-400 hover:bg-gray-700 hover:text-red-400'
+                          ? 'text-red-500 bg-red-500/10 shadow-glow-sm' 
+                          : 'text-gray-400 hover:bg-white/10 hover:text-red-400'
                       }`}
                       title={favorited ? "Unfavorite" : "Favorite"}
                     >
@@ -429,8 +428,8 @@ export const NameList: React.FC<NameListProps> = ({
                 </div>
 
                 {/* Copy Feedback Overlay */}
-                <div className={`absolute inset-0 flex items-center justify-center bg-roblox-accent/90 backdrop-blur-sm transition-opacity duration-200 rounded-xl z-20 pointer-events-none ${isCopied ? 'opacity-100' : 'opacity-0'}`}>
-                  <div className="flex items-center gap-2 text-white font-bold text-lg animate-bounce">
+                <div className={`absolute inset-0 flex items-center justify-center bg-roblox-accent text-black font-bold text-lg transition-all duration-300 rounded-2xl z-20 pointer-events-none ${isCopied ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}>
+                  <div className="flex items-center gap-2 animate-bounce">
                     <Check className="w-6 h-6" />
                     Copied!
                   </div>
