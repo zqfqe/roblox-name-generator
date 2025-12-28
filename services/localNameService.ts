@@ -16,9 +16,17 @@ const capitalize = (str: string) => {
 };
 
 // Modern Roblox "Sweat" capitalization (e.g., "vIper", "nINJA")
-// UPDATED: Now preserves the case of the rest of the string to keep suffixes like 'Sz' or 'PvP' intact.
+// UPDATED: Smarter logic to avoid breaking CamelCase names like "FuryCpu" -> "fUryCpu"
 const sweatCapitalize = (str: string) => {
-  if (str.length < 2) return str.toLowerCase();
+  if (str.length < 3) return str.toLowerCase();
+  
+  // If the string contains uppercase letters after index 1 (e.g. "FuryCpu"), 
+  // do NOT apply sweat caps as it breaks the word boundary readability.
+  const restOfString = str.slice(1);
+  if (/[A-Z]/.test(restOfString)) {
+     return str; 
+  }
+
   // Pattern: vIper (Lowers first char, Uppers second char, PRESERVES the rest)
   return str.charAt(0).toLowerCase() + str.charAt(1).toUpperCase() + str.slice(2);
 };
@@ -68,11 +76,17 @@ const replaceSwithZ = (str: string): string => {
 };
 
 // Repeat the last character (e.g., "Darkkk")
-// UPDATED: Only repeat "Cool" letters to avoid looking like a typo (e.g. "Godd" looks bad, "Darkzz" looks cool)
+// UPDATED: Stricter logic. Don't repeat vowels on long words (e.g. "Drakee" looks like a typo).
 const repeatEndChar = (str: string, count: number = 1): string => {
   if (str.length === 0) return str;
   const lastChar = str.charAt(str.length - 1);
+  const isVowel = /[aeiouAEIOU]/.test(lastChar);
   
+  // If it's a vowel, ONLY repeat if the word is very short (e.g. "Kye" -> "Kyee" is ok, "Drake" -> "Drakee" is bad)
+  if (isVowel && str.length > 4) {
+      return str;
+  }
+
   // Only repeat z, x, s, or vowels. Repeating 'd', 't', 'r' usually looks like a mistake.
   if (/[zxsZXSaeiou]/.test(lastChar)) {
      return str + lastChar.repeat(count);
@@ -122,14 +136,13 @@ const STRATEGIES: Record<string, StyleStrategy> = {
     ],
     transform: (name) => {
       let n = name;
-      // UPDATED: Logic to prevent 'aLphaNerf' scenarios.
-      // Only apply sweat capitalization to SHORTER names (<= 8 chars) where it looks stylistic (e.g. vIper, vIperSz).
-      // For longer compound names (e.g. DemonShuriken), keep CamelCase for readability.
+      
+      // Apply style transforms probabilistically
       if (oneIn(8) && n.length > 3 && n.length <= 8) {
          n = sweatCapitalize(n);
       }
       else if (oneIn(4)) n = replaceSwithZ(n); 
-      else if (oneIn(8)) n = repeatEndChar(n, 1);
+      else if (oneIn(10)) n = repeatEndChar(n, 1); // Reduced frequency of repeated char
       return n;
     }
   },
@@ -264,7 +277,13 @@ export const generateRobloxNames = async (options: GeneratorOptions): Promise<st
         if (currentStyle === NameStyle.AESTHETIC || (currentStyle === NameStyle.EDGY && Math.random() > 0.5)) {
             currentKeyword = currentKeyword.toLowerCase();
         } else if (currentStyle === NameStyle.COOL && oneIn(10)) {
-            currentKeyword = sweatCapitalize(currentKeyword);
+            // Apply sweat capitalization to keyword ONLY if safe
+            const sweated = sweatCapitalize(currentKeyword);
+            if (sweated.length < 8 && !/[A-Z]/.test(sweated.slice(1))) {
+              currentKeyword = sweated;
+            } else {
+              currentKeyword = capitalize(currentKeyword);
+            }
         } else {
             currentKeyword = capitalize(currentKeyword);
         }
