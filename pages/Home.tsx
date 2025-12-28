@@ -267,7 +267,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-secondary">{forcedStyle}</span>
             ) : "BloxName"}
           </h1>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light leading-relaxed mb-12">
+          <p className="text-xl text-gray-300 max-w-2xl mx-auto font-light leading-relaxed mb-12">
             The #1 <strong className="text-white">Roblox Name Generator</strong> and <strong className="text-white">Roblox Username Generator</strong>. <br className="hidden md:block" />
             Craft rare, sweaty, and aesthetic identities instantly.
           </p>
@@ -281,14 +281,15 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
                    <div className="relative flex-grow group">
                       <div className="absolute inset-0 bg-brand-primary/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
                       <div className="relative flex items-center h-16 md:h-20 bg-white/5 border border-white/10 rounded-2xl px-6 transition-all group-focus-within:border-brand-primary/50 group-focus-within:bg-black/40">
-                         <Search className="w-6 h-6 text-gray-500 group-focus-within:text-brand-primary transition-colors" />
+                         <Search className="w-6 h-6 text-gray-400 group-focus-within:text-brand-primary transition-colors" />
                          <input 
                            type="text"
                            value={keyword}
                            onChange={(e) => setKeyword(e.target.value)}
                            onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
                            placeholder="Enter a keyword (e.g. Ghost, Star)..."
-                           className="w-full bg-transparent border-none outline-none text-xl md:text-2xl text-white font-medium placeholder-gray-600 ml-4 h-full"
+                           className="w-full bg-transparent border-none outline-none text-xl md:text-2xl text-white font-medium placeholder-gray-500 ml-4 h-full"
+                           aria-label="Enter username keyword"
                          />
                       </div>
                       
@@ -320,6 +321,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
                         onClick={() => handleGenerate()}
                         isLoading={isLoading}
                         className="h-16 md:h-20 px-8 rounded-2xl text-lg shadow-glow-primary bg-brand-primary hover:bg-indigo-500"
+                        aria-label="Generate names"
                       >
                         <Wand2 className="w-6 h-6" />
                       </Button>
@@ -330,7 +332,8 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
                 <div className="border-t border-white/5 pt-6">
                    <button 
                      onClick={() => setShowAdvanced(!showAdvanced)}
-                     className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-white uppercase tracking-widest transition-colors mb-6 group w-full justify-center"
+                     className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors mb-6 group w-full justify-center"
+                     aria-expanded={showAdvanced}
                    >
                      {showAdvanced ? 'Collapse Config' : 'Advanced Configuration'}
                      <ChevronRight className={`w-3 h-3 transition-transform ${showAdvanced ? '-rotate-90' : 'rotate-90'}`} />
@@ -341,19 +344,37 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
                         <div className="space-y-4">
                            <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-400 font-medium">Use Leet Speak</span>
-                              <button onClick={() => setUseLeet(!useLeet)} className={`w-12 h-6 rounded-full transition-colors ${useLeet ? 'bg-brand-primary' : 'bg-gray-700'} relative`}>
+                              <button 
+                                onClick={() => setUseLeet(!useLeet)} 
+                                className={`w-12 h-6 rounded-full transition-colors ${useLeet ? 'bg-brand-primary' : 'bg-gray-700'} relative`}
+                                aria-label="Toggle Leet Speak"
+                                aria-checked={useLeet}
+                                role="switch"
+                              >
                                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${useLeet ? 'translate-x-6' : ''}`}></div>
                               </button>
                            </div>
                            <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-400 font-medium">Include Numbers</span>
-                              <button onClick={() => setIncludeNumbers(!includeNumbers)} className={`w-12 h-6 rounded-full transition-colors ${includeNumbers ? 'bg-brand-primary' : 'bg-gray-700'} relative`}>
+                              <button 
+                                onClick={() => setIncludeNumbers(!includeNumbers)} 
+                                className={`w-12 h-6 rounded-full transition-colors ${includeNumbers ? 'bg-brand-primary' : 'bg-gray-700'} relative`}
+                                aria-label="Toggle Numbers"
+                                aria-checked={includeNumbers}
+                                role="switch"
+                              >
                                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${includeNumbers ? 'translate-x-6' : ''}`}></div>
                               </button>
                            </div>
                            <div className="flex justify-between items-center">
                               <span className="text-sm text-gray-400 font-medium">Allow Underscores</span>
-                              <button onClick={() => setIncludeUnderscore(!includeUnderscore)} className={`w-12 h-6 rounded-full transition-colors ${includeUnderscore ? 'bg-brand-primary' : 'bg-gray-700'} relative`}>
+                              <button 
+                                onClick={() => setIncludeUnderscore(!includeUnderscore)} 
+                                className={`w-12 h-6 rounded-full transition-colors ${includeUnderscore ? 'bg-brand-primary' : 'bg-gray-700'} relative`}
+                                aria-label="Toggle Underscores"
+                                aria-checked={includeUnderscore}
+                                role="switch"
+                              >
                                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${includeUnderscore ? 'translate-x-6' : ''}`}></div>
                               </button>
                            </div>
@@ -487,7 +508,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
           <div className="grid md:grid-cols-2 gap-8 mb-16">
             <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
                <h3 className="text-xl font-bold text-white mb-3">Why use a Roblox Username Generator?</h3>
-               <p className="text-sm leading-relaxed">
+               <p className="text-sm leading-relaxed text-gray-300">
                  A <strong>roblox username generator</strong> helps you bypass the frustration of "Username Taken" errors. 
                  By using advanced prefixes, suffixes, and "Leet Speak", our <strong>roblox name generator</strong> 
                  finds available variations of your favorite keywords instantly.
@@ -495,7 +516,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
             </div>
             <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
                <h3 className="text-xl font-bold text-white mb-3">Features of our Roblox Name Generator</h3>
-               <p className="text-sm leading-relaxed">
+               <p className="text-sm leading-relaxed text-gray-300">
                  From "Og" short names to "Sweaty" competitive tags, this <strong>roblox name generator</strong> covers every style. 
                  It is the only <strong>roblox username generator</strong> with specific modes for Anime, Y2K, and Glitch aesthetics.
                </p>
@@ -507,8 +528,8 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
              <div className="grid md:grid-cols-2 gap-6 text-left">
                 {generateFAQs(style, keyword).map((q, i) => (
                    <div key={i} className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
-                      <h4 className="text-white font-bold mb-2">{q.question}</h4>
-                      <p className="text-sm">{q.answer}</p>
+                      <h3 className="text-white font-bold mb-2">{q.question}</h3>
+                      <p className="text-sm text-gray-300">{q.answer}</p>
                    </div>
                 ))}
              </div>

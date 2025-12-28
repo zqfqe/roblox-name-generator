@@ -38,19 +38,23 @@ export const DecoratorModal: React.FC<DecoratorModalProps> = ({ name, isOpen, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in-up" role="dialog" aria-modal="true" aria-labelledby="decorator-title">
       <div className="bg-[#111827] w-full max-w-2xl rounded-2xl border border-gray-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-gray-700 bg-gray-800/50">
           <div>
-            <h3 className="text-white font-bold text-xl flex items-center gap-2">
+            <h3 id="decorator-title" className="text-white font-bold text-xl flex items-center gap-2">
               <Wand2 className="w-5 h-5 text-purple-400" />
               Name Decorator
             </h3>
             <p className="text-gray-400 text-xs mt-1">Perfect for Roblox <strong className="text-gray-300">Display Names</strong></p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-700 rounded-lg">
+          <button 
+            onClick={onClose} 
+            className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-gray-700 rounded-lg"
+            aria-label="Close decorator"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>

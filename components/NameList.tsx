@@ -60,11 +60,15 @@ export const NameList: React.FC<NameListProps> = ({
             
             <div className="flex items-center gap-2">
                {/* Sort & View Controls - Simplified for cleaner UI */}
-               <button onClick={() => setViewMode(v => v === 'grid' ? 'list' : 'grid')} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors">
+               <button 
+                 onClick={() => setViewMode(v => v === 'grid' ? 'list' : 'grid')} 
+                 className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
+                 aria-label={viewMode === 'grid' ? "Switch to List View" : "Switch to Grid View"}
+               >
                   {viewMode === 'grid' ? <ListIcon className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
                </button>
                {onCopyAll && (
-                 <button onClick={onCopyAll} className="px-3 py-1.5 text-xs font-bold bg-white/5 hover:bg-brand-primary hover:text-white rounded-lg transition-colors text-gray-400">
+                 <button onClick={onCopyAll} className="px-3 py-1.5 text-xs font-bold bg-white/5 hover:bg-brand-primary hover:text-white rounded-lg transition-colors text-gray-300 hover:text-white">
                    Copy All
                  </button>
                )}
@@ -90,6 +94,10 @@ export const NameList: React.FC<NameListProps> = ({
                 ${viewMode === 'list' ? 'flex items-center justify-between p-3' : 'p-5'}
               `}
               onClick={() => handleCopy(item.id, item.name)}
+              onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') handleCopy(item.id, item.name); }}
+              tabIndex={0}
+              role="button"
+              aria-label={`Copy username ${item.name}`}
               style={{ animationDelay: `${index * 50}ms` }}
             >
               {/* Content */}
@@ -100,7 +108,7 @@ export const NameList: React.FC<NameListProps> = ({
                  <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                        {rarity && <span className={`text-[10px] font-black uppercase tracking-wider ${rarity.color} px-1.5 py-0.5 rounded bg-black/30`}>{rarity.label}</span>}
-                       <div className={`w-2 h-2 rounded-full ${availability.color}`}></div>
+                       <div className={`w-2 h-2 rounded-full ${availability.color}`} aria-label={`Availability: ${availability.text}`}></div>
                     </div>
                     <div className="font-mono text-xl font-bold text-white truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-brand-primary transition-all">
                        {isLoading ? <DecryptText text={item.name} /> : item.name}
@@ -109,9 +117,31 @@ export const NameList: React.FC<NameListProps> = ({
               </div>
 
               {/* Actions - visible on hover */}
-              <div className={`flex items-center gap-1 ${viewMode === 'list' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
-                 <button onClick={(e) => { e.stopPropagation(); onDecorate && onDecorate(item.name); }} className="p-2 text-gray-400 hover:text-purple-400 hover:bg-white/5 rounded-lg"><Wand2 className="w-4 h-4" /></button>
-                 <button onClick={(e) => { e.stopPropagation(); onFavoriteToggle && onFavoriteToggle(item); }} className={`p-2 rounded-lg ${favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-500 hover:bg-white/5'}`}><Heart className={`w-4 h-4 ${favorited ? 'fill-current' : ''}`} /></button>
+              <div className={`flex items-center gap-1 ${viewMode === 'list' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100'} transition-opacity`}>
+                 <button 
+                   onClick={(e) => { e.stopPropagation(); onDecorate && onDecorate(item.name); }} 
+                   className="p-2 text-gray-400 hover:text-purple-400 hover:bg-white/5 rounded-lg focus:opacity-100"
+                   aria-label="Decorate name"
+                   title="Decorate Name"
+                 >
+                   <Wand2 className="w-4 h-4" />
+                 </button>
+                 <button 
+                   onClick={(e) => { e.stopPropagation(); onPreview && onPreview(item); }} 
+                   className="p-2 text-gray-400 hover:text-blue-400 hover:bg-white/5 rounded-lg focus:opacity-100"
+                   aria-label="Preview name profile"
+                   title="Preview Profile"
+                 >
+                   <User className="w-4 h-4" />
+                 </button>
+                 <button 
+                   onClick={(e) => { e.stopPropagation(); onFavoriteToggle && onFavoriteToggle(item); }} 
+                   className={`p-2 rounded-lg focus:opacity-100 ${favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-500 hover:bg-white/5'}`}
+                   aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+                   title={favorited ? "Unfavorite" : "Favorite"}
+                 >
+                   <Heart className={`w-4 h-4 ${favorited ? 'fill-current' : ''}`} />
+                 </button>
               </div>
 
               {/* Copy Feedback */}

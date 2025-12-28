@@ -25,16 +25,16 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ name, onClose, isOpe
   const finalDisplayName = displayName.length < 3 ? name.name : displayName;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in-up" role="dialog" aria-modal="true" aria-labelledby="preview-title">
       <div className="bg-[#111827] w-full max-w-md rounded-2xl border border-gray-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gray-800/50">
-          <h3 className="text-white font-bold flex items-center gap-2">
+          <h3 id="preview-title" className="text-white font-bold flex items-center gap-2">
             <User className="w-4 h-4 text-roblox-accent" />
             Name Preview
           </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors" aria-label="Close preview">
             <X className="w-5 h-5" />
           </button>
         </div>

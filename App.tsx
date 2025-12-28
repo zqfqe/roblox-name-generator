@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Volume2, VolumeX, ArrowUp } from 'lucide-react';
+import { Volume2, VolumeX, ArrowUp, Loader2 } from 'lucide-react';
 import { NameStyle } from './types';
 import { Logo } from './components/Logo';
-import { SEOHead, SchemaMarkup } from './components/SEO';
-import { Home } from './pages/Home';
-import { Blog } from './components/Blog';
-import { NameAnalyzer } from './components/NameAnalyzer';
-import { LegalPage } from './components/LegalPages';
-import { Sitemap } from './components/Sitemap';
+import { SEOHead } from './components/SEO';
+import { Home } from './pages/Home'; // Critical Path: Keep static import for LCP
 import { BLOG_POSTS } from './data/blogPosts';
+
+// Lazy Load secondary pages to reduce initial bundle size and "Unused CSS"
+const Blog = lazy(() => import('./components/Blog').then(module => ({ default: module.Blog })));
+const NameAnalyzer = lazy(() => import('./components/NameAnalyzer').then(module => ({ default: module.NameAnalyzer })));
+const LegalPage = lazy(() => import('./components/LegalPages').then(module => ({ default: module.LegalPage })));
+const Sitemap = lazy(() => import('./components/Sitemap').then(module => ({ default: module.Sitemap })));
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -36,6 +38,13 @@ const ScrollToTop = () => {
     </button>
   );
 };
+
+const PageLoader = () => (
+  <div className="min-h-[60vh] flex flex-col items-center justify-center animate-fade-in">
+    <Loader2 className="w-10 h-10 text-brand-primary animate-spin mb-4" />
+    <p className="text-gray-500 text-sm font-medium">Loading...</p>
+  </div>
+);
 
 const App: React.FC = () => {
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -93,7 +102,7 @@ const App: React.FC = () => {
           backdrop-blur-xl border border-white/10 transition-all duration-500
           ${scrolled ? 'bg-black/60 shadow-glass' : 'bg-white/5'}
         `}>
-          <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 mr-2">
+          <Link to="/" onClick={() => window.scrollTo(0,0)} className="flex items-center gap-2 mr-2" aria-label="Home">
             <Logo size="sm" />
           </Link>
 
@@ -109,7 +118,7 @@ const App: React.FC = () => {
                 className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-all ${
                   location.pathname === link.to 
                     ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.3)]' 
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    : 'text-gray-300 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {link.label}
@@ -121,8 +130,9 @@ const App: React.FC = () => {
 
           <button 
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-colors hidden sm:block"
+            className="p-2 rounded-full text-gray-300 hover:text-white hover:bg-white/10 transition-colors hidden sm:block"
             title={soundEnabled ? "Mute Sounds" : "Enable Sounds"}
+            aria-label={soundEnabled ? "Mute sounds" : "Enable sounds"}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
@@ -131,24 +141,26 @@ const App: React.FC = () => {
 
       <div className="pt-32">
         <main id="main-content" className="relative z-10 pb-24">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            
-            <Route path="/sweaty-roblox-names" element={<Home forcedStyle={NameStyle.COOL} />} />
-            <Route path="/aesthetic-roblox-usernames" element={<Home forcedStyle={NameStyle.AESTHETIC} />} />
-            <Route path="/rare-og-roblox-names" element={<Home forcedStyle={NameStyle.OG} />} />
-            <Route path="/cute-roblox-names" element={<Home forcedStyle={NameStyle.CUTE} />} />
-            <Route path="/funny-roblox-names" element={<Home forcedStyle={NameStyle.FUNNY} />} />
-            
-            <Route path="/analyzer" element={<NameAnalyzer />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/blog/:slug" element={<Blog />} />
-            <Route path="/about" element={<LegalPage type="about" />} />
-            <Route path="/contact" element={<LegalPage type="contact" />} />
-            <Route path="/privacy" element={<LegalPage type="privacy" />} />
-            <Route path="/terms" element={<LegalPage type="terms" />} />
-            <Route path="/sitemap" element={<Sitemap />} />
-          </Routes>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              
+              <Route path="/sweaty-roblox-names" element={<Home forcedStyle={NameStyle.COOL} />} />
+              <Route path="/aesthetic-roblox-usernames" element={<Home forcedStyle={NameStyle.AESTHETIC} />} />
+              <Route path="/rare-og-roblox-names" element={<Home forcedStyle={NameStyle.OG} />} />
+              <Route path="/cute-roblox-names" element={<Home forcedStyle={NameStyle.CUTE} />} />
+              <Route path="/funny-roblox-names" element={<Home forcedStyle={NameStyle.FUNNY} />} />
+              
+              <Route path="/analyzer" element={<NameAnalyzer />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<Blog />} />
+              <Route path="/about" element={<LegalPage type="about" />} />
+              <Route path="/contact" element={<LegalPage type="contact" />} />
+              <Route path="/privacy" element={<LegalPage type="privacy" />} />
+              <Route path="/terms" element={<LegalPage type="terms" />} />
+              <Route path="/sitemap" element={<Sitemap />} />
+            </Routes>
+          </Suspense>
         </main>
       </div>
 
@@ -158,7 +170,7 @@ const App: React.FC = () => {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <Logo size="sm" />
             </Link>
-            <p className="text-gray-500 text-xs leading-relaxed">
+            <p className="text-gray-400 text-xs leading-relaxed">
               &copy; {CURRENT_YEAR} BloxName.<br/>
               Next-gen identity tools for the Metaverse.
             </p>
