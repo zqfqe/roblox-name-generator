@@ -52,9 +52,9 @@ const getRobloxNumber = (style: NameStyle) => {
 
   if (style === NameStyle.OG) return Math.floor(Math.random() * 9).toString();
   
-  // Year shorthand (24, 25)
-  if (r > 0.8) return '24'; 
-  if (r > 0.9) return '25';
+  // Year shorthand (24, 25, 26)
+  if (r > 0.8) return '25'; 
+  if (r > 0.9) return '26';
 
   return Math.floor(Math.random() * 900 + 100).toString();
 };
@@ -95,11 +95,10 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n) => k ? `Not${k}` : `Not${n}`,
       (k, a, n) => k ? `iAm${k}` : `iAm${capitalize(a)}`,
       
-      // Combinations (Adjective + Keyword) - MORE VARIETY
+      // Combinations (Adjective + Keyword)
       (k, a, n) => k ? `${a}${k}` : `${a}${n}`, // e.g. ToxicNebula
-      (k, a, n) => k ? `${a}${k}` : `${a}${n}`, // Weighted higher
       
-      // Keyword + Noun/Role - MORE VARIETY
+      // Keyword + Noun/Role
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth) => k ? `${k}${myth}` : `${n}${myth}`, // e.g. NebulaHydra
       (k, a, n, v, s, c, p, t, j, f, an, e, w) => k ? `${k}${w}` : `${n}${w}`, // e.g. NebulaSniper
       (k, a, n, v, s, c) => k ? `${c}${k}` : `${c}${n}`, // Color + Keyword e.g. RedNebula
@@ -112,8 +111,8 @@ const STRATEGIES: Record<string, StyleStrategy> = {
 
       // Sweaty/PVP
       (k, a, n, v, s, c, p) => k ? `${k}${p}` : `${n}${p}`, // NebulaClutch
-      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth) => `${myth}Slayer`,
-      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech) => `${tech}God`,
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth) => k ? `${k}Slayer` : `${myth}Slayer`,
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech) => k ? `${k}God` : `${tech}God`,
     ],
     transform: (name) => {
       let n = name;
@@ -153,7 +152,12 @@ const STRATEGIES: Record<string, StyleStrategy> = {
   },
   [NameStyle.EDGY]: {
     templates: [
-      (k, a, n) => k ? `${k}Broken` : `${n}Broken`,
+      (k, a, n) => {
+        // Smart handling to avoid "BrokenBroken"
+        if (k && k.toLowerCase().includes('broken')) return `${k}Heart`;
+        if (k && k.toLowerCase().includes('dead')) return `${k}Soul`;
+        return k ? `${k}Broken` : `${n}Broken`;
+      },
       (k, a, n) => k ? `DontTalkTo${k}` : `DontTalkTo${n}`,
       (k, a, n) => k ? `${k}WasTaken` : `${n}WasTaken`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em) => k ? `${em}${k}` : `${em}${n}`, // Emotion + Keyword e.g. SadNebula
@@ -203,6 +207,7 @@ export const generateRobloxNames = async (options: GeneratorOptions): Promise<st
   await new Promise(resolve => setTimeout(resolve, 200));
 
   const results: Set<string> = new Set();
+  const lowerResults: Set<string> = new Set(); // Track lowercase versions for strict deduplication
   const targetCount = 12; 
   
   let baseKeywords: string[] = [];
@@ -238,6 +243,7 @@ export const generateRobloxNames = async (options: GeneratorOptions): Promise<st
     const nounList = NOUNS[currentStyle] || NOUNS[NameStyle.COOL];
 
     let currentKeyword = getRandom(baseKeywords);
+    const originalKeyword = currentKeyword;
     
     if (currentKeyword) {
         if (currentStyle === NameStyle.AESTHETIC || (currentStyle === NameStyle.EDGY && Math.random() > 0.5)) {
@@ -318,7 +324,22 @@ export const generateRobloxNames = async (options: GeneratorOptions): Promise<st
         name = name.replace(/__+/g, '_').replace(/\.\.+/g, '.');
         name = name.replace(/[^a-zA-Z0-9_\.]/g, ''); 
     }
+
+    // --- QUALITY CHECKS ---
+    const lowerName = name.toLowerCase();
+    const lowerK = originalKeyword.toLowerCase();
+
+    // 1. Dedup Check (Case Insensitive)
+    if (lowerResults.has(lowerName)) continue;
+
+    // 2. Repetition Check (Echo Effect)
+    // Prevent "brokenbroken" (direct repeat)
+    if (lowerName === lowerK + lowerK) continue;
     
+    // Prevent "BrokenBroken" (if keyword is broken and template adds broken)
+    // If the name ends with the keyword AND starts with the keyword, and is just the keyword twice
+    if (lowerName.length === lowerK.length * 2 && lowerName.startsWith(lowerK) && lowerName.endsWith(lowerK)) continue;
+
     let isValidLength = true;
     const len = name.length;
     if (length === LengthPreference.SHORT && len >= 8) isValidLength = false;
@@ -327,6 +348,7 @@ export const generateRobloxNames = async (options: GeneratorOptions): Promise<st
 
     if (len >= 3 && len <= 20 && isValidLength) {
       results.add(name);
+      lowerResults.add(lowerName);
     }
   }
 
