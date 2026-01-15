@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 
+  SELF-HOSTED FONTS
+  Please download 'Inter.woff2' and 'PressStart2P.woff2' and place them in public/fonts/
+  This removes dependency on Google CDN for privacy and performance.
+*/
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('/fonts/PressStart2P.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
 @layer base {
   body {
     @apply bg-brand-dark text-white font-sans antialiased selection:bg-brand-primary selection:text-white;

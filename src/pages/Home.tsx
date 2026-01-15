@@ -15,6 +15,7 @@ import { DecoratorModal } from '../components/DecoratorModal';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { SYNONYMS } from '../data/wordLists';
 import { SchemaMarkup } from '../components/SEO';
+import { TrendingSection } from '../components/TrendingSection'; // New Component
 
 const CURRENT_YEAR = new Date().getFullYear();
 const BAD_WORDS = ['fuck', 'shit', 'nigg', 'bitch', 'cunt', 'whore', 'dick', 'pussy', 'asshole', 'sex', 'porn', 'xxx'];
@@ -28,7 +29,6 @@ const PRESET_CATEGORIES = [
   { label: 'Funny', emoji: '🤡', style: NameStyle.FUNNY, link: '/funny-roblox-names', desc: 'Troll & Meme Names' },
 ];
 
-// Specific Content for Landing Pages to ensure uniqueness in SEO
 const LANDING_CONTENT: Record<string, { title: string; subtitle: string; description: string }> = {
   [NameStyle.COOL]: {
     title: "Sweaty Roblox Name Generator",
@@ -59,11 +59,20 @@ const LANDING_CONTENT: Record<string, { title: string; subtitle: string; descrip
 
 const FEATURED_EXAMPLES: GeneratedName[] = [
   { id: 'ex1', name: 'VelvetViper' },
-  { id: 'ex2', name: 'NeonGhost' },
-  { id: 'ex3', name: 'CyberSoul' },
-  { id: 'ex4', name: 'PureVibes' },
+  { id: 'ex2', name: 'NotGrim' },
+  { id: 'ex3', name: 'SoulSz' },
+  { id: 'ex4', name: 'vIperFn' },
   { id: 'ex5', name: 'ToxicLegend' },
-  { id: 'ex6', name: 'DreamyCloud' },
+  { id: 'ex6', name: 'lunar.sky' },
+  { id: 'ex7', name: 'pure.honey' },
+  { id: 'ex8', name: 'DreamyCloud' },
+  { id: 'ex9', name: 'SoftAngel' },
+  { id: 'ex10', name: 'cloud.tea' },
+  { id: 'ex11', name: 'Rxre' },
+  { id: 'ex12', name: 'Jinx' },
+  { id: 'ex13', name: 'Kilo' },
+  { id: 'ex14', name: 'Zero' },
+  { id: 'ex15', name: 'Void' },
 ];
 
 const generateFAQs = (style: NameStyle, keyword: string) => {
@@ -95,7 +104,6 @@ const generateFAQs = (style: NameStyle, keyword: string) => {
 
 const getRandom = <T extends unknown>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-// Premium Select Component
 const StyleSelect = ({ value, onChange, disabled }: { value: NameStyle, onChange: (val: NameStyle) => void, disabled?: boolean }) => {
   return (
     <div className="relative group">
@@ -121,14 +129,16 @@ const StyleSelect = ({ value, onChange, disabled }: { value: NameStyle, onChange
 
 interface HomeProps {
   forcedStyle?: NameStyle;
+  initialKeyword?: string;
+  topicTitle?: string;
 }
 
-export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
+export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTitle }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   // State initialization
-  const [keyword, setKeyword] = useState(searchParams.get('keyword') || '');
+  const [keyword, setKeyword] = useState(initialKeyword || searchParams.get('keyword') || '');
   const [internalStyle, setInternalStyle] = useState<NameStyle>((searchParams.get('style') as NameStyle) || NameStyle.COOL);
   const style = forcedStyle || internalStyle;
 
@@ -156,8 +166,6 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
   
   // Filters
   const [filterText, setFilterText] = useState('');
-  const [filterHideNumbers, setFilterHideNumbers] = useState(false);
-  const [filterShortOnly, setFilterShortOnly] = useState(false);
 
   // Data Persistence logic
   const [generatedNames, setGeneratedNames] = useState<GeneratedName[]>(() => {
@@ -182,22 +190,24 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
   useEffect(() => { localStorage.setItem('bloxname_favorites', JSON.stringify(favorites)); }, [favorites]);
 
   useEffect(() => {
-    const params: any = {};
-    if (keyword) params.keyword = keyword;
-    if (!forcedStyle && internalStyle !== NameStyle.COOL) params.style = internalStyle;
-    if (length !== LengthPreference.ANY) params.length = length;
-    if (includeNumbers) params.numbers = 'true';
-    if (includeUnderscore) params.underscore = 'true';
-    if (useExactMatch) params.exact = 'true';
-    if (useLeet) params.leet = 'true';
-    if (forDisplayName) params.displayname = 'true';
-    if (prefix) params.prefix = prefix;
-    if (suffix) params.suffix = suffix;
-    
-    setSearchParams(params, { replace: true });
-  }, [keyword, internalStyle, length, includeNumbers, includeUnderscore, useExactMatch, useLeet, forDisplayName, prefix, suffix, setSearchParams, forcedStyle]);
+    // Only update search params if NOT on a special topic page (to keep URLs clean)
+    if (!topicTitle) {
+      const params: any = {};
+      if (keyword) params.keyword = keyword;
+      if (!forcedStyle && internalStyle !== NameStyle.COOL) params.style = internalStyle;
+      if (length !== LengthPreference.ANY) params.length = length;
+      if (includeNumbers) params.numbers = 'true';
+      if (includeUnderscore) params.underscore = 'true';
+      if (useExactMatch) params.exact = 'true';
+      if (useLeet) params.leet = 'true';
+      if (forDisplayName) params.displayname = 'true';
+      if (prefix) params.prefix = prefix;
+      if (suffix) params.suffix = suffix;
+      
+      setSearchParams(params, { replace: true });
+    }
+  }, [keyword, internalStyle, length, includeNumbers, includeUnderscore, useExactMatch, useLeet, forDisplayName, prefix, suffix, setSearchParams, forcedStyle, topicTitle]);
 
-  // Synonyms suggestion logic
   useEffect(() => {
     if (!keyword || keyword.length < 2) { setSuggestions([]); return; }
     const lowerKey = keyword.toLowerCase().trim();
@@ -294,7 +304,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": activeContent ? activeContent.title : "Roblox Name Generator",
+    "name": topicTitle || (activeContent ? activeContent.title : "Roblox Name Generator"),
     "applicationCategory": "Game",
     "operatingSystem": "Web Browser",
     "offers": {
@@ -327,7 +337,11 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tight text-white mb-6 drop-shadow-2xl px-2">
-            {activeContent ? (
+            {topicTitle ? (
+               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-secondary">
+                 {topicTitle}
+               </span>
+            ) : activeContent ? (
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-primary to-brand-secondary">
                 {activeContent.title}
               </span>
@@ -479,21 +493,6 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
           </div>
        </div>
 
-       {/* QUICK ACCESS GRID */}
-       <div className="mb-24 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-          {PRESET_CATEGORIES.map((cat, i) => (
-            <Link 
-              key={i}
-              to={cat.link}
-              className="interactive-card p-6 rounded-2xl flex flex-col items-center text-center group"
-            >
-              <span className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg">{cat.emoji}</span>
-              <span className="text-sm font-bold text-white mb-1">{cat.label}</span>
-              <span className="text-[10px] text-gray-500 uppercase tracking-wide group-hover:text-gray-300 transition-colors">{cat.desc}</span>
-            </Link>
-          ))}
-       </div>
-
        {/* RESULTS AREA */}
        <div id="results-section" className="min-h-[600px] mb-20">
           {(generatedNames.length > 0 || history.length > 0) && (
@@ -542,6 +541,24 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
             onDeleteName={activeTab === 'history' ? (id) => setHistory(h => h.filter(i => i.id !== id)) : undefined}
           />
        </div>
+       
+       {/* TRENDING SECTION (SOCIAL PROOF) - POINT 5 */}
+       <TrendingSection />
+
+       {/* QUICK ACCESS GRID */}
+       <div className="mb-24 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          {PRESET_CATEGORIES.map((cat, i) => (
+            <Link 
+              key={i}
+              to={cat.link}
+              className="interactive-card p-6 rounded-2xl flex flex-col items-center text-center group"
+            >
+              <span className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg">{cat.emoji}</span>
+              <span className="text-sm font-bold text-white mb-1">{cat.label}</span>
+              <span className="text-[10px] text-gray-500 uppercase tracking-wide group-hover:text-gray-300 transition-colors">{cat.desc}</span>
+            </Link>
+          ))}
+       </div>
 
        {/* SECONDARY SECTIONS */}
        <div className="grid md:grid-cols-2 gap-12 mb-24">
@@ -564,7 +581,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle }) => {
        <div className="mt-24 max-w-4xl mx-auto prose prose-invert prose-lg text-gray-400">
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-white mb-6">
-              {activeContent ? `Why use our ${activeContent.title}?` : "The Best Roblox Name Generator for 2026"}
+              {topicTitle ? `Why use our ${topicTitle} Tool?` : activeContent ? `Why use our ${activeContent.title}?` : "The Best Roblox Name Generator for 2026"}
             </h2>
             <p>
               Welcome to BloxName, the ultimate <strong>roblox name generator</strong> designed for serious gamers. 

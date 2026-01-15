@@ -8,13 +8,13 @@
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="8GpcuF59bM20PwePfzeTjhLVr_RMzbAden8OAH9HsaY" />
 
-    <!-- Optimized Title for Primary and Secondary Keywords -->
+    <!-- Default Title (Will be overwritten by prerender.js for specific pages) -->
     <title>Roblox Name Generator & Roblox Username Generator (2026) - BloxName</title>
     
     <!-- Robots: Maximize snippet control for higher CTR -->
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     
-    <!-- Optimized Meta Description with high keyword density but natural flow -->
+    <!-- Default Description (Will be overwritten by prerender.js) -->
     <meta name="description" content="The #1 Roblox Name Generator and Roblox Username Generator. Create rare, aesthetic, and sweaty usernames instantly. Check availability with our advanced Roblox name generator tool." />
     <meta name="keywords" content="roblox name generator, roblox username generator, sweaty roblox names, aesthetic roblox usernames, roblox name checker, cool gaming names, username ideas for roblox" />
     
@@ -23,21 +23,12 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- Canonical Tag: Essential for SEO to consolidate ranking signals -->
+    <!-- Canonical Tag -->
     <link rel="canonical" href="https://robloxnamegenerator.org/" />
 
     <!-- Performance Optimizations: Preconnect to key origins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://images.unsplash.com">
     <link rel="dns-prefetch" href="https://images.unsplash.com">
-
-    <!-- Fonts: Optimized Loading Strategy (Non-blocking) -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" media="print" onload="this.media='all'">
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap">
-    </noscript>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -66,69 +57,29 @@
       }
     }
     </script>
+    
+    <!-- Dynamic Data Injection Point -->
+    <script id="initial-data"></script>
+
   <script type="importmap">
 {
   "imports": {
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.11.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
     "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "vite": "https://esm.sh/vite@^7.3.0",
+    "vite": "https://esm.sh/vite@^7.3.1",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+    "react-router-dom/": "https://esm.sh/react-router-dom@^7.12.0/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0"
   }
 }
 </script>
 </head>
   <body class="bg-gray-900 text-white antialiased overflow-x-hidden" style="background-color: #111827;">
-    <div id="root">
-        <!-- Loading Animation / Splash Screen -->
-        <style>
-          .initial-loader {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            width: 100%;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-          }
-          .loader-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid #1f2937; /* Gray 800 */
-            border-top-color: #00B06F; /* Roblox Accent Green */
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-bottom: 20px;
-          }
-          @keyframes spin { to { transform: rotate(360deg); } }
-          .loader-text {
-            color: #9ca3af; /* Gray 400 */
-            font-size: 0.875rem;
-            font-weight: 500;
-            letter-spacing: 0.025em;
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-          }
-          @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        </style>
-        <div class="initial-loader">
-          <div class="loader-spinner"></div>
-          <div class="loader-text">Loading BloxName...</div>
-        </div>
-    </div>
+    <div id="root"><!--app-html--></div>
 
-    <!-- SEO & No-JS Fallback: High density for keywords -->
-    <noscript>
-      <div style="padding: 2rem; color: #9ca3af; text-align: center; max-width: 800px; margin: 0 auto; font-family: sans-serif;">
-          <h1 style="color:white; font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">Roblox Name Generator</h1>
-          <p style="margin-bottom: 1rem;">Welcome to BloxName, the ultimate <strong>roblox name generator</strong> and <strong>roblox username generator</strong>. Whether you need sweaty names, aesthetic ideas, or rare OG tags, our free tool helps you find the perfect identity.</p>
-          <p>Our <strong>roblox username generator</strong> checks availability and provides instant ideas for 2026. Use the best <strong>roblox name generator</strong> on the web today.</p>
-          <p style="color: #ef4444; font-weight: bold;">Please enable JavaScript to use this generator.</p>
-      </div>
-    </noscript>
-
-    <!-- Use absolute path for index.tsx to support nested routes -->
-    <script type="module" src="/index.tsx"></script>
+    <!-- Use absolute path for index.tsx which is now the client entry -->
+    <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>
