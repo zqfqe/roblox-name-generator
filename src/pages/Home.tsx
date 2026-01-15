@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { Wand2, Dices, AlertTriangle, Search, Info, Settings2, Filter, AlignLeft, AlignRight, EyeOff, Ruler, Share2, Download, Trash2, Tag, HelpCircle, BookOpen, Clock, ChevronRight, Lightbulb, Zap, ArrowRight } from 'lucide-react';
 import { NameStyle, LengthPreference, GeneratedName } from '../types';
 import { generateRobloxNames } from '../services/localNameService';
@@ -15,47 +15,17 @@ import { DecoratorModal } from '../components/DecoratorModal';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { SYNONYMS } from '../data/wordLists';
 import { SchemaMarkup } from '../components/SEO';
-import { TrendingSection } from '../components/TrendingSection'; // New Component
+import { TrendingSection } from '../components/TrendingSection'; 
+import { STYLE_ROUTES, getRouteByStyle } from '../data/routes'; // Centralized Config
 
 const CURRENT_YEAR = new Date().getFullYear();
 const BAD_WORDS = ['fuck', 'shit', 'nigg', 'bitch', 'cunt', 'whore', 'dick', 'pussy', 'asshole', 'sex', 'porn', 'xxx'];
 
 const PRESET_CATEGORIES = [
-  { label: 'Sweaty PvP', emoji: '⚔️', style: NameStyle.COOL, link: '/sweaty-roblox-names', desc: 'For Da Hood & Bedwars' },
-  { label: 'Aesthetic', emoji: '✨', style: NameStyle.AESTHETIC, link: '/aesthetic-roblox-usernames', desc: 'Soft, Y2K & Cottagecore' },
-  { label: 'Rare OG', emoji: '💎', style: NameStyle.OG, link: '/rare-og-roblox-names', desc: 'Short 4-Letter Names' },
+  ...Object.values(STYLE_ROUTES).map(r => ({ label: r.navLabel, emoji: r.emoji, style: r.style, link: r.path, desc: r.subtitle })),
+  // Add manual ones if needed, but the routes file covers most
   { label: 'Anime', emoji: '⛩️', style: NameStyle.COOL, link: '/sweaty-roblox-names?keyword=Anime', desc: 'Japanese & Manga Styles' },
-  { label: 'Cute', emoji: '🌸', style: NameStyle.CUTE, link: '/cute-roblox-names', desc: 'Kawaii & Pastel Vibes' },
-  { label: 'Funny', emoji: '🤡', style: NameStyle.FUNNY, link: '/funny-roblox-names', desc: 'Troll & Meme Names' },
 ];
-
-const LANDING_CONTENT: Record<string, { title: string; subtitle: string; description: string }> = {
-  [NameStyle.COOL]: {
-    title: "Sweaty Roblox Name Generator",
-    subtitle: "Tryhard, PvP & Edgy Usernames",
-    description: "Create intimidating, clean, and sweaty usernames instantly. Perfect for competitive players in BedWars, Da Hood, and Deepwoken who need a 'vIper' or 'Soul' style alias."
-  },
-  [NameStyle.AESTHETIC]: {
-    title: "Aesthetic Roblox Username Generator",
-    subtitle: "Soft, Y2K & Cottagecore Ideas",
-    description: "Find the perfect soft, dreamy, or retro aesthetic username. Our tool specializes in lower-case, spacing, and Y2K themes for Royale High, Brookhaven, and Berry Avenue."
-  },
-  [NameStyle.OG]: {
-    title: "Rare & OG Roblox Name Generator",
-    subtitle: "Short 4-Letter & Clean Usernames",
-    description: "Generate rare-looking, short, and 'OG' style names. We use advanced algorithms to find clean combinations that look like they were created in 2010."
-  },
-  [NameStyle.CUTE]: {
-    title: "Cute Roblox Username Generator",
-    subtitle: "Kawaii, Pastel & Sweet Names",
-    description: "Discover adorable and kawaii usernames inspired by anime, sweets, and nature. Perfect for players who want a charming and friendly identity."
-  },
-  [NameStyle.FUNNY]: {
-    title: "Funny Roblox Name Generator",
-    subtitle: "Troll, Meme & Alt Account Names",
-    description: "Need a name for your alt account? Generate hilarious, meme-worthy, and troll usernames that are safe for Roblox but guaranteed to get a laugh."
-  }
-};
 
 const FEATURED_EXAMPLES: GeneratedName[] = [
   { id: 'ex1', name: 'VelvetViper' },
@@ -136,6 +106,7 @@ interface HomeProps {
 export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTitle }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // State initialization
   const [keyword, setKeyword] = useState(initialKeyword || searchParams.get('keyword') || '');
@@ -181,8 +152,28 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
     try { const saved = localStorage.getItem('bloxname_favorites'); return saved ? JSON.parse(saved) : []; } catch (e) { return []; }
   });
 
-  // Determine current page content for SEO
-  const activeContent = forcedStyle ? LANDING_CONTENT[forcedStyle] : null;
+  // Determine current page content for SEO from Central Config
+  const activeContent = forcedStyle ? getRouteByStyle(forcedStyle) : null;
+
+  // --- SEO REDIRECT LOGIC ---
+  // If user lands on /?style=Cool, redirect to /sweaty-roblox-names
+  useEffect(() => {
+    if (location.pathname === '/' && !forcedStyle && !topicTitle) {
+      const queryStyle = searchParams.get('style') as NameStyle;
+      if (queryStyle) {
+        const routeConfig = getRouteByStyle(queryStyle);
+        if (routeConfig) {
+          // Preserve other query params (like keyword)
+          const newParams = new URLSearchParams(searchParams);
+          newParams.delete('style'); // Remove style as it becomes part of the path
+          const queryString = newParams.toString();
+          
+          const targetPath = routeConfig.path + (queryString ? `?${queryString}` : '');
+          navigate(targetPath, { replace: true });
+        }
+      }
+    }
+  }, [searchParams, location.pathname, forcedStyle, topicTitle, navigate]);
 
   // Effects
   useEffect(() => { if (generatedNames.length > 0) sessionStorage.setItem('bloxname_current_results', JSON.stringify(generatedNames)); }, [generatedNames]);
@@ -396,10 +387,18 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
                          <StyleSelect 
                            value={style} 
                            onChange={(val) => {
-                             if (forcedStyle) { navigate('/'); setTimeout(() => setInternalStyle(val), 50); }
+                             if (forcedStyle) { 
+                               // If user switches dropdown while on a static page, force redirect to home with new style
+                               const route = getRouteByStyle(val);
+                               if (route) {
+                                 navigate(route.path);
+                               } else {
+                                 navigate(`/?style=${val}`);
+                               }
+                             }
                              else setInternalStyle(val);
                            }} 
-                           disabled={!!forcedStyle}
+                           disabled={false} // Always enabled now
                          />
                       </div>
                       
@@ -542,7 +541,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
           />
        </div>
        
-       {/* TRENDING SECTION (SOCIAL PROOF) - POINT 5 */}
+       {/* TRENDING SECTION (SOCIAL PROOF) */}
        <TrendingSection />
 
        {/* QUICK ACCESS GRID */}

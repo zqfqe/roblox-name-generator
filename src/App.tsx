@@ -6,6 +6,7 @@ import { Logo } from './components/Logo';
 import { SEOHead } from './components/SEO';
 import { Home } from './pages/Home'; // Critical Path: Keep static import for LCP
 import { BLOG_POSTS } from './data/blogPosts';
+import { STYLE_ROUTES, getRouteByPath } from './data/routes';
 
 // Lazy Load secondary pages to reduce initial bundle size and "Unused CSS"
 const Blog = lazy(() => import('./components/Blog').then(module => ({ default: module.Blog })));
@@ -62,6 +63,12 @@ const App: React.FC = () => {
   const getPageMeta = () => {
     const path = location.pathname;
     
+    // Check for Static Landing Pages (Centralized SEO)
+    const staticRoute = getRouteByPath(path);
+    if (staticRoute) {
+      return { title: staticRoute.title, description: staticRoute.description };
+    }
+
     if (path.startsWith('/blog/')) {
        const slug = path.split('/')[2];
        const post = BLOG_POSTS.find(p => p.slug === slug);
@@ -69,12 +76,6 @@ const App: React.FC = () => {
     }
     if (path === '/blog') return { title: 'Roblox Username Guides & Blog - BloxName', description: 'Read our latest guides on Roblox naming trends, display name hacks, and aesthetic ideas.' };
     if (path === '/analyzer') return { title: 'Roblox Name Rater & Analyzer - Is Your Name Rare?', description: 'Check if your Roblox username is rare, sweaty, or OG. Get a rarity score instantly.' };
-    
-    if (path === '/sweaty-roblox-names') return { title: `Sweaty Roblox Name Generator (2026) - Cool PvP Usernames`, description: `Generate sweaty, tryhard, and cool Roblox usernames instantly. Perfect for Da Hood and BedWars players.` };
-    if (path === '/aesthetic-roblox-usernames') return { title: `Aesthetic Roblox Username Generator (2026) - Soft & Y2K`, description: `Create soft, dreamy, and aesthetic Roblox usernames. The best aesthetic name generator for cottagecore and y2k styles.` };
-    if (path === '/rare-og-roblox-names') return { title: `Rare OG Roblox Name Generator - Short 4 Letter Usernames`, description: `Generate rare, short, and OG style Roblox names. Find available 4 letter and 5 letter username ideas.` };
-    if (path === '/cute-roblox-names') return { title: `Cute Roblox Username Generator - Kawaii Name Ideas`, description: `Generate cute, kawaii, and adorable Roblox usernames. Perfect for Royale High and Adopt Me.` };
-    if (path === '/funny-roblox-names') return { title: `Funny Roblox Name Generator - Troll Username Ideas`, description: `Generate hilarious, funny, and troll Roblox usernames for your alt account.` };
     
     if (path.startsWith('/topic/')) {
        const tag = path.split('/')[2];
@@ -155,11 +156,14 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               
-              <Route path="/sweaty-roblox-names" element={<Home forcedStyle={NameStyle.COOL} />} />
-              <Route path="/aesthetic-roblox-usernames" element={<Home forcedStyle={NameStyle.AESTHETIC} />} />
-              <Route path="/rare-og-roblox-names" element={<Home forcedStyle={NameStyle.OG} />} />
-              <Route path="/cute-roblox-names" element={<Home forcedStyle={NameStyle.CUTE} />} />
-              <Route path="/funny-roblox-names" element={<Home forcedStyle={NameStyle.FUNNY} />} />
+              {/* Dynamic Route Generation based on Configuration */}
+              {Object.values(STYLE_ROUTES).map(route => (
+                <Route 
+                  key={route.path} 
+                  path={route.path} 
+                  element={<Home forcedStyle={route.style} />} 
+                />
+              ))}
               
               <Route path="/analyzer" element={<NameAnalyzer />} />
               <Route path="/blog" element={<Blog />} />
@@ -194,9 +198,9 @@ const App: React.FC = () => {
           <div>
             <h4 className="font-bold text-white mb-4 text-xs uppercase tracking-wider">Tools</h4>
             <ul className="space-y-2 text-sm text-gray-400">
-              <li><Link to="/sweaty-roblox-names" className="hover:text-white transition-colors">Sweaty Gen</Link></li>
-              <li><Link to="/aesthetic-roblox-usernames" className="hover:text-white transition-colors">Aesthetic Gen</Link></li>
-              <li><Link to="/rare-og-roblox-names" className="hover:text-white transition-colors">OG Names</Link></li>
+              {Object.values(STYLE_ROUTES).slice(0, 3).map(r => (
+                <li key={r.path}><Link to={r.path} className="hover:text-white transition-colors">{r.navLabel}</Link></li>
+              ))}
             </ul>
           </div>
 
