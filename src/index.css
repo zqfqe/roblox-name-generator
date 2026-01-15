@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+  SELF-HOSTED FONTS
+  Please download 'Inter.woff2' and 'PressStart2P.woff2' and place them in public/fonts/
+  This removes dependency on Google CDN for privacy and performance.
+*/
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('/fonts/PressStart2P.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-dark text-white font-sans antialiased selection:bg-brand-primary selection:text-white;
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%), 
+      radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.08), transparent 25%);
+    background-attachment: fixed;
+  }
+}
+
+@layer components {
+  /* Ultra-Premium Glass */
+  .glass-card {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-glass relative overflow-hidden;
+  }
+  
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  }
+
+  .glass-input {
+    @apply bg-white/[0.03] border border-white/10 text-white placeholder-gray-500 focus:border-brand-primary/50 focus:ring-1 focus:ring-brand-primary/50 transition-all duration-300 backdrop-blur-md;
+  }
+
+  /* Interactive Holo Card */
+  .interactive-card {
+    @apply relative transition-all duration-300 border border-white/5 bg-gradient-to-br from-white/[0.05] to-transparent hover:border-brand-primary/30 hover:bg-white/[0.08] hover:shadow-glow-primary hover:-translate-y-1;
+  }
+
+  /* Rarity Gradients */
+  .text-gradient-mythic {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500;
+  }
+  .text-gradient-gold {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500;
+  }
+
+  /* Blog Styles */
+  .blog-article-content {
+    @apply text-gray-300 text-lg leading-loose font-light;
+  }
+  .blog-article-content h2 {
+    @apply text-3xl font-bold text-white mt-16 mb-6 pb-4 border-b border-white/5;
+  }
+  .blog-article-content h3 {
+    @apply text-2xl font-semibold text-white mt-10 mb-4;
+  }
+  .blog-article-content a {
+    @apply text-brand-primary hover:text-brand-accent transition-colors border-b border-brand-primary/30 hover:border-brand-accent;
+  }
+  .blog-article-content blockquote {
+    @apply border-l-4 border-brand-primary pl-6 py-2 my-8 italic text-gray-400 bg-white/[0.02] rounded-r-lg;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #030014;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1f2937;
+    border-radius: 4px;
+    border: 2px solid #030014;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #374151;
+  }
+}
+
+/* Dynamic Mesh Animation Background */
+.mesh-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  background: #030014;
+}
+
+.mesh-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.4;
+  animation: float 20s infinite ease-in-out;
+}
+
+.orb-1 {
+  top: -10%;
+  left: -10%;
+  width: 50vw;
+  height: 50vw;
+  background: #4f46e5;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  bottom: -20%;
+  right: -10%;
+  width: 60vw;
+  height: 60vw;
+  background: #7c3aed;
+  animation-delay: -5s;
+}
+
+.orb-3 {
+  top: 40%;
+  left: 40%;
+  width: 30vw;
+  height: 30vw;
+  background: #0ea5e9;
+  animation-delay: -10s;
+  opacity: 0.2;
+}
+
+@keyframes float {
+  0% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -50px) scale(1.1); }
+  66% { transform: translate(-20px, 20px) scale(0.9); }
+  100% { transform: translate(0, 0) scale(1); }
+}
