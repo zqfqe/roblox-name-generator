@@ -7,14 +7,17 @@ import { SEOHead } from './components/SEO';
 import { Home } from './pages/Home'; // Critical Path: Keep static import for LCP
 import { BLOG_POSTS } from './data/blogPosts';
 import { STYLE_ROUTES, getRouteByPath } from './data/routes';
+import { AZNav } from './components/AZNav';
 
-// Lazy Load secondary pages to reduce initial bundle size and "Unused CSS"
+// Lazy Load secondary pages
 const Blog = lazy(() => import('./components/Blog').then(module => ({ default: module.Blog })));
 const NameAnalyzer = lazy(() => import('./components/NameAnalyzer').then(module => ({ default: module.NameAnalyzer })));
 const LegalPage = lazy(() => import('./components/LegalPages').then(module => ({ default: module.LegalPage })));
 const Sitemap = lazy(() => import('./components/Sitemap').then(module => ({ default: module.Sitemap })));
 const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default: module.NotFound })));
 const TopicHub = lazy(() => import('./pages/TopicHub').then(module => ({ default: module.TopicHub })));
+const LetterHub = lazy(() => import('./pages/LetterHub').then(module => ({ default: module.LetterHub })));
+const Symbols = lazy(() => import('./pages/Symbols').then(module => ({ default: module.Symbols })));
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -76,11 +79,17 @@ const App: React.FC = () => {
     }
     if (path === '/blog') return { title: 'Roblox Username Guides & Blog - BloxName', description: 'Read our latest guides on Roblox naming trends, display name hacks, and aesthetic ideas.' };
     if (path === '/analyzer') return { title: 'Roblox Name Rater & Analyzer - Is Your Name Rare?', description: 'Check if your Roblox username is rare, sweaty, or OG. Get a rarity score instantly.' };
+    if (path === '/symbols') return { title: 'Roblox Symbols Copy Paste (2026) - Aesthetic Stars & Kaomoji', description: 'Copy and paste aesthetic stars, hearts, and text faces for your Roblox Display Name and Bio. The ultimate collection of Roblox symbols.' };
     
     if (path.startsWith('/topic/')) {
        const tag = path.split('/')[2];
        const formattedTag = tag.charAt(0).toUpperCase() + tag.slice(1);
        return { title: `${formattedTag} Roblox Names - Generator & Guide`, description: `Generate unique ${formattedTag} Roblox usernames and read our latest guides on ${formattedTag} aesthetics.` };
+    }
+
+    if (path.startsWith('/letter/')) {
+       const char = path.split('/')[2].toUpperCase();
+       return { title: `Roblox Names Starting With "${char}" - Generator`, description: `Generate unique, aesthetic, and cool Roblox usernames that start with the letter ${char}.` };
     }
 
     if (path === '/404' || path === '*') return { title: 'Page Not Found - BloxName', description: 'The requested page does not exist.' };
@@ -120,6 +129,7 @@ const App: React.FC = () => {
           <div className="flex items-center gap-1 sm:gap-2">
             {[
               { to: '/', label: 'Generator' },
+              { to: '/symbols', label: 'Symbols' },
               { to: '/analyzer', label: 'Rater' },
               { to: '/blog', label: 'Blog' },
             ].map(link => (
@@ -166,9 +176,11 @@ const App: React.FC = () => {
               ))}
               
               <Route path="/analyzer" element={<NameAnalyzer />} />
+              <Route path="/symbols" element={<Symbols />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<Blog />} />
               <Route path="/topic/:tag" element={<TopicHub />} />
+              <Route path="/letter/:char" element={<LetterHub />} />
               <Route path="/about" element={<LegalPage type="about" />} />
               <Route path="/contact" element={<LegalPage type="contact" />} />
               <Route path="/privacy" element={<LegalPage type="privacy" />} />
@@ -183,8 +195,8 @@ const App: React.FC = () => {
         </main>
       </div>
 
-      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl py-16">
-        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10">
+      <footer className="border-t border-white/5 bg-black/40 backdrop-blur-xl pt-16">
+        <div className="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <Logo size="sm" />
@@ -201,6 +213,7 @@ const App: React.FC = () => {
               {Object.values(STYLE_ROUTES).slice(0, 3).map(r => (
                 <li key={r.path}><Link to={r.path} className="hover:text-white transition-colors">{r.navLabel}</Link></li>
               ))}
+              <li><Link to="/symbols" className="hover:text-white transition-colors">Symbols</Link></li>
             </ul>
           </div>
 
@@ -220,6 +233,9 @@ const App: React.FC = () => {
              </ul>
           </div>
         </div>
+        
+        {/* A-Z Navigation (SEO Strategy #1) */}
+        <AZNav />
       </footer>
       
       <ScrollToTop />

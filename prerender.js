@@ -35,6 +35,7 @@ const staticRoutes = [
   '/cute-roblox-names',
   '/funny-roblox-names',
   '/analyzer',
+  '/symbols',
   '/blog',
   '/about',
   '/contact',
@@ -44,7 +45,7 @@ const staticRoutes = [
   '/404', 
 ];
 
-// 2. Build Dynamic Routes (Blogs & Topic Clusters)
+// 2. Build Dynamic Routes (Blogs & Topic Clusters & Letters)
 const blogRoutes = BLOG_POSTS.map(post => `/blog/${post.slug}`);
 
 // Extract unique tags for Topic Clusters (SEO Strategy #2)
@@ -57,7 +58,10 @@ BLOG_POSTS.forEach(post => {
 
 const topicRoutes = Array.from(tags).map(tag => `/topic/${tag}`);
 
-const allRoutes = [...staticRoutes, ...blogRoutes, ...topicRoutes];
+// SEO STRATEGY #1: A-Z Index Pages
+const letterRoutes = "abcdefghijklmnopqrstuvwxyz".split('').map(char => `/letter/${char}`);
+
+const allRoutes = [...staticRoutes, ...blogRoutes, ...topicRoutes, ...letterRoutes];
 
 // 3. Define Static Metadata
 const STATIC_META = {
@@ -88,6 +92,10 @@ const STATIC_META = {
   '/analyzer': {
     title: 'Roblox Name Rater & Analyzer - Is Your Name Rare?',
     desc: 'Check if your Roblox username is rare, sweaty, or OG. Get a rarity score instantly.'
+  },
+  '/symbols': {
+    title: 'Roblox Symbols Copy Paste (2026) - Aesthetic Stars & Kaomoji',
+    desc: 'Copy and paste aesthetic stars, hearts, and text faces for your Roblox Display Name and Bio. The ultimate collection of Roblox symbols.'
   },
   '/blog': {
     title: 'Roblox Username Guides & Blog - BloxName',
@@ -141,6 +149,12 @@ const STATIC_META = {
        title = `${formattedTag} Roblox Names - Generator & Guide`;
        desc = `Generate unique ${formattedTag} Roblox usernames and read our latest guides on ${formattedTag} aesthetics.`;
     }
+    // Check Letter Map
+    else if (url.startsWith('/letter/')) {
+       const char = url.split('/letter/')[1].toUpperCase();
+       title = `Roblox Names Starting With "${char}" - Generator`;
+       desc = `Generate unique, aesthetic, and cool Roblox usernames that start with the letter ${char}.`;
+    }
 
     // Inject Meta Tags (RegEx replacement handles existing placeholder tags in index.html)
     html = html.replace(/<title>.*?<\/title>/, `<title>${title}</title>`);
@@ -189,7 +203,9 @@ ${allRoutes.filter(r => r !== '/404').map(route => {
   // Custom priority logic
   if (route === '/') { priority = '1.0'; changefreq = 'daily'; }
   else if (route === '/analyzer') { priority = '0.9'; }
+  else if (route === '/symbols') { priority = '0.9'; }
   else if (route === '/blog') { priority = '0.9'; }
+  else if (route.startsWith('/letter/')) { priority = '0.6'; changefreq = 'monthly'; } // Lower priority for A-Z
   else if (route.startsWith('/blog/')) {
      priority = '0.7';
      changefreq = 'monthly';

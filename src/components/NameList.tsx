@@ -25,6 +25,21 @@ interface NameListProps {
 type SortOption = 'default' | 'shortest' | 'rarity';
 type ViewMode = 'grid' | 'list';
 
+const SkeletonCard: React.FC<{ viewMode: ViewMode }> = ({ viewMode }) => (
+  <div className={`
+    relative bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden animate-pulse
+    ${viewMode === 'list' ? 'h-[72px] flex items-center p-3' : 'h-[104px] p-5'}
+  `}>
+    <div className="flex items-center gap-4 w-full h-full">
+      <div className="w-1 h-full bg-gray-800 rounded-full"></div>
+      <div className="flex-1 space-y-3">
+        <div className="h-2 w-16 bg-gray-800 rounded"></div>
+        <div className="h-6 w-3/4 bg-gray-800 rounded"></div>
+      </div>
+    </div>
+  </div>
+);
+
 export const NameList: React.FC<NameListProps> = ({ 
   names, onFavoriteToggle, onUpdateName, onDeleteName, onRemix, onPreview, onDecorate, favorites = [], title = "Generated Results", onCopy, onCopyAll, isLoading, soundEnabled = true, allowDelete = false
 }) => {
@@ -49,8 +64,9 @@ export const NameList: React.FC<NameListProps> = ({
 
   const isFavorited = (nameToCheck: string) => favorites.some(f => f.name === nameToCheck);
 
+  // CLS FIX: Ensure container has min-height so page doesn't jump
   return (
-    <div className="w-full">
+    <div className="w-full min-h-[600px]"> 
       {names.length > 0 && (
          <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
             <h2 className="text-white font-bold text-lg flex items-center gap-2">
@@ -59,7 +75,6 @@ export const NameList: React.FC<NameListProps> = ({
             </h2>
             
             <div className="flex items-center gap-2">
-               {/* Sort & View Controls - Simplified for cleaner UI */}
                <button 
                  onClick={() => setViewMode(v => v === 'grid' ? 'list' : 'grid')} 
                  className="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-gray-400 hover:text-white transition-colors"
@@ -79,78 +94,81 @@ export const NameList: React.FC<NameListProps> = ({
       <div className={`
         ${viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'flex flex-col gap-2'}
       `}>
-        {sortedNames.map((item, index) => {
-          const rarity = getRarity(item.name);
-          const availability = estimateAvailability(item.name);
-          const isCopied = copiedId === item.id;
-          const favorited = isFavorited(item.name);
+        {isLoading ? (
+          // Render 12 Skeleton items while loading
+          Array.from({ length: 12 }).map((_, i) => (
+            <SkeletonCard key={i} viewMode={viewMode} />
+          ))
+        ) : (
+          sortedNames.map((item, index) => {
+            const rarity = getRarity(item.name);
+            const availability = estimateAvailability(item.name);
+            const isCopied = copiedId === item.id;
+            const favorited = isFavorited(item.name);
 
-          return (
-            <div 
-              key={item.id}
-              className={`
-                group relative bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden transition-all duration-300
-                hover:border-brand-primary/30 hover:bg-white/[0.04] hover:-translate-y-1 hover:shadow-lg
-                ${viewMode === 'list' ? 'flex items-center justify-between p-3' : 'p-5'}
-              `}
-              onClick={() => handleCopy(item.id, item.name)}
-              onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') handleCopy(item.id, item.name); }}
-              tabIndex={0}
-              role="button"
-              aria-label={`Copy username ${item.name}`}
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              {/* Content */}
-              <div className="flex items-center gap-4 flex-1 min-w-0">
-                 {/* Rarity Indicator Strip */}
-                 <div className={`w-1 self-stretch rounded-full ${rarity ? rarity.color.split(' ')[0].replace('text-', 'bg-') : 'bg-gray-700'}`}></div>
-                 
-                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                       {rarity && <span className={`text-[10px] font-black uppercase tracking-wider ${rarity.color} px-1.5 py-0.5 rounded bg-black/30`}>{rarity.label}</span>}
-                       <div className={`w-2 h-2 rounded-full ${availability.color}`} aria-label={`Availability: ${availability.text}`}></div>
-                    </div>
-                    <div className="font-mono text-xl font-bold text-white truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-brand-primary transition-all">
-                       {isLoading ? <DecryptText text={item.name} /> : item.name}
-                    </div>
-                 </div>
-              </div>
+            return (
+              <div 
+                key={item.id}
+                className={`
+                  group relative bg-white/[0.02] border border-white/5 rounded-xl overflow-hidden transition-all duration-300
+                  hover:border-brand-primary/30 hover:bg-white/[0.04] hover:-translate-y-1 hover:shadow-lg
+                  ${viewMode === 'list' ? 'flex items-center justify-between p-3' : 'p-5'}
+                `}
+                onClick={() => handleCopy(item.id, item.name)}
+                onKeyDown={(e) => { if(e.key === 'Enter' || e.key === ' ') handleCopy(item.id, item.name); }}
+                tabIndex={0}
+                role="button"
+                aria-label={`Copy username ${item.name}`}
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                <div className="flex items-center gap-4 flex-1 min-w-0">
+                   <div className={`w-1 self-stretch rounded-full ${rarity ? rarity.color.split(' ')[0].replace('text-', 'bg-') : 'bg-gray-700'}`}></div>
+                   
+                   <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                         {rarity && <span className={`text-[10px] font-black uppercase tracking-wider ${rarity.color} px-1.5 py-0.5 rounded bg-black/30`}>{rarity.label}</span>}
+                         <div className={`w-2 h-2 rounded-full ${availability.color}`} aria-label={`Availability: ${availability.text}`}></div>
+                      </div>
+                      <div className="font-mono text-xl font-bold text-white truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-brand-primary transition-all">
+                         <DecryptText text={item.name} animateOnMount={true} />
+                      </div>
+                   </div>
+                </div>
 
-              {/* Actions - visible on hover */}
-              <div className={`flex items-center gap-1 ${viewMode === 'list' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100'} transition-opacity`}>
-                 <button 
-                   onClick={(e) => { e.stopPropagation(); onDecorate && onDecorate(item.name); }} 
-                   className="p-2 text-gray-400 hover:text-purple-400 hover:bg-white/5 rounded-lg focus:opacity-100"
-                   aria-label="Decorate name"
-                   title="Decorate Name"
-                 >
-                   <Wand2 className="w-4 h-4" />
-                 </button>
-                 <button 
-                   onClick={(e) => { e.stopPropagation(); onPreview && onPreview(item); }} 
-                   className="p-2 text-gray-400 hover:text-blue-400 hover:bg-white/5 rounded-lg focus:opacity-100"
-                   aria-label="Preview name profile"
-                   title="Preview Profile"
-                 >
-                   <User className="w-4 h-4" />
-                 </button>
-                 <button 
-                   onClick={(e) => { e.stopPropagation(); onFavoriteToggle && onFavoriteToggle(item); }} 
-                   className={`p-2 rounded-lg focus:opacity-100 ${favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-500 hover:bg-white/5'}`}
-                   aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
-                   title={favorited ? "Unfavorite" : "Favorite"}
-                 >
-                   <Heart className={`w-4 h-4 ${favorited ? 'fill-current' : ''}`} />
-                 </button>
-              </div>
+                <div className={`flex items-center gap-1 ${viewMode === 'list' ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100'} transition-opacity`}>
+                   <button 
+                     onClick={(e) => { e.stopPropagation(); onDecorate && onDecorate(item.name); }} 
+                     className="p-2 text-gray-400 hover:text-purple-400 hover:bg-white/5 rounded-lg focus:opacity-100"
+                     aria-label="Decorate name"
+                     title="Decorate Name"
+                   >
+                     <Wand2 className="w-4 h-4" />
+                   </button>
+                   <button 
+                     onClick={(e) => { e.stopPropagation(); onPreview && onPreview(item); }} 
+                     className="p-2 text-gray-400 hover:text-blue-400 hover:bg-white/5 rounded-lg focus:opacity-100"
+                     aria-label="Preview name profile"
+                     title="Preview Profile"
+                   >
+                     <User className="w-4 h-4" />
+                   </button>
+                   <button 
+                     onClick={(e) => { e.stopPropagation(); onFavoriteToggle && onFavoriteToggle(item); }} 
+                     className={`p-2 rounded-lg focus:opacity-100 ${favorited ? 'text-red-500' : 'text-gray-400 hover:text-red-500 hover:bg-white/5'}`}
+                     aria-label={favorited ? "Remove from favorites" : "Add to favorites"}
+                     title={favorited ? "Unfavorite" : "Favorite"}
+                   >
+                     <Heart className={`w-4 h-4 ${favorited ? 'fill-current' : ''}`} />
+                   </button>
+                </div>
 
-              {/* Copy Feedback */}
-              <div className={`absolute inset-0 flex items-center justify-center bg-brand-primary text-white font-bold transition-opacity duration-200 pointer-events-none ${isCopied ? 'opacity-100' : 'opacity-0'}`}>
-                 <Check className="w-6 h-6 mr-2" /> Copied!
+                <div className={`absolute inset-0 flex items-center justify-center bg-brand-primary text-white font-bold transition-opacity duration-200 pointer-events-none ${isCopied ? 'opacity-100' : 'opacity-0'}`}>
+                   <Check className="w-6 h-6 mr-2" /> Copied!
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );

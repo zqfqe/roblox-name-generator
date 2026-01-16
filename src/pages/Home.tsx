@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { Wand2, Dices, AlertTriangle, Search, Info, Settings2, Filter, AlignLeft, AlignRight, EyeOff, Ruler, Share2, Download, Trash2, Tag, HelpCircle, BookOpen, Clock, ChevronRight, Lightbulb, Zap, ArrowRight } from 'lucide-react';
+import { Wand2, Dices, AlertTriangle, Search, Info, Settings2, Filter, AlignLeft, AlignRight, EyeOff, Ruler, Share2, Download, Trash2, Tag, HelpCircle, BookOpen, Clock, ChevronRight, Lightbulb, Zap, ArrowRight, TrendingUp } from 'lucide-react';
 import { NameStyle, LengthPreference, GeneratedName } from '../types';
 import { generateRobloxNames } from '../services/localNameService';
 import { audioService } from '../services/audioService';
@@ -12,18 +12,19 @@ import { RarityGuide } from '../components/RarityGuide';
 import { Logo } from '../components/Logo';
 import { PreviewModal } from '../components/PreviewModal';
 import { DecoratorModal } from '../components/DecoratorModal';
-import { BLOG_POSTS } from '../data/blogPosts';
+import { BLOG_POSTS, BlogPost } from '../data/blogPosts';
 import { SYNONYMS } from '../data/wordLists';
 import { SchemaMarkup } from '../components/SEO';
 import { TrendingSection } from '../components/TrendingSection'; 
-import { STYLE_ROUTES, getRouteByStyle } from '../data/routes'; // Centralized Config
+import { STYLE_ROUTES, getRouteByStyle } from '../data/routes';
+import { Breadcrumbs } from '../components/Breadcrumbs';
+import { PopularTopics } from '../components/PopularTopics';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const BAD_WORDS = ['fuck', 'shit', 'nigg', 'bitch', 'cunt', 'whore', 'dick', 'pussy', 'asshole', 'sex', 'porn', 'xxx'];
 
 const PRESET_CATEGORIES = [
   ...Object.values(STYLE_ROUTES).map(r => ({ label: r.navLabel, emoji: r.emoji, style: r.style, link: r.path, desc: r.subtitle })),
-  // Add manual ones if needed, but the routes file covers most
   { label: 'Anime', emoji: '⛩️', style: NameStyle.COOL, link: '/sweaty-roblox-names?keyword=Anime', desc: 'Japanese & Manga Styles' },
 ];
 
@@ -72,8 +73,6 @@ const generateFAQs = (style: NameStyle, keyword: string) => {
   ];
 };
 
-const getRandom = <T extends unknown>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
-
 const StyleSelect = ({ value, onChange, disabled }: { value: NameStyle, onChange: (val: NameStyle) => void, disabled?: boolean }) => {
   return (
     <div className="relative group">
@@ -101,9 +100,10 @@ interface HomeProps {
   forcedStyle?: NameStyle;
   initialKeyword?: string;
   topicTitle?: string;
+  forcedPrefix?: string; // New prop for A-Z directory
 }
 
-export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTitle }) => {
+export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTitle, forcedPrefix }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -119,7 +119,9 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
   const [useExactMatch, setUseExactMatch] = useState(searchParams.get('exact') === 'true');
   const [useLeet, setUseLeet] = useState(searchParams.get('leet') === 'true');
   const [forDisplayName, setForDisplayName] = useState(searchParams.get('displayname') === 'true');
-  const [prefix, setPrefix] = useState(searchParams.get('prefix') || '');
+  
+  // Initialize prefix with forcedPrefix if available
+  const [prefix, setPrefix] = useState(forcedPrefix || searchParams.get('prefix') || '');
   const [suffix, setSuffix] = useState(searchParams.get('suffix') || '');
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -142,9 +144,23 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
   const [generatedNames, setGeneratedNames] = useState<GeneratedName[]>(() => {
     try {
       const saved = sessionStorage.getItem('bloxname_current_results');
-      return saved ? JSON.parse(saved) : [];
+      if (saved) return JSON.parse(saved);
+      
+      // SEO STRATEGY 2: Static Sample Data Pre-rendering
+      // If no generated names exist, load static examples for this style to fill the page content
+      if (forcedStyle) {
+         const route = getRouteByStyle(forcedStyle);
+         if (route && route.sampleNames) {
+           return route.sampleNames.map(n => ({ 
+             id: `static-${n}`, 
+             name: n 
+           }));
+         }
+      }
+      return [];
     } catch(e) { return []; }
   });
+  
   const [history, setHistory] = useState<GeneratedName[]>(() => {
      try { const saved = localStorage.getItem('bloxname_history'); return saved ? JSON.parse(saved) : []; } catch (e) { return []; }
   });
@@ -155,17 +171,41 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
   // Determine current page content for SEO from Central Config
   const activeContent = forcedStyle ? getRouteByStyle(forcedStyle) : null;
 
+  // SEO STRATEGY 1: Breadcrumbs Logic
+  const breadcrumbs = useMemo(() => {
+      const items = [];
+      if (forcedStyle && activeContent) {
+          items.push({ label: activeContent.navLabel, path: location.pathname });
+      } else if (topicTitle) {
+          // If it's a letter page (inferred by topicTitle having "Starting with")
+          if (topicTitle.includes('Starting with')) {
+             items.push({ label: 'A-Z Index' });
+          } else {
+             items.push({ label: 'Topics', path: '/blog' }); 
+          }
+          items.push({ label: topicTitle });
+      }
+      return items;
+  }, [forcedStyle, activeContent, topicTitle, location.pathname]);
+
+  // SEO STRATEGY 2: Contextual Internal Linking (Blog Posts)
+  const relatedPosts = useMemo(() => {
+    if (!activeContent || !activeContent.relatedTags) return [];
+    
+    return BLOG_POSTS.filter(post => 
+      post.tags.some(tag => activeContent.relatedTags.includes(tag))
+    ).slice(0, 3);
+  }, [activeContent]);
+
   // --- SEO REDIRECT LOGIC ---
-  // If user lands on /?style=Cool, redirect to /sweaty-roblox-names
   useEffect(() => {
-    if (location.pathname === '/' && !forcedStyle && !topicTitle) {
+    if (location.pathname === '/' && !forcedStyle && !topicTitle && !forcedPrefix) {
       const queryStyle = searchParams.get('style') as NameStyle;
       if (queryStyle) {
         const routeConfig = getRouteByStyle(queryStyle);
         if (routeConfig) {
-          // Preserve other query params (like keyword)
           const newParams = new URLSearchParams(searchParams);
-          newParams.delete('style'); // Remove style as it becomes part of the path
+          newParams.delete('style'); 
           const queryString = newParams.toString();
           
           const targetPath = routeConfig.path + (queryString ? `?${queryString}` : '');
@@ -173,7 +213,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
         }
       }
     }
-  }, [searchParams, location.pathname, forcedStyle, topicTitle, navigate]);
+  }, [searchParams, location.pathname, forcedStyle, topicTitle, forcedPrefix, navigate]);
 
   // Effects
   useEffect(() => { if (generatedNames.length > 0) sessionStorage.setItem('bloxname_current_results', JSON.stringify(generatedNames)); }, [generatedNames]);
@@ -205,6 +245,11 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
     if (SYNONYMS[lowerKey]) setSuggestions(SYNONYMS[lowerKey].slice(0, 5));
     else setSuggestions([]);
   }, [keyword]);
+
+  // Force update prefix if prop changes
+  useEffect(() => {
+    if (forcedPrefix) setPrefix(forcedPrefix);
+  }, [forcedPrefix]);
 
   // Handlers
   const handleGenerate = async (overrideKeyword?: string, overrideStyle?: NameStyle) => {
@@ -311,9 +356,14 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
   };
   
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-12">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
        <SchemaMarkup data={appSchema} />
        <SchemaMarkup data={faqSchema} />
+
+       {/* SEO STRATEGY 1: BREADCRUMBS */}
+       {breadcrumbs.length > 0 && (
+         <Breadcrumbs items={breadcrumbs} />
+       )}
 
        {/* HERO SECTION */}
        <div className="text-center mb-20 animate-fade-in relative">
@@ -481,7 +531,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
                               </div>
                            </div>
                            <div className="grid grid-cols-2 gap-4">
-                              <input type="text" placeholder="Prefix" value={prefix} onChange={e => setPrefix(e.target.value)} className="glass-input px-3 py-2 rounded-lg text-sm" />
+                              <input type="text" placeholder="Prefix" value={prefix} onChange={e => setPrefix(e.target.value)} className="glass-input px-3 py-2 rounded-lg text-sm" disabled={!!forcedPrefix} />
                               <input type="text" placeholder="Suffix" value={suffix} onChange={e => setSuffix(e.target.value)} className="glass-input px-3 py-2 rounded-lg text-sm" />
                            </div>
                         </div>
@@ -576,23 +626,67 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
 
        <RarityGuide />
 
-       {/* SEO Content */}
-       <div className="mt-24 max-w-4xl mx-auto prose prose-invert prose-lg text-gray-400">
+       {/* SEO STRATEGY 3: POPULAR TOPICS (Internal Linking Cloud) */}
+       <PopularTopics />
+
+       {/* SEO Content: Contextual Blog Links & Unique Content */}
+       <div className="mt-8 max-w-4xl mx-auto prose prose-invert prose-lg text-gray-400">
+          
+          {/* Internal Linking: Related Guides (SEO Strategy #2) */}
+          {relatedPosts.length > 0 && (
+            <div className="not-prose mb-24 bg-white/[0.03] border border-white/10 rounded-2xl p-8">
+               <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                 <BookOpen className="w-6 h-6 text-brand-primary" />
+                 {activeContent ? `${activeContent.navLabel} Guides` : 'Related Guides'}
+               </h3>
+               <div className="grid md:grid-cols-3 gap-6">
+                 {relatedPosts.map(post => {
+                    const thumbUrl = post.imageUrl ? `${post.imageUrl.replace('w=1200', 'w=400')}&fm=webp` : '';
+                    return (
+                      <Link 
+                        key={post.slug} 
+                        to={`/blog/${post.slug}`} 
+                        className="group flex flex-col gap-3 hover:bg-white/5 rounded-xl p-3 transition-colors"
+                      >
+                        {post.imageUrl && (
+                          <div className="w-full h-32 rounded-lg overflow-hidden relative bg-black/20">
+                             <img src={thumbUrl} alt={post.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
+                          </div>
+                        )}
+                        <div>
+                          <h4 className="text-sm font-bold text-gray-200 group-hover:text-brand-primary transition-colors line-clamp-2">{post.title}</h4>
+                          <span className="text-[10px] uppercase font-bold text-gray-500 mt-1 block">Read Guide</span>
+                        </div>
+                      </Link>
+                    )
+                 })}
+               </div>
+            </div>
+          )}
+
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-white mb-6">
-              {topicTitle ? `Why use our ${topicTitle} Tool?` : activeContent ? `Why use our ${activeContent.title}?` : "The Best Roblox Name Generator for 2026"}
+              {activeContent ? `Why use our ${activeContent.title}?` : "The Best Roblox Name Generator for 2026"}
             </h2>
-            <p>
-              Welcome to BloxName, the ultimate <strong>roblox name generator</strong> designed for serious gamers. 
-              Whether you are looking for a sweaty PvP tag for <em>Da Hood</em> or a soft aesthetic handle for <em>Royale High</em>, 
-              our tool is the most advanced <strong>roblox username generator</strong> on the web.
-            </p>
-            <p>
-              With over 200 million active users, finding a unique name is difficult. Most simple words are taken. 
-              That is why you need a smart <strong>roblox name generator</strong> that understands gaming culture. 
-              Our <strong>roblox username generator</strong> doesn't just combine random words; it uses logic to create 
-              names that command respect.
-            </p>
+            
+            {/* Dynamic SEO Content (SEO Strategy #1: Differentiated Content) */}
+            {activeContent && activeContent.seoContent ? (
+               <div dangerouslySetInnerHTML={{ __html: activeContent.seoContent }} />
+            ) : (
+              <>
+                <p>
+                  Welcome to BloxName, the ultimate <strong>roblox name generator</strong> designed for serious gamers. 
+                  Whether you are looking for a sweaty PvP tag for <em>Da Hood</em> or a soft aesthetic handle for <em>Royale High</em>, 
+                  our tool is the most advanced <strong>roblox username generator</strong> on the web.
+                </p>
+                <p>
+                  With over 200 million active users, finding a unique name is difficult. Most simple words are taken. 
+                  That is why you need a smart <strong>roblox name generator</strong> that understands gaming culture. 
+                  Our <strong>roblox username generator</strong> doesn't just combine random words; it uses logic to create 
+                  names that command respect.
+                </p>
+              </>
+            )}
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">

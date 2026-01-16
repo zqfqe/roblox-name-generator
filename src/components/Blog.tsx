@@ -9,31 +9,41 @@ export const Blog: React.FC = () => {
   const { slug } = useParams();
   const activePost = slug ? BLOG_POSTS.find(p => p.slug === slug) : null;
 
-  // Process content to inject IDs for Table of Contents
-  const { processedContent, toc } = useMemo(() => {
-    if (!activePost) return { processedContent: '', toc: [] };
+  // Process content to inject IDs for Table of Contents AND detect Steps for Schema
+  const { processedContent, toc, howToSteps } = useMemo(() => {
+    if (!activePost) return { processedContent: '', toc: [], howToSteps: [] };
 
     const tocList: { id: string; text: string }[] = [];
-    // Regex to find h2 tags and inject IDs
+    const steps: { name: string; text: string; url: string }[] = [];
+
+    // Inject IDs into headers
     const contentWithIds = activePost.content.replace(/<h2>(.*?)<\/h2>/g, (match, text) => {
-      // Create a slug-like ID from the header text
       const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       tocList.push({ id, text });
       return `<h2 id="${id}">${text}</h2>`;
     });
 
-    return { processedContent: contentWithIds, toc: tocList };
+    // Detect Steps for HowTo Schema (Looks for <h3>Step X: Title</h3>)
+    // Simple regex to extract steps from HTML content
+    const stepRegex = /<h3>(Step \d+:.*?)<\/h3>\s*<p>(.*?)<\/p>/g;
+    let match;
+    while ((match = stepRegex.exec(activePost.content)) !== null) {
+        steps.push({
+            name: match[1].replace(/<[^>]*>?/gm, ''), // Clean tags
+            text: match[2].replace(/<[^>]*>?/gm, ''), // Clean tags
+            url: `https://robloxnamegenerator.org/blog/${activePost.slug}#${match[1].toLowerCase().substring(0, 6).replace(' ', '-')}`
+        });
+    }
+
+    return { processedContent: contentWithIds, toc: tocList, howToSteps: steps };
   }, [activePost]);
 
-  // --- Post Detail View ---
   if (activePost) {
-    // Convert date string to ISO format for datetime attribute if possible, otherwise keep as is
     const dateObj = new Date(activePost.date);
     const dateTimeStr = !isNaN(dateObj.getTime()) ? dateObj.toISOString().split('T')[0] : '';
     const shareUrl = encodeURIComponent(window.location.href);
     const shareText = encodeURIComponent(`Check out this guide: ${activePost.title}`);
 
-    // Responsive Image Logic with WEBP forcing for Performance
     const baseImg = activePost.imageUrl ? `${activePost.imageUrl}&fm=webp` : '';
     const imgSrcSet = activePost.imageUrl ? `
       ${activePost.imageUrl.replace('w=1200', 'w=400')}&fm=webp 400w,
@@ -41,7 +51,7 @@ export const Blog: React.FC = () => {
       ${activePost.imageUrl.replace('w=1200', 'w=1200')}&fm=webp 1200w
     ` : '';
 
-    // Article Schema
+    // Standard Article Schema
     const articleSchema = {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
@@ -53,8 +63,8 @@ export const Blog: React.FC = () => {
       "description": activePost.excerpt,
       "image": activePost.imageUrl ? [activePost.imageUrl] : [],
       "author": {
-        "@type": "Organization",
-        "name": activePost.author || "BloxName Team",
+        "@type": "Person",
+        "name": activePost.author.name,
         "url": "https://robloxnamegenerator.org"
       },
       "publisher": {
@@ -66,14 +76,32 @@ export const Blog: React.FC = () => {
         }
       },
       "datePublished": dateTimeStr,
-      "dateModified": dateTimeStr // Assuming no modification date yet
+      "dateModified": dateTimeStr 
     };
+
+    // Advanced HowTo Schema (Rich Snippets)
+    const howToSchema = howToSteps.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": activePost.title,
+        "description": activePost.excerpt,
+        "image": activePost.imageUrl ? {
+            "@type": "ImageObject",
+            "url": activePost.imageUrl
+        } : undefined,
+        "step": howToSteps.map(step => ({
+            "@type": "HowToStep",
+            "name": step.name,
+            "text": step.text,
+            "url": step.url
+        }))
+    } : null;
 
     return (
       <div className="min-h-screen pb-20 animate-fade-in-up">
         <SchemaMarkup data={articleSchema} />
+        {howToSchema && <SchemaMarkup data={howToSchema} />}
         
-        {/* Navigation & Breadcrumbs */}
         <div className="max-w-4xl mx-auto px-4 py-8">
            <Breadcrumbs items={[
              { label: 'Blog', path: '/blog' },
@@ -82,8 +110,6 @@ export const Blog: React.FC = () => {
         </div>
 
         <article className="max-w-4xl mx-auto px-4">
-          
-          {/* Article Header */}
           <header className="text-center max-w-3xl mx-auto mb-12">
             <div className="flex flex-wrap justify-center gap-2 mb-6">
               {activePost.tags.map(tag => (
@@ -99,10 +125,8 @@ export const Blog: React.FC = () => {
 
             <div className="flex flex-wrap items-center justify-center gap-6 text-sm md:text-base text-gray-400 font-medium">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-gray-800 rounded-full">
-                  <User className="w-4 h-4 text-roblox-accent" />
-                </div>
-                {activePost.author}
+                <img src={activePost.author.avatar} alt={activePost.author.name} className="w-6 h-6 rounded-full border border-gray-600" />
+                {activePost.author.name}
               </div>
               <div className="w-1.5 h-1.5 rounded-full bg-gray-700"></div>
               <div className="flex items-center gap-2">
@@ -117,7 +141,6 @@ export const Blog: React.FC = () => {
             </div>
           </header>
 
-          {/* Cinematic Cover Image with SrcSet and Explicit Dimensions for CLS */}
           {activePost.imageUrl && (
             <div className="relative w-full aspect-[21/9] md:aspect-[2/1] mb-12 rounded-3xl overflow-hidden shadow-2xl border border-gray-700/50 group">
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-60 z-10 pointer-events-none"></div>
@@ -128,16 +151,14 @@ export const Blog: React.FC = () => {
                 alt={activePost.imageAlt || activePost.title}
                 width="1200"
                 height="600"
-                loading="eager" // Eager load LCP candidate
+                loading="eager" 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />
             </div>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-10 max-w-5xl mx-auto">
-            {/* Main Content */}
             <div className="lg:min-w-0">
-               {/* Mobile/Inline Table of Contents */}
                {toc.length > 0 && (
                 <div className="bg-gray-800/30 border border-gray-700 rounded-2xl p-6 mb-10 lg:hidden">
                   <div className="flex items-center gap-2 font-bold text-white mb-4 uppercase tracking-wider text-sm">
@@ -160,8 +181,22 @@ export const Blog: React.FC = () => {
                 dangerouslySetInnerHTML={{ __html: processedContent }} 
               />
 
+              {/* AUTHOR BIO - E-E-A-T */}
+              <div className="mt-16 mb-8 p-8 bg-gray-900/50 border border-gray-700/50 rounded-2xl flex flex-col sm:flex-row gap-6 items-center sm:items-start text-center sm:text-left">
+                 <div className="shrink-0">
+                    <img src={activePost.author.avatar} alt={activePost.author.name} className="w-20 h-20 rounded-full border-2 border-roblox-accent shadow-lg" />
+                 </div>
+                 <div>
+                    <h3 className="text-white font-bold text-lg mb-1 flex items-center justify-center sm:justify-start gap-2">
+                      {activePost.author.name}
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-roblox-accent/20 text-roblox-accent uppercase tracking-wide">{activePost.author.role}</span>
+                    </h3>
+                    <p className="text-gray-400 text-sm leading-relaxed">{activePost.author.bio}</p>
+                 </div>
+              </div>
+
               {/* Post Footer / Share */}
-              <div className="mt-16 pt-10 border-t border-gray-800">
+              <div className="pt-10 border-t border-gray-800">
                 <div className="bg-gray-800/30 rounded-2xl p-8 text-center border border-gray-700/50">
                   <h3 className="text-xl font-bold text-white mb-4">Did you find this guide helpful?</h3>
                   <p className="text-gray-400 mb-6">Share it with your Roblox squad or generate a new name now!</p>
@@ -185,25 +220,13 @@ export const Blog: React.FC = () => {
                       <Twitter className="w-5 h-5" />
                       Tweet
                     </a>
-                    <a 
-                       href={`https://www.reddit.com/submit?url=${shareUrl}&title=${shareText}`}
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#FF4500] hover:bg-[#e03d00] text-white rounded-xl transition-all font-medium"
-                    >
-                      <Share2 className="w-5 h-5" />
-                      Reddit
-                    </a>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Desktop Sidebar (ToC + Sticky CTA) */}
             <aside className="hidden lg:block relative">
-              <div className="sticky top-8 space-y-6">
-                
-                {/* Internal Linking Widget (Contextual CTA) */}
+              <div className="sticky top-24 space-y-6">
                 {activePost.relatedPreset && (
                   <div className="bg-roblox-accent/10 backdrop-blur-sm border border-roblox-accent/30 rounded-2xl p-6 shadow-xl animate-fade-in-up">
                     <div className="flex items-center gap-2 font-bold text-white mb-3 uppercase tracking-wider text-xs">
@@ -247,10 +270,8 @@ export const Blog: React.FC = () => {
               </div>
             </aside>
           </div>
-
         </article>
 
-        {/* Read Next Section */}
         <div className="max-w-6xl mx-auto px-4 mt-24">
           <div className="flex items-center gap-4 mb-8">
              <div className="h-px flex-1 bg-gray-800"></div>
@@ -299,10 +320,8 @@ export const Blog: React.FC = () => {
     );
   }
 
-  // --- Blog List View ---
   return (
     <div className="max-w-7xl mx-auto py-12 px-4 animate-fade-in-up">
-      {/* Breadcrumbs for Blog Home */}
       <Breadcrumbs items={[{ label: 'Blog' }]} />
 
       <div className="text-center mb-20 space-y-6">
@@ -321,7 +340,6 @@ export const Blog: React.FC = () => {
         {BLOG_POSTS.map((post) => {
           const dateObj = new Date(post.date);
           const dateTimeStr = !isNaN(dateObj.getTime()) ? dateObj.toISOString().split('T')[0] : '';
-          
           const thumbUrl = post.imageUrl ? `${post.imageUrl.replace('w=1200', 'w=500')}&fm=webp` : '';
 
           return (
@@ -330,7 +348,6 @@ export const Blog: React.FC = () => {
               to={`/blog/${post.slug}`}
               className="group flex flex-col bg-gray-800/30 border border-gray-700/50 rounded-3xl overflow-hidden hover:border-roblox-accent/50 hover:bg-gray-800/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl cursor-pointer"
             >
-              {/* List Item Image with explicit dimensions */}
               {post.imageUrl && (
                 <div className="w-full h-56 overflow-hidden relative">
                   <div className="absolute inset-0 bg-gray-900/10 group-hover:bg-transparent transition-colors z-10"></div>
@@ -342,8 +359,6 @@ export const Blog: React.FC = () => {
                     height="224"
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                   />
-                  
-                  {/* Date Overlay */}
                   <div className="absolute top-4 left-4 z-20 bg-gray-900/80 backdrop-blur text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10">
                     <time dateTime={dateTimeStr}>{post.date}</time>
                   </div>
@@ -371,9 +386,10 @@ export const Blog: React.FC = () => {
                    <span className="text-gray-500 flex items-center gap-2">
                       <Clock className="w-4 h-4" /> {post.readTime}
                    </span>
-                   <span className="text-white flex items-center gap-1 group-hover:translate-x-2 transition-transform duration-300">
-                      Read Post <ChevronRight className="w-4 h-4 text-roblox-accent" />
-                   </span>
+                   <div className="flex items-center gap-2">
+                      <img src={post.author.avatar} alt={post.author.name} className="w-5 h-5 rounded-full border border-gray-600" />
+                      <span className="text-gray-400 text-xs">{post.author.name}</span>
+                   </div>
                 </div>
               </div>
             </Link>

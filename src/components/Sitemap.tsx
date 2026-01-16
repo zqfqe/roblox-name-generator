@@ -20,6 +20,7 @@ export const Sitemap: React.FC = () => (
           {[
             { path: '/', label: 'Home / Generator' },
             { path: '/analyzer', label: 'Username Rater' },
+            { path: '/symbols', label: 'Symbols & Kaomoji' },
             { path: '/blog', label: 'Blog & Guides' },
             { path: '/about', label: 'About Us' },
             { path: '/contact', label: 'Contact Support' },

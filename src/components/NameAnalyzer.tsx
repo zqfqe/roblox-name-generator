@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Trophy, AlertTriangle, Check, Sparkles, Activity } from 'lucide-react';
+import { Search, Trophy, AlertTriangle, Check, Sparkles, Activity, Share2 } from 'lucide-react';
 import { analyzeName, AnalysisResult } from '../utils/rarity';
 import { Button } from './Button';
 
@@ -7,6 +7,7 @@ export const NameAnalyzer: React.FC = () => {
   const [inputName, setInputName] = useState('');
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [copiedShare, setCopiedShare] = useState(false);
 
   const handleAnalyze = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -14,6 +15,7 @@ export const NameAnalyzer: React.FC = () => {
 
     setIsAnalyzing(true);
     setResult(null);
+    setCopiedShare(false);
 
     // Fake processing delay for dramatic effect
     setTimeout(() => {
@@ -21,6 +23,14 @@ export const NameAnalyzer: React.FC = () => {
       setResult(res);
       setIsAnalyzing(false);
     }, 800);
+  };
+
+  const handleShare = () => {
+    if (!result) return;
+    const shareText = `🏆 I just rated my Roblox username: ${inputName} scored ${result.score}/100 (${result.tier})! Test yours at robloxnamegenerator.org`;
+    navigator.clipboard.writeText(shareText);
+    setCopiedShare(true);
+    setTimeout(() => setCopiedShare(false), 2000);
   };
 
   return (
@@ -74,7 +84,20 @@ export const NameAnalyzer: React.FC = () => {
                 <div className="text-6xl font-bold text-white mb-4">
                   {result.score}<span className="text-2xl text-gray-600">/100</span>
                 </div>
-                <p className="text-gray-300 italic">"{result.summary}"</p>
+                <p className="text-gray-300 italic mb-6">"{result.summary}"</p>
+                
+                {/* Viral Share Button */}
+                <button 
+                  onClick={handleShare}
+                  className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
+                    copiedShare 
+                      ? 'bg-green-500 text-white' 
+                      : 'bg-white/10 hover:bg-white/20 text-white hover:scale-105'
+                  }`}
+                >
+                  {copiedShare ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                  {copiedShare ? 'Copied to Clipboard!' : 'Copy Result'}
+                </button>
               </div>
             </div>
 
