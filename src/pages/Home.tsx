@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { Wand2, Dices, AlertTriangle, Search, Info, Settings2, Filter, AlignLeft, AlignRight, EyeOff, Ruler, Share2, Download, Trash2, Tag, HelpCircle, BookOpen, Clock, ChevronRight, Lightbulb, Zap, ArrowRight, TrendingUp } from 'lucide-react';
+import { Wand2, Dices, AlertTriangle, Search, Info, Settings2, Filter, AlignLeft, AlignRight, EyeOff, Ruler, Share2, Download, Trash2, Tag, HelpCircle, BookOpen, Clock, ChevronRight, Lightbulb, Zap, ArrowRight, TrendingUp, List } from 'lucide-react';
 import { NameStyle, LengthPreference, GeneratedName } from '../types';
 import { generateRobloxNames } from '../services/localNameService';
 import { audioService } from '../services/audioService';
@@ -13,9 +13,11 @@ import { Logo } from '../components/Logo';
 import { PreviewModal } from '../components/PreviewModal';
 import { DecoratorModal } from '../components/DecoratorModal';
 import { BLOG_POSTS, BlogPost } from '../data/blogPosts';
+import { STATIC_LISTS } from '../data/staticLists'; // Import static lists
 import { SYNONYMS } from '../data/wordLists';
 import { SchemaMarkup } from '../components/SEO';
 import { TrendingSection } from '../components/TrendingSection'; 
+import { NameOfTheDay } from '../components/NameOfTheDay'; // Import NotD
 import { STYLE_ROUTES, getRouteByStyle } from '../data/routes';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { PopularTopics } from '../components/PopularTopics';
@@ -100,7 +102,7 @@ interface HomeProps {
   forcedStyle?: NameStyle;
   initialKeyword?: string;
   topicTitle?: string;
-  forcedPrefix?: string; // New prop for A-Z directory
+  forcedPrefix?: string;
 }
 
 export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTitle, forcedPrefix }) => {
@@ -119,8 +121,6 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
   const [useExactMatch, setUseExactMatch] = useState(searchParams.get('exact') === 'true');
   const [useLeet, setUseLeet] = useState(searchParams.get('leet') === 'true');
   const [forDisplayName, setForDisplayName] = useState(searchParams.get('displayname') === 'true');
-  
-  // Initialize prefix with forcedPrefix if available
   const [prefix, setPrefix] = useState(forcedPrefix || searchParams.get('prefix') || '');
   const [suffix, setSuffix] = useState(searchParams.get('suffix') || '');
 
@@ -130,31 +130,21 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  // UI State
   const [toastMsg, setToastMsg] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<'results' | 'history' | 'favorites'>('results');
   const [previewName, setPreviewName] = useState<GeneratedName | null>(null);
   const [decoratorName, setDecoratorName] = useState<string | null>(null);
-  
-  // Filters
   const [filterText, setFilterText] = useState('');
 
-  // Data Persistence logic
   const [generatedNames, setGeneratedNames] = useState<GeneratedName[]>(() => {
     try {
       const saved = sessionStorage.getItem('bloxname_current_results');
       if (saved) return JSON.parse(saved);
-      
-      // SEO STRATEGY 2: Static Sample Data Pre-rendering
-      // If no generated names exist, load static examples for this style to fill the page content
       if (forcedStyle) {
          const route = getRouteByStyle(forcedStyle);
          if (route && route.sampleNames) {
-           return route.sampleNames.map(n => ({ 
-             id: `static-${n}`, 
-             name: n 
-           }));
+           return route.sampleNames.map(n => ({ id: `static-${n}`, name: n }));
          }
       }
       return [];
@@ -168,36 +158,25 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
     try { const saved = localStorage.getItem('bloxname_favorites'); return saved ? JSON.parse(saved) : []; } catch (e) { return []; }
   });
 
-  // Determine current page content for SEO from Central Config
   const activeContent = forcedStyle ? getRouteByStyle(forcedStyle) : null;
 
-  // SEO STRATEGY 1: Breadcrumbs Logic
   const breadcrumbs = useMemo(() => {
       const items = [];
       if (forcedStyle && activeContent) {
           items.push({ label: activeContent.navLabel, path: location.pathname });
       } else if (topicTitle) {
-          // If it's a letter page (inferred by topicTitle having "Starting with")
-          if (topicTitle.includes('Starting with')) {
-             items.push({ label: 'A-Z Index' });
-          } else {
-             items.push({ label: 'Topics', path: '/blog' }); 
-          }
+          if (topicTitle.includes('Starting with')) items.push({ label: 'A-Z Index' });
+          else items.push({ label: 'Topics', path: '/blog' }); 
           items.push({ label: topicTitle });
       }
       return items;
   }, [forcedStyle, activeContent, topicTitle, location.pathname]);
 
-  // SEO STRATEGY 2: Contextual Internal Linking (Blog Posts)
   const relatedPosts = useMemo(() => {
     if (!activeContent || !activeContent.relatedTags) return [];
-    
-    return BLOG_POSTS.filter(post => 
-      post.tags.some(tag => activeContent.relatedTags.includes(tag))
-    ).slice(0, 3);
+    return BLOG_POSTS.filter(post => post.tags.some(tag => activeContent.relatedTags.includes(tag))).slice(0, 3);
   }, [activeContent]);
 
-  // --- SEO REDIRECT LOGIC ---
   useEffect(() => {
     if (location.pathname === '/' && !forcedStyle && !topicTitle && !forcedPrefix) {
       const queryStyle = searchParams.get('style') as NameStyle;
@@ -207,7 +186,6 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
           const newParams = new URLSearchParams(searchParams);
           newParams.delete('style'); 
           const queryString = newParams.toString();
-          
           const targetPath = routeConfig.path + (queryString ? `?${queryString}` : '');
           navigate(targetPath, { replace: true });
         }
@@ -215,13 +193,11 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
     }
   }, [searchParams, location.pathname, forcedStyle, topicTitle, forcedPrefix, navigate]);
 
-  // Effects
   useEffect(() => { if (generatedNames.length > 0) sessionStorage.setItem('bloxname_current_results', JSON.stringify(generatedNames)); }, [generatedNames]);
   useEffect(() => { localStorage.setItem('bloxname_history', JSON.stringify(history)); }, [history]);
   useEffect(() => { localStorage.setItem('bloxname_favorites', JSON.stringify(favorites)); }, [favorites]);
 
   useEffect(() => {
-    // Only update search params if NOT on a special topic page (to keep URLs clean)
     if (!topicTitle) {
       const params: any = {};
       if (keyword) params.keyword = keyword;
@@ -234,7 +210,6 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
       if (forDisplayName) params.displayname = 'true';
       if (prefix) params.prefix = prefix;
       if (suffix) params.suffix = suffix;
-      
       setSearchParams(params, { replace: true });
     }
   }, [keyword, internalStyle, length, includeNumbers, includeUnderscore, useExactMatch, useLeet, forDisplayName, prefix, suffix, setSearchParams, forcedStyle, topicTitle]);
@@ -246,12 +221,10 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
     else setSuggestions([]);
   }, [keyword]);
 
-  // Force update prefix if prop changes
   useEffect(() => {
     if (forcedPrefix) setPrefix(forcedPrefix);
   }, [forcedPrefix]);
 
-  // Handlers
   const handleGenerate = async (overrideKeyword?: string, overrideStyle?: NameStyle) => {
     const k = overrideKeyword !== undefined ? overrideKeyword : keyword;
     const s = overrideStyle !== undefined ? overrideStyle : style;
@@ -278,11 +251,7 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
       const newGeneratedNames = names.map(n => ({ id: Math.random().toString(36).substr(2, 9), name: n }));
       setGeneratedNames(newGeneratedNames);
       setHistory(prev => [...newGeneratedNames.slice(0, 4), ...prev].slice(0, 50));
-      
-      setTimeout(() => {
-          document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-
+      setTimeout(() => { document.getElementById('results-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
     } catch (err) {
       console.error(err);
       setError("Generation failed.");
@@ -313,60 +282,25 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
     if (activeTab === 'results') list = generatedNames;
     else if (activeTab === 'history') list = history;
     else if (activeTab === 'favorites') list = favorites;
-
     if (!filterText) return list;
-    
     const lowerFilter = filterText.toLowerCase();
     return list.filter(item => item.name.toLowerCase().includes(lowerFilter));
   };
 
   const filteredNames = getFilteredNames();
-
-  // Prepare Schema.org Data
   const faqs = generateFAQs(style, keyword);
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqs.map(f => ({
-      "@type": "Question",
-      "name": f.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": f.answer
-      }
-    }))
-  };
-
-  const appSchema = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": topicTitle || (activeContent ? activeContent.title : "Roblox Name Generator"),
-    "applicationCategory": "Game",
-    "operatingSystem": "Web Browser",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "ratingCount": "1250"
-    }
-  };
+  const faqSchema = { "@context": "https://schema.org", "@type": "FAQPage", "mainEntity": faqs.map(f => ({ "@type": "Question", "name": f.question, "acceptedAnswer": { "@type": "Answer", "text": f.answer } })) };
+  const appSchema = { "@context": "https://schema.org", "@type": "SoftwareApplication", "name": topicTitle || (activeContent ? activeContent.title : "Roblox Name Generator"), "applicationCategory": "Game", "operatingSystem": "Web Browser", "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }, "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "ratingCount": "1250" } };
   
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8">
        <SchemaMarkup data={appSchema} />
        <SchemaMarkup data={faqSchema} />
 
-       {/* SEO STRATEGY 1: BREADCRUMBS */}
-       {breadcrumbs.length > 0 && (
-         <Breadcrumbs items={breadcrumbs} />
-       )}
+       {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
 
        {/* HERO SECTION */}
-       <div className="text-center mb-20 animate-fade-in relative">
+       <div className="text-center mb-16 animate-fade-in relative">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-8 animate-slide-up">
              <span className="relative flex h-2 w-2">
                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-success opacity-75"></span>
@@ -376,6 +310,9 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
                {activeContent ? activeContent.subtitle : "Updated for 2026"}
              </span>
           </div>
+
+          {/* NAME OF THE DAY FEATURE - STRATEGY #3 */}
+          {!topicTitle && <NameOfTheDay />}
 
           <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold tracking-tight text-white mb-6 drop-shadow-2xl px-2">
             {topicTitle ? (
@@ -399,141 +336,50 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
             )}
           </p>
 
-          {/* MAIN INTERFACE CARD */}
           <div className="glass-card max-w-4xl mx-auto rounded-3xl p-2 animate-slide-up relative z-20">
              <div className="bg-[#0b0c15]/90 rounded-[20px] p-6 md:p-10 border border-white/5 backdrop-blur-3xl">
-                
-                {/* Search Bar */}
                 <div className="flex flex-col md:flex-row gap-4 mb-8">
                    <div className="relative flex-grow group">
                       <div className="absolute inset-0 bg-brand-primary/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
                       <div className="relative flex items-center h-16 md:h-20 bg-white/5 border border-white/10 rounded-2xl px-6 transition-all group-focus-within:border-brand-primary/50 group-focus-within:bg-black/40">
                          <Search className="w-6 h-6 text-gray-400 group-focus-within:text-brand-primary transition-colors" />
-                         <input 
-                           type="text"
-                           value={keyword}
-                           onChange={(e) => setKeyword(e.target.value)}
-                           onKeyDown={(e) => e.key === 'Enter' && handleGenerate()}
-                           placeholder="Enter a keyword (e.g. Ghost, Star)..."
-                           className="w-full bg-transparent border-none outline-none text-xl md:text-2xl text-white font-medium placeholder-gray-500 ml-4 h-full"
-                           aria-label="Enter username keyword"
-                         />
+                         <input type="text" value={keyword} onChange={(e) => setKeyword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleGenerate()} placeholder="Enter a keyword (e.g. Ghost, Star)..." className="w-full bg-transparent border-none outline-none text-xl md:text-2xl text-white font-medium placeholder-gray-500 ml-4 h-full" aria-label="Enter username keyword" />
                       </div>
-                      
-                      {/* Floating suggestions */}
                       {suggestions.length > 0 && (
                         <div className="absolute top-full left-0 mt-3 flex gap-2 flex-wrap px-2 animate-fade-in z-50">
                            {suggestions.map(s => (
-                             <button key={s} onClick={() => { setKeyword(s); handleGenerate(s); }} className="px-3 py-1 bg-black/60 border border-white/10 rounded-lg text-xs text-gray-300 hover:text-white hover:border-brand-primary/50 transition-colors backdrop-blur-md">
-                               {s}
-                             </button>
+                             <button key={s} onClick={() => { setKeyword(s); handleGenerate(s); }} className="px-3 py-1 bg-black/60 border border-white/10 rounded-lg text-xs text-gray-300 hover:text-white hover:border-brand-primary/50 transition-colors backdrop-blur-md">{s}</button>
                            ))}
                         </div>
                       )}
                    </div>
-
                    <div className="flex-shrink-0 flex items-center gap-3">
                       <div className="h-16 md:h-20 flex items-center bg-white/5 border border-white/10 rounded-2xl px-2">
-                         <StyleSelect 
-                           value={style} 
-                           onChange={(val) => {
-                             if (forcedStyle) { 
-                               // If user switches dropdown while on a static page, force redirect to home with new style
-                               const route = getRouteByStyle(val);
-                               if (route) {
-                                 navigate(route.path);
-                               } else {
-                                 navigate(`/?style=${val}`);
-                               }
-                             }
-                             else setInternalStyle(val);
-                           }} 
-                           disabled={false} // Always enabled now
-                         />
+                         <StyleSelect value={style} onChange={(val) => { if (forcedStyle) { const route = getRouteByStyle(val); if (route) navigate(route.path); else navigate(`/?style=${val}`); } else setInternalStyle(val); }} disabled={false} />
                       </div>
-                      
-                      <Button 
-                        onClick={() => handleGenerate()}
-                        isLoading={isLoading}
-                        className="h-16 md:h-20 px-8 rounded-2xl text-lg shadow-glow-primary bg-brand-primary hover:bg-indigo-500"
-                        aria-label="Generate names"
-                      >
-                        <Wand2 className="w-6 h-6" />
-                      </Button>
+                      <Button onClick={() => handleGenerate()} isLoading={isLoading} className="h-16 md:h-20 px-8 rounded-2xl text-lg shadow-glow-primary bg-brand-primary hover:bg-indigo-500" aria-label="Generate names"><Wand2 className="w-6 h-6" /></Button>
                    </div>
                 </div>
-
-                {/* Advanced Options Toggle */}
                 <div className="border-t border-white/5 pt-6">
-                   <button 
-                     onClick={() => setShowAdvanced(!showAdvanced)}
-                     className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors mb-6 group w-full justify-center"
-                     aria-expanded={showAdvanced}
-                   >
+                   <button onClick={() => setShowAdvanced(!showAdvanced)} className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors mb-6 group w-full justify-center" aria-expanded={showAdvanced}>
                      {showAdvanced ? 'Collapse Config' : 'Advanced Configuration'}
                      <ChevronRight className={`w-3 h-3 transition-transform ${showAdvanced ? '-rotate-90' : 'rotate-90'}`} />
                    </button>
-
                    {showAdvanced && (
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in p-4 bg-white/[0.02] rounded-2xl border border-white/5">
                         <div className="space-y-4">
-                           <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-400 font-medium">Use Leet Speak</span>
-                              <button 
-                                onClick={() => setUseLeet(!useLeet)} 
-                                className={`w-12 h-6 rounded-full transition-colors ${useLeet ? 'bg-brand-primary' : 'bg-gray-700'} relative`}
-                                aria-label="Toggle Leet Speak"
-                                aria-checked={useLeet}
-                                role="switch"
-                              >
-                                 <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${useLeet ? 'translate-x-6' : ''}`}></div>
-                              </button>
-                           </div>
-                           <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-400 font-medium">Include Numbers</span>
-                              <button 
-                                onClick={() => setIncludeNumbers(!includeNumbers)} 
-                                className={`w-12 h-6 rounded-full transition-colors ${includeNumbers ? 'bg-brand-primary' : 'bg-gray-700'} relative`}
-                                aria-label="Toggle Numbers"
-                                aria-checked={includeNumbers}
-                                role="switch"
-                              >
-                                 <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${includeNumbers ? 'translate-x-6' : ''}`}></div>
-                              </button>
-                           </div>
-                           <div className="flex justify-between items-center">
-                              <span className="text-sm text-gray-400 font-medium">Allow Underscores</span>
-                              <button 
-                                onClick={() => setIncludeUnderscore(!includeUnderscore)} 
-                                className={`w-12 h-6 rounded-full transition-colors ${includeUnderscore ? 'bg-brand-primary' : 'bg-gray-700'} relative`}
-                                aria-label="Toggle Underscores"
-                                aria-checked={includeUnderscore}
-                                role="switch"
-                              >
-                                 <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${includeUnderscore ? 'translate-x-6' : ''}`}></div>
-                              </button>
-                           </div>
+                           <div className="flex justify-between items-center"><span className="text-sm text-gray-400 font-medium">Use Leet Speak</span><button onClick={() => setUseLeet(!useLeet)} className={`w-12 h-6 rounded-full transition-colors ${useLeet ? 'bg-brand-primary' : 'bg-gray-700'} relative`} aria-label="Toggle Leet Speak" aria-checked={useLeet} role="switch"><div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${useLeet ? 'translate-x-6' : ''}`}></div></button></div>
+                           <div className="flex justify-between items-center"><span className="text-sm text-gray-400 font-medium">Include Numbers</span><button onClick={() => setIncludeNumbers(!includeNumbers)} className={`w-12 h-6 rounded-full transition-colors ${includeNumbers ? 'bg-brand-primary' : 'bg-gray-700'} relative`} aria-label="Toggle Numbers" aria-checked={includeNumbers} role="switch"><div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${includeNumbers ? 'translate-x-6' : ''}`}></div></button></div>
+                           <div className="flex justify-between items-center"><span className="text-sm text-gray-400 font-medium">Allow Underscores</span><button onClick={() => setIncludeUnderscore(!includeUnderscore)} className={`w-12 h-6 rounded-full transition-colors ${includeUnderscore ? 'bg-brand-primary' : 'bg-gray-700'} relative`} aria-label="Toggle Underscores" aria-checked={includeUnderscore} role="switch"><div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${includeUnderscore ? 'translate-x-6' : ''}`}></div></button></div>
                         </div>
-                        
                         <div className="space-y-4">
                            <div>
                               <label className="text-xs text-gray-500 font-bold uppercase tracking-wider block mb-2">Max Length</label>
                               <div className="flex gap-2">
-                                 {[LengthPreference.ANY, LengthPreference.SHORT, LengthPreference.MEDIUM].map(opt => (
-                                    <button 
-                                      key={opt}
-                                      onClick={() => setLength(opt)}
-                                      className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${length === opt ? 'bg-white text-black' : 'bg-black/30 text-gray-500 hover:text-white'}`}
-                                    >
-                                      {opt.split(' ')[0]}
-                                    </button>
-                                 ))}
+                                 {[LengthPreference.ANY, LengthPreference.SHORT, LengthPreference.MEDIUM].map(opt => (<button key={opt} onClick={() => setLength(opt)} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${length === opt ? 'bg-white text-black' : 'bg-black/30 text-gray-500 hover:text-white'}`}>{opt.split(' ')[0]}</button>))}
                               </div>
                            </div>
-                           <div className="grid grid-cols-2 gap-4">
-                              <input type="text" placeholder="Prefix" value={prefix} onChange={e => setPrefix(e.target.value)} className="glass-input px-3 py-2 rounded-lg text-sm" disabled={!!forcedPrefix} />
-                              <input type="text" placeholder="Suffix" value={suffix} onChange={e => setSuffix(e.target.value)} className="glass-input px-3 py-2 rounded-lg text-sm" />
-                           </div>
+                           <div className="grid grid-cols-2 gap-4"><input type="text" placeholder="Prefix" value={prefix} onChange={e => setPrefix(e.target.value)} className="glass-input px-3 py-2 rounded-lg text-sm" disabled={!!forcedPrefix} /><input type="text" placeholder="Suffix" value={suffix} onChange={e => setSuffix(e.target.value)} className="glass-input px-3 py-2 rounded-lg text-sm" /></div>
                         </div>
                      </div>
                    )}
@@ -542,66 +388,27 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
           </div>
        </div>
 
-       {/* RESULTS AREA */}
        <div id="results-section" className="min-h-[600px] mb-20">
           {(generatedNames.length > 0 || history.length > 0) && (
              <div className="flex flex-col md:flex-row items-center justify-between mb-8 gap-6 animate-fade-in">
                 <div className="flex p-1 bg-white/5 rounded-xl backdrop-blur-md border border-white/10">
                    {(['results', 'history', 'favorites'] as const).map(tab => (
-                      <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={`px-6 py-2.5 rounded-lg text-sm font-bold capitalize transition-all ${activeTab === tab ? 'bg-white/10 text-white shadow-sm' : 'text-gray-500 hover:text-white'}`}
-                      >
-                        {tab}
-                      </button>
+                      <button key={tab} onClick={() => setActiveTab(tab)} className={`px-6 py-2.5 rounded-lg text-sm font-bold capitalize transition-all ${activeTab === tab ? 'bg-white/10 text-white shadow-sm' : 'text-gray-500 hover:text-white'}`}>{tab}</button>
                    ))}
                 </div>
-                
                 <div className="flex items-center gap-3">
-                   <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                      <input 
-                        type="text"
-                        placeholder="Filter..."
-                        value={filterText}
-                        onChange={e => setFilterText(e.target.value)}
-                        className="pl-9 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:border-brand-primary/50 outline-none w-40 md:w-64"
-                      />
-                   </div>
+                   <div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" /><input type="text" placeholder="Filter..." value={filterText} onChange={e => setFilterText(e.target.value)} className="pl-9 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-white focus:border-brand-primary/50 outline-none w-40 md:w-64" /></div>
                 </div>
              </div>
           )}
-
-          <NameList 
-            names={filteredNames.length > 0 ? filteredNames : FEATURED_EXAMPLES} 
-            onFavoriteToggle={handleFavoriteToggle}
-            onRemix={handleRemix}
-            onPreview={(name) => setPreviewName(name)}
-            onDecorate={(name) => setDecoratorName(name)}
-            isLoading={isLoading}
-            title={activeTab === 'favorites' ? "Saved Names" : activeTab === 'history' ? "History Log" : "Generated Output"}
-            onCopyAll={() => {
-              navigator.clipboard.writeText(filteredNames.map(n => n.name).join('\n'));
-              setToastMsg("All Copied");
-              setIsToastVisible(true);
-            }}
-            allowDelete={activeTab === 'history'}
-            onDeleteName={activeTab === 'history' ? (id) => setHistory(h => h.filter(i => i.id !== id)) : undefined}
-          />
+          <NameList names={filteredNames.length > 0 ? filteredNames : FEATURED_EXAMPLES} onFavoriteToggle={handleFavoriteToggle} onRemix={handleRemix} onPreview={(name) => setPreviewName(name)} onDecorate={(name) => setDecoratorName(name)} isLoading={isLoading} title={activeTab === 'favorites' ? "Saved Names" : activeTab === 'history' ? "History Log" : "Generated Output"} onCopyAll={() => { navigator.clipboard.writeText(filteredNames.map(n => n.name).join('\n')); setToastMsg("All Copied"); setIsToastVisible(true); }} allowDelete={activeTab === 'history'} onDeleteName={activeTab === 'history' ? (id) => setHistory(h => h.filter(i => i.id !== id)) : undefined} />
        </div>
        
-       {/* TRENDING SECTION (SOCIAL PROOF) */}
        <TrendingSection />
 
-       {/* QUICK ACCESS GRID */}
        <div className="mb-24 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 animate-slide-up" style={{ animationDelay: '0.1s' }}>
           {PRESET_CATEGORIES.map((cat, i) => (
-            <Link 
-              key={i}
-              to={cat.link}
-              className="interactive-card p-6 rounded-2xl flex flex-col items-center text-center group"
-            >
+            <Link key={i} to={cat.link} className="interactive-card p-6 rounded-2xl flex flex-col items-center text-center group">
               <span className="text-3xl mb-3 group-hover:scale-110 transition-transform duration-300 filter drop-shadow-lg">{cat.emoji}</span>
               <span className="text-sm font-bold text-white mb-1">{cat.label}</span>
               <span className="text-[10px] text-gray-500 uppercase tracking-wide group-hover:text-gray-300 transition-colors">{cat.desc}</span>
@@ -609,13 +416,29 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
           ))}
        </div>
 
-       {/* SECONDARY SECTIONS */}
+       {/* STATIC LISTS LINKS - STRATEGY #2 */}
+       <div className="mb-24 px-4">
+         <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+           <List className="w-6 h-6 text-brand-primary" />
+           <h2 className="text-2xl font-bold text-white">Curated Collections</h2>
+         </div>
+         <div className="grid md:grid-cols-3 gap-6">
+           {STATIC_LISTS.map(list => (
+             <Link key={list.slug} to={`/lists/${list.slug}`} className="block p-6 bg-gray-800/40 border border-gray-700/50 rounded-2xl hover:border-brand-primary/50 transition-all hover:-translate-y-1">
+               <h3 className="font-bold text-white mb-2">{list.title}</h3>
+               <p className="text-sm text-gray-400 line-clamp-2">{list.description}</p>
+               <div className="mt-4 text-xs font-bold text-brand-primary uppercase tracking-wider flex items-center gap-2">
+                 View List <ArrowRight className="w-3 h-3" />
+               </div>
+             </Link>
+           ))}
+         </div>
+       </div>
+
        <div className="grid md:grid-cols-2 gap-12 mb-24">
           <RatingWidget />
           <div className="glass-card rounded-3xl p-8 flex flex-col justify-center">
-             <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-               <Zap className="w-5 h-5 text-yellow-400" /> Pro Tips
-             </h3>
+             <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Zap className="w-5 h-5 text-yellow-400" /> Pro Tips</h3>
              <ul className="space-y-3 text-sm text-gray-400">
                <li className="flex gap-2"><ArrowRight className="w-4 h-4 text-brand-primary shrink-0" /> Use <strong>Leet Speak</strong> to bypass "Name Taken" errors.</li>
                <li className="flex gap-2"><ArrowRight className="w-4 h-4 text-brand-primary shrink-0" /> Sweaty names usually have <strong>No Numbers</strong>.</li>
@@ -625,98 +448,34 @@ export const Home: React.FC<HomeProps> = ({ forcedStyle, initialKeyword, topicTi
        </div>
 
        <RarityGuide />
-
-       {/* SEO STRATEGY 3: POPULAR TOPICS (Internal Linking Cloud) */}
        <PopularTopics />
 
-       {/* SEO Content: Contextual Blog Links & Unique Content */}
        <div className="mt-8 max-w-4xl mx-auto prose prose-invert prose-lg text-gray-400">
-          
-          {/* Internal Linking: Related Guides (SEO Strategy #2) */}
           {relatedPosts.length > 0 && (
             <div className="not-prose mb-24 bg-white/[0.03] border border-white/10 rounded-2xl p-8">
-               <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
-                 <BookOpen className="w-6 h-6 text-brand-primary" />
-                 {activeContent ? `${activeContent.navLabel} Guides` : 'Related Guides'}
-               </h3>
+               <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2"><BookOpen className="w-6 h-6 text-brand-primary" /> {activeContent ? `${activeContent.navLabel} Guides` : 'Related Guides'}</h3>
                <div className="grid md:grid-cols-3 gap-6">
                  {relatedPosts.map(post => {
                     const thumbUrl = post.imageUrl ? `${post.imageUrl.replace('w=1200', 'w=400')}&fm=webp` : '';
-                    return (
-                      <Link 
-                        key={post.slug} 
-                        to={`/blog/${post.slug}`} 
-                        className="group flex flex-col gap-3 hover:bg-white/5 rounded-xl p-3 transition-colors"
-                      >
-                        {post.imageUrl && (
-                          <div className="w-full h-32 rounded-lg overflow-hidden relative bg-black/20">
-                             <img src={thumbUrl} alt={post.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" />
-                          </div>
-                        )}
-                        <div>
-                          <h4 className="text-sm font-bold text-gray-200 group-hover:text-brand-primary transition-colors line-clamp-2">{post.title}</h4>
-                          <span className="text-[10px] uppercase font-bold text-gray-500 mt-1 block">Read Guide</span>
-                        </div>
-                      </Link>
-                    )
+                    return (<Link key={post.slug} to={`/blog/${post.slug}`} className="group flex flex-col gap-3 hover:bg-white/5 rounded-xl p-3 transition-colors">{post.imageUrl && (<div className="w-full h-32 rounded-lg overflow-hidden relative bg-black/20"><img src={thumbUrl} alt={post.title} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" loading="lazy" /></div>)}<div><h4 className="text-sm font-bold text-gray-200 group-hover:text-brand-primary transition-colors line-clamp-2">{post.title}</h4><span className="text-[10px] uppercase font-bold text-gray-500 mt-1 block">Read Guide</span></div></Link>)
                  })}
                </div>
             </div>
           )}
-
+          
           <div className="mb-16">
-            <h2 className="text-3xl font-bold text-white mb-6">
-              {activeContent ? `Why use our ${activeContent.title}?` : "The Best Roblox Name Generator for 2026"}
-            </h2>
-            
-            {/* Dynamic SEO Content (SEO Strategy #1: Differentiated Content) */}
-            {activeContent && activeContent.seoContent ? (
-               <div dangerouslySetInnerHTML={{ __html: activeContent.seoContent }} />
-            ) : (
-              <>
-                <p>
-                  Welcome to BloxName, the ultimate <strong>roblox name generator</strong> designed for serious gamers. 
-                  Whether you are looking for a sweaty PvP tag for <em>Da Hood</em> or a soft aesthetic handle for <em>Royale High</em>, 
-                  our tool is the most advanced <strong>roblox username generator</strong> on the web.
-                </p>
-                <p>
-                  With over 200 million active users, finding a unique name is difficult. Most simple words are taken. 
-                  That is why you need a smart <strong>roblox name generator</strong> that understands gaming culture. 
-                  Our <strong>roblox username generator</strong> doesn't just combine random words; it uses logic to create 
-                  names that command respect.
-                </p>
-              </>
-            )}
+            <h2 className="text-3xl font-bold text-white mb-6">{activeContent ? `Why use our ${activeContent.title}?` : "The Best Roblox Name Generator for 2026"}</h2>
+            {activeContent && activeContent.seoContent ? (<div dangerouslySetInnerHTML={{ __html: activeContent.seoContent }} />) : (<><p>Welcome to BloxName, the ultimate <strong>roblox name generator</strong> designed for serious gamers. Whether you are looking for a sweaty PvP tag for <em>Da Hood</em> or a soft aesthetic handle for <em>Royale High</em>, our tool is the most advanced <strong>roblox username generator</strong> on the web.</p><p>With over 200 million active users, finding a unique name is difficult. Most simple words are taken. That is why you need a smart <strong>roblox name generator</strong> that understands gaming culture. Our <strong>roblox username generator</strong> doesn't just combine random words; it uses logic to create names that command respect.</p></>)}
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-               <h3 className="text-xl font-bold text-white mb-3">Why use a Roblox Username Generator?</h3>
-               <p className="text-sm leading-relaxed text-gray-300">
-                 A <strong>roblox username generator</strong> helps you bypass the frustration of "Username Taken" errors. 
-                 By using advanced prefixes, suffixes, and "Leet Speak", our <strong>roblox name generator</strong> 
-                 finds available variations of your favorite keywords instantly.
-               </p>
-            </div>
-            <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-               <h3 className="text-xl font-bold text-white mb-3">Features of our Roblox Name Generator</h3>
-               <p className="text-sm leading-relaxed text-gray-300">
-                 From "Og" short names to "Sweaty" competitive tags, this <strong>roblox name generator</strong> covers every style. 
-                 It is the only <strong>roblox username generator</strong> with specific modes for Anime, Y2K, and Glitch aesthetics.
-               </p>
-            </div>
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/5"><h3 className="text-xl font-bold text-white mb-3">Why use a Roblox Username Generator?</h3><p className="text-sm leading-relaxed text-gray-300">A <strong>roblox username generator</strong> helps you bypass the frustration of "Username Taken" errors. By using advanced prefixes, suffixes, and "Leet Speak", our <strong>roblox name generator</strong> finds available variations of your favorite keywords instantly.</p></div>
+            <div className="bg-white/5 p-6 rounded-2xl border border-white/5"><h3 className="text-xl font-bold text-white mb-3">Features of our Roblox Name Generator</h3><p className="text-sm leading-relaxed text-gray-300">From "Og" short names to "Sweaty" competitive tags, this <strong>roblox name generator</strong> covers every style. It is the only <strong>roblox username generator</strong> with specific modes for Anime, Y2K, and Glitch aesthetics.</p></div>
           </div>
 
           <section className="text-center mb-16">
              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Frequently Asked Questions</h2>
-             <div className="grid md:grid-cols-2 gap-6 text-left">
-                {faqs.map((q, i) => (
-                   <div key={i} className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
-                      <h3 className="text-white font-bold mb-2">{q.question}</h3>
-                      <p className="text-sm text-gray-300">{q.answer}</p>
-                   </div>
-                ))}
-             </div>
+             <div className="grid md:grid-cols-2 gap-6 text-left">{faqs.map((q, i) => (<div key={i} className="bg-white/5 p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors"><h3 className="text-white font-bold mb-2">{q.question}</h3><p className="text-sm text-gray-300">{q.answer}</p></div>))}</div>
           </section>
        </div>
 

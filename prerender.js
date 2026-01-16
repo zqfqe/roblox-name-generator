@@ -10,6 +10,17 @@ const template = fs.readFileSync(toAbsolute('dist/static/index.html'), 'utf-8');
 // Load the server entry module (which now exports BLOG_POSTS)
 const { render, BLOG_POSTS } = await import('./dist/server/entry-server.js');
 
+// Import Static Lists via dynamic import or define them here to match
+// Note: In a real environment, we'd import { STATIC_LISTS } from data/staticLists, 
+// but since this is JS running in Node, we might need to duplicate the config if not transpiled.
+// For simplicity in this artifact, we will assume we can access them via an imported module or define them.
+// Let's define the slugs to ensure build passes.
+const STATIC_LIST_SLUGS = [
+  'best-sweaty-roblox-names-2026',
+  'cute-aesthetic-usernames-girls',
+  'funny-troll-roblox-names-alt'
+];
+
 // Helper to generate fake "Trending" names for Social Proof (SEO Strategy #5)
 // In a real app, this would query a DB. Here we simulate "fresh" content per build.
 const generateTrendingNames = () => {
@@ -45,8 +56,9 @@ const staticRoutes = [
   '/404', 
 ];
 
-// 2. Build Dynamic Routes (Blogs & Topic Clusters & Letters)
+// 2. Build Dynamic Routes (Blogs & Topic Clusters & Letters & Lists)
 const blogRoutes = BLOG_POSTS.map(post => `/blog/${post.slug}`);
+const listRoutes = STATIC_LIST_SLUGS.map(slug => `/lists/${slug}`);
 
 // Extract unique tags for Topic Clusters (SEO Strategy #2)
 const tags = new Set();
@@ -61,7 +73,7 @@ const topicRoutes = Array.from(tags).map(tag => `/topic/${tag}`);
 // SEO STRATEGY #1: A-Z Index Pages
 const letterRoutes = "abcdefghijklmnopqrstuvwxyz".split('').map(char => `/letter/${char}`);
 
-const allRoutes = [...staticRoutes, ...blogRoutes, ...topicRoutes, ...letterRoutes];
+const allRoutes = [...staticRoutes, ...blogRoutes, ...topicRoutes, ...letterRoutes, ...listRoutes];
 
 // 3. Define Static Metadata
 const STATIC_META = {
@@ -155,6 +167,11 @@ const STATIC_META = {
        title = `Roblox Names Starting With "${char}" - Generator`;
        desc = `Generate unique, aesthetic, and cool Roblox usernames that start with the letter ${char}.`;
     }
+    // Check List Map (Simple fallback logic for lists if not imported)
+    else if (url.startsWith('/lists/')) {
+       title = 'Best Roblox Names List (2026) - Curated Collection';
+       desc = 'A curated list of the best Roblox usernames. Copy and paste sweaty, aesthetic, and rare names instantly.';
+    }
 
     // Inject Meta Tags (RegEx replacement handles existing placeholder tags in index.html)
     html = html.replace(/<title>.*?<\/title>/, `<title>${title}</title>`);
@@ -205,6 +222,7 @@ ${allRoutes.filter(r => r !== '/404').map(route => {
   else if (route === '/analyzer') { priority = '0.9'; }
   else if (route === '/symbols') { priority = '0.9'; }
   else if (route === '/blog') { priority = '0.9'; }
+  else if (route.startsWith('/lists/')) { priority = '0.85'; } // High priority for listicles
   else if (route.startsWith('/letter/')) { priority = '0.6'; changefreq = 'monthly'; } // Lower priority for A-Z
   else if (route.startsWith('/blog/')) {
      priority = '0.7';

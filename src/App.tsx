@@ -6,6 +6,7 @@ import { Logo } from './components/Logo';
 import { SEOHead } from './components/SEO';
 import { Home } from './pages/Home'; // Critical Path: Keep static import for LCP
 import { BLOG_POSTS } from './data/blogPosts';
+import { STATIC_LISTS } from './data/staticLists'; // Import for meta
 import { STYLE_ROUTES, getRouteByPath } from './data/routes';
 import { AZNav } from './components/AZNav';
 
@@ -18,6 +19,7 @@ const NotFound = lazy(() => import('./pages/NotFound').then(module => ({ default
 const TopicHub = lazy(() => import('./pages/TopicHub').then(module => ({ default: module.TopicHub })));
 const LetterHub = lazy(() => import('./pages/LetterHub').then(module => ({ default: module.LetterHub })));
 const Symbols = lazy(() => import('./pages/Symbols').then(module => ({ default: module.Symbols })));
+const CuratedList = lazy(() => import('./pages/CuratedList').then(module => ({ default: module.CuratedList }))); // New Page
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -70,6 +72,13 @@ const App: React.FC = () => {
     const staticRoute = getRouteByPath(path);
     if (staticRoute) {
       return { title: staticRoute.title, description: staticRoute.description };
+    }
+
+    // Check for Static Curated Lists
+    if (path.startsWith('/lists/')) {
+      const slug = path.split('/')[2];
+      const list = STATIC_LISTS.find(l => l.slug === slug);
+      if (list) return { title: list.title, description: list.description };
     }
 
     if (path.startsWith('/blog/')) {
@@ -181,6 +190,7 @@ const App: React.FC = () => {
               <Route path="/blog/:slug" element={<Blog />} />
               <Route path="/topic/:tag" element={<TopicHub />} />
               <Route path="/letter/:char" element={<LetterHub />} />
+              <Route path="/lists/:slug" element={<CuratedList />} />
               <Route path="/about" element={<LegalPage type="about" />} />
               <Route path="/contact" element={<LegalPage type="contact" />} />
               <Route path="/privacy" element={<LegalPage type="privacy" />} />
