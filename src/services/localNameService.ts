@@ -2,7 +2,9 @@ import { GeneratorOptions, NameStyle, LengthPreference } from "../types";
 import { 
   ADJECTIVES, NOUNS, VERBS, ACCOUNT_STATUS, COLORS, PVP_TERMS, TITLES, LEET_MAP, 
   JAPANESE_TERMS, FOODS, ANIMALS, ELEMENTS, WEAPONS, Y2K_SUFFIXES, EMOTIONS,
-  MYTHICAL, TECH, ASTRO, SYNONYMS, CLEAN_SUFFIXES
+  MYTHICAL, TECH, ASTRO, SYNONYMS, CLEAN_SUFFIXES,
+  HARD_SOUNDS, SOFT_SOUNDS, LATIN_ROOTS, FOREIGN_COOL, OPIUM_VAMP, BLOKECORE, 
+  ACUBI_Y2K, PSEUDO_PREFIX, PSEUDO_SUFFIX, ORG_SUFFIXES, STATE_SUFFIXES
 } from "../data/wordLists";
 
 // --- Utility Functions ---
@@ -99,7 +101,10 @@ const repeatEndChar = (str: string, count: number = 1): string => {
 type TemplateFn = (
   k: string, a: string, n: string, v: string, s: string, c: string, p: string, t: string, 
   j: string, f: string, an: string, e: string, w: string, y: string, em: string,
-  myth: string, tech: string, astro: string, suff: string
+  myth: string, tech: string, astro: string, suff: string,
+  // New Params
+  hard: string, soft: string, latin: string, foreign: string, opium: string, bloke: string, 
+  acubi: string, pPre: string, pSuf: string, org: string, state: string
 ) => string;
 
 interface StyleStrategy {
@@ -134,6 +139,16 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n, v, s, c, p) => k ? `${k}${p}` : `${n}${p}`, // NebulaClutch
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth) => k ? `${k}Slayer` : `${myth}Slayer`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech) => k ? `${k}God` : `${tech}God`,
+
+      // NEW LISTS INTEGRATION
+      // Hard Sounds (PvP)
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard) => k ? `${k}${hard}` : `${hard}${n}`, // e.g. StarVex
+      // Latin Flair (Status)
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin) => k ? `${latin}${k}` : `${latin}${n}`, // e.g. LuxViper
+      // Opium/Vamp Style
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin, foreign, opium) => k ? `${k}${opium}` : `${n}${opium}`, // e.g. StarCarti
+      // Org Suffixes
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin, foreign, opium, bloke, acubi, pPre, pSuf, org) => k ? `${k}${org}` : `${n}${org}`, // e.g. ViperCult
     ],
     transform: (name) => {
       let n = name;
@@ -173,6 +188,8 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n, v, s, c, p, t, j, f, an) => k ? `${k}${an}` : `${n}${an}`, // Keyword + Animal
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro) => k ? `${astro}${k}` : `${astro}${n}`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff) => k ? `${k}${suff}` : `${n}${suff}`,
+      // NEW: Soft sounds
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft) => k ? `${k}${soft}` : `${soft}${n}`,
     ],
     transform: (name) => name 
   },
@@ -195,6 +212,8 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n) => k ? `${k}Rage` : `${n}Rage`,
       (k, a, n, v, s, c, p, t, j) => k ? `${j}${k}` : `${j}${n}`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em) => k ? `${em}${k}` : `${em}${n}`,
+      // NEW: Opium/Vamp integration
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin, foreign, opium) => k ? `${k}${opium}` : `${opium}${n}`,
     ],
     transform: (name) => {
       // Standardized to lower case for Edgy to look cleaner, mixed caps looks messy often
@@ -215,6 +234,9 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y) => k ? `${k}${y}` : `${n}${y}`, // Keyword + Y2K Suffix
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro) => k ? `${astro}${k}` : `${astro}${n}`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff) => k ? `${k}${suff}` : `${n}${suff}`,
+      // NEW: Acubi / Foreign Cool
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin, foreign) => k ? `${foreign}${k}` : `${foreign}${n}`,
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin, foreign, opium, bloke, acubi) => k ? `${k}${acubi}` : `${acubi}${n}`,
     ],
     transform: (name) => name.toLowerCase()
   },
@@ -225,6 +247,10 @@ const STRATEGIES: Record<string, StyleStrategy> = {
       (k, a, n) => k ? `Real${k}` : `Real${n}`,
       (k, a, n) => k ? `${k}1` : `${n}1`,
       (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech) => k ? `${tech}${k}` : `${tech}${n}`,
+      // NEW: Pseudo-Word Construction (The "Fake Word" Engine)
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin, foreign, opium, bloke, acubi, pPre, pSuf) => `${pPre}${pSuf}`, // e.g. "Zax", "Krix"
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin) => `${latin}`, // Just the latin root
+      (k, a, n, v, s, c, p, t, j, f, an, e, w, y, em, myth, tech, astro, suff, hard, soft, latin, foreign, opium, bloke) => k ? `${k}${bloke}` : `${bloke}${n}`, // Blokecore (FC, City)
     ]
   }
 };
@@ -299,7 +325,11 @@ export const generateRobloxNames = async (options: GeneratorOptions): Promise<st
         getRandom(ACCOUNT_STATUS), getRandom(COLORS), getRandom(PVP_TERMS), getRandom(TITLES),
         getRandom(JAPANESE_TERMS), getRandom(FOODS), getRandom(ANIMALS), getRandom(ELEMENTS),
         getRandom(WEAPONS), getRandom(Y2K_SUFFIXES), getRandom(EMOTIONS), getRandom(MYTHICAL),
-        getRandom(TECH), getRandom(ASTRO), getRandom(CLEAN_SUFFIXES)
+        getRandom(TECH), getRandom(ASTRO), getRandom(CLEAN_SUFFIXES),
+        // NEW ARGS
+        getRandom(HARD_SOUNDS), getRandom(SOFT_SOUNDS), getRandom(LATIN_ROOTS), getRandom(FOREIGN_COOL),
+        getRandom(OPIUM_VAMP), getRandom(BLOKECORE), getRandom(ACUBI_Y2K), getRandom(PSEUDO_PREFIX),
+        getRandom(PSEUDO_SUFFIX), getRandom(ORG_SUFFIXES), getRandom(STATE_SUFFIXES)
     ] as const;
 
     let name = template(...args);

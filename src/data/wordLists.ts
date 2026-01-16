@@ -5,22 +5,22 @@ export const SYNONYMS: Record<string, string[]> = {
   // Elements & Nature
   'fire': ['Flame', 'Inferno', 'Pyro', 'Burn', 'Heat', 'Ash', 'Blaze', 'Ember', 'Ignis', 'Scorch', 'Flare', 'Magma', 'Cinder', 'Coal', 'Spark', 'Fuego', 'Solar', 'Arson'],
   'ice': ['Frost', 'Cold', 'Frozen', 'Chill', 'Glacier', 'Snow', 'Arctic', 'Cryo', 'Shiver', 'Hail', 'Sleet', 'Polar', 'Rime', 'Winter', 'Zero', 'Icey', 'Cool'],
-  'dark': ['Shadow', 'Void', 'Night', 'Black', 'Abyss', 'Gloom', 'Obsidian', 'Dusk', 'Umbra', 'Shade', 'Eclipse', 'Pitch', 'Onyx', 'Grim', 'Murk', 'Noir', 'Null', 'Vantablack'],
+  'dark': ['Shadow', 'Void', 'Night', 'Black', 'Abyss', 'Gloom', 'Obsidian', 'Dusk', 'Umbra', 'Shade', 'Eclipse', 'Pitch', 'Onyx', 'Grim', 'Murk', 'Noir', 'Null', 'Vantablack', 'Nox', 'Ebon'],
   'light': ['Sun', 'Ray', 'Bright', 'Glow', 'Shine', 'Solar', 'Lumen', 'Dawn', 'Lux', 'Flash', 'Beam', 'Radiance', 'Halo', 'Glory', 'Day', 'Spark', 'Volt', 'Prism'],
-  'water': ['Aqua', 'Hydro', 'Tide', 'Wave', 'Ocean', 'Sea', 'Mist', 'Rain', 'Storm', 'Surge', 'Ripple', 'Flow', 'Drip', 'Soak', 'Liquid', 'Vapor', 'Fluid'],
+  'water': ['Aqua', 'Hydro', 'Tide', 'Wave', 'Ocean', 'Sea', 'Mist', 'Rain', 'Storm', 'Surge', 'Ripple', 'Flow', 'Drip', 'Soak', 'Liquid', 'Vapor', 'Fluid', 'Mar'],
   'earth': ['Terra', 'Gaia', 'Stone', 'Rock', 'Dust', 'Sand', 'Quake', 'Root', 'Geo', 'Fossil', 'Granite', 'Slate', 'Clay', 'Ores', 'Gem', 'Mud', 'Dirt'],
-  'air': ['Wind', 'Aero', 'Sky', 'Breeze', 'Gust', 'Zephyr', 'Gale', 'Cloud', 'Mist', 'Vapor', 'Ether', 'Drift', 'Float', 'Soar', 'Oxygen'],
+  'air': ['Wind', 'Aero', 'Sky', 'Breeze', 'Gust', 'Zephyr', 'Gale', 'Cloud', 'Mist', 'Vapor', 'Ether', 'Drift', 'Float', 'Soar', 'Oxygen', 'Ciel'],
   
   // Space & Sci-Fi
   'star': ['Astral', 'Cosmic', 'Nova', 'Nebula', 'Galaxy', 'Stellar', 'Comet', 'Orbit', 'Pulsar', 'Quasar', 'Zodiac', 'Astro', 'Spark', 'Wish', 'Constellation'],
   'nebula': ['Cosmic', 'Galaxy', 'Void', 'Star', 'Nova', 'Astro', 'Space', 'Orbit', 'Vortex', 'Quasar', 'Nebulous', 'Cluster', 'Dust', 'Helix'],
   'space': ['Cosmos', 'Galaxy', 'Universe', 'Void', 'Star', 'Astro', 'Lunar', 'Solar', 'Horizon', 'Infinity', 'Deep', 'Exo', 'Alien', 'Outer'],
-  'cyber': ['Tech', 'Glitch', 'Digital', 'Neon', 'Bot', 'System', 'Data', 'Code', 'Binary', 'Net', 'Grid', 'Link', 'Node', 'Main', 'Root', 'Web', 'Synth', 'Mech'],
+  'cyber': ['Tech', 'Glitch', 'Digital', 'Neon', 'Bot', 'System', 'Data', 'Code', 'Binary', 'Net', 'Grid', 'Link', 'Node', 'Main', 'Root', 'Web', 'Synth', 'Mech', 'Chrome'],
   'system': ['OS', 'Root', 'Admin', 'Cyber', 'Core', 'Main', 'Bot', 'Glitch', 'Server', 'Node', 'Proxy', 'Terminal', 'Host', 'Bios', 'Kernel', 'Shell'],
   'magic': ['Spell', 'Hex', 'Rune', 'Mana', 'Arcane', 'Wiz', 'Mage', 'Charm', 'Curse', 'Mystic', 'Aura', 'Witch', 'Occult', 'Omen', 'Fate', 'Voodoo', 'Alchemy'],
   
   // Status & Power
-  'god': ['Lord', 'King', 'Deity', 'Divine', 'Apex', 'Titan', 'Ruler', 'Zeus', 'Odin', 'Legend', 'Myth', 'Idol', 'Kami', 'Saint', 'Boss', 'Hero', 'Creator'],
+  'god': ['Lord', 'King', 'Deity', 'Divine', 'Apex', 'Titan', 'Ruler', 'Zeus', 'Odin', 'Legend', 'Myth', 'Idol', 'Kami', 'Saint', 'Boss', 'Hero', 'Creator', 'Deus'],
   'king': ['Lord', 'God', 'Prince', 'Royal', 'Crown', 'Ruler', 'Boss', 'Chief', 'Emperor', 'Monarch', 'Sovereign', 'Rex', 'Heir', 'Duke', 'Baron'],
   'pro': ['Elite', 'Sweat', 'God', 'King', 'Chief', 'Main', 'Boss', 'Tryhard', 'Carry', 'Goat', 'Vet', 'Mvp', 'Comp', 'Ranked', 'Top', 'Peak', 'Cracked'],
   'noob': ['Bot', 'Guest', 'Bacon', 'Newb', 'Trash', 'Bad', 'Lag', 'Bronze', 'Scrub', 'Dogwater', 'Npc', 'Farm', 'Alt', 'Default'],
@@ -70,7 +70,7 @@ export const SYNONYMS: Record<string, string[]> = {
   // --- Game Specific Synonyms ---
   'dahood': ['Hood', 'Rev', 'Macro', 'Aim', 'Cash', 'Street', 'Bank', 'Lock', 'Clip', 'Mod', 'Wanted', 'Gang', 'Drill', 'Opp', 'Spin'],
   'bedwars': ['Bed', 'Rush', 'Wool', 'Void', 'Clutch', 'Defense', 'Solo', 'Squad', 'Break', 'Gen', 'Rusher', 'Bridge', 'Tap'],
-  'bloxfruits': ['Pirate', 'Marine', 'Devil', 'Fruit', 'Sea', 'King', 'Bounty', 'Haki', 'Leopard', 'Awaken', 'Dough', 'Rubber', 'Race'],
+  'bloxfruits': ['Pirate', 'Marine', 'Devil', 'Fruit', 'Sea', 'King', 'Bounty', 'Haki', 'Leopard', 'Awaken', 'Dough', 'Rubber', 'Race', 'Kitsune', 'T-Rex', 'Mammoth', 'Sound', 'Spirit'],
   'murdermystery2': ['Sheriff', 'Murder', 'Knife', 'Gun', 'Mystery', 'Elite', 'Chroma', 'Godly', 'Seer', 'Luger', 'Ice', 'Radio'],
   'mm2': ['Sheriff', 'Murder', 'Knife', 'Gun', 'Mystery', 'Elite', 'Chroma', 'Godly', 'Seer', 'Luger', 'Ice', 'Radio'],
   'petsim99': ['Pet', 'Huge', 'Titan', 'Gem', 'Egg', 'Lucky', 'Shiny', 'Titanic', 'Hatch', 'Fuse', 'Rainbow', 'Trade'],
@@ -82,7 +82,7 @@ export const SYNONYMS: Record<string, string[]> = {
   'aura': ['Soul', 'Spirit', 'Vibe', 'Energy', 'Power', 'Glow', 'Halo', 'Divine', 'Presence', 'Radiance', 'Chi'],
   'sigma': ['Alpha', 'Wolf', 'Lone', 'Chad', 'Based', 'Peak', 'Prime', 'Boss', 'Mogger', 'Grind', 'Hustle'],
   'coquette': ['Bow', 'Lace', 'Pearl', 'Doll', 'Pink', 'Soft', 'Girl', 'Angel', 'Ribbon', 'Ballet', 'Swan', 'Ballet'],
-  'rng': ['Luck', 'Roll', 'Spin', 'Chance', 'Fate', 'Dice', 'Rare', 'Exotic', 'Jackpot', 'Gamble', 'Bet'],
+  'rng': ['Luck', 'Roll', 'Spin', 'Chance', 'Fate', 'Dice', 'Rare', 'Exotic', 'Jackpot', 'Gamble', 'Bet', 'Undefined', 'Arcane', 'Matrix', 'Glitch'],
 };
 
 // Character substitution map
@@ -307,6 +307,29 @@ export const GRUNGE = [
   'Grunge', 'Punk', 'Emo', 'Goth', 'Alt', 'Dark', 'Core', 'Drain'
 ];
 
+// --- NEW ADVANCED WORD LISTS FOR OPTIMIZATION ---
+
+// 1. Phonetic Aesthetics
+export const HARD_SOUNDS = ['Vex', 'Krix', 'Zot', 'Jinx', 'Flux', 'Tek', 'Rox', 'Koz', 'Dax', 'Trix', 'Grox', 'Vix', 'Bix', 'Qex', 'Zax', 'Kax'];
+export const SOFT_SOUNDS = ['Lull', 'Sawn', 'Mellow', 'Willow', 'Halo', 'Aura', 'Muse', 'Lune', 'Sol', 'Vell', 'Lua', 'Noa', 'Ello', 'Amor', 'Fleur'];
+
+// 2. Foreign Flair (Latin/French/German)
+export const LATIN_ROOTS = ['Lux', 'Nox', 'Ignis', 'Aqua', 'Terra', 'Vita', 'Mors', 'Bellum', 'Rex', 'Pax', 'Umbra', 'Lumen', 'Astra', 'Volo', 'Sol'];
+export const FOREIGN_COOL = ['Noir', 'Blanc', 'Nacht', 'Tot', 'Mort', 'Sang', 'Luz', 'Cielo', 'Rojo', 'Azul', 'Kuro', 'Shiro', 'Yami', 'Hana'];
+
+// 3. Micro-Aesthetics
+export const OPIUM_VAMP = ['Vamp', 'Carti', 'Opium', 'Narcist', 'Slay3r', 'Whole', 'Lotta', 'Red', 'Punk', 'Rock', 'Star', 'Vamps', 'Die', 'Lit'];
+export const BLOKECORE = ['United', 'City', 'FC', 'Real', 'Inter', 'Sporting', 'Athletic', 'Goal', 'Kit', 'Jersey', 'Baller', 'Striker', 'Tekkers'];
+export const ACUBI_Y2K = ['Chrome', 'Diesel', 'Basic', 'Archive', 'Sub', 'Liquid', 'Metal', 'Acid', 'Base', 'Layer', 'Mesh', 'Top', 'Wear'];
+
+// 4. Pseudo-Word Components (CVC Construction)
+export const PSEUDO_PREFIX = ['Br', 'Kr', 'St', 'Z', 'V', 'Tr', 'Gr', 'Ph', 'X', 'Qu', 'Dr', 'Kl', 'Pr', 'Sn', 'Sp'];
+export const PSEUDO_SUFFIX = ['ax', 'ex', 'iz', 'oz', 'ux', 'ix', 'yr', 'or', 'aq', 'ez', 'ox', 'yx', 'io', 'ia'];
+
+// 5. Suffix Engineering
+export const ORG_SUFFIXES = ['Corp', 'Inc', 'Gang', 'Mob', 'Cult', 'Clan', 'Unit', 'Sect', 'Firm', 'Ltd', 'Co', 'Grp', 'Sys'];
+export const STATE_SUFFIXES = ['Mode', 'Vibe', 'Era', 'Arc', 'Zone', 'Phase', 'Mood', 'Core', 'State', 'Verse', 'Land', 'Wrld'];
+
 // EXPANDED: Short / Abstract (Crucial for "Sweaty" & "OG" Rarity)
 export const SHORT_ABSTRACT = [
   'Vex', 'Zen', 'Kye', 'Lux', 'Jinx', 'Flux', 'Haze', 'Mist', 'Echo', 
@@ -361,7 +384,8 @@ export const ADJECTIVES: Record<NameStyle, string[]> = {
     'Phantom', 'Shadow', 'Crystal', 'Final', 'Last', 'First', 'Only',
     'Mortal', 'Vital', 'Feral', 'Vicious', 'Brutal', 'Hostile', 'Wicked',
     'Grim', 'Vile', 'Dire', 'Null', 'Void', 'Blank', 'Raw', 'Pure',
-    ...RNG_LUCK, ...MATH, 'Based', 'Sigma', 'Alpha', 'Lone', 'Cold'
+    ...RNG_LUCK, ...MATH, 'Based', 'Sigma', 'Alpha', 'Lone', 'Cold',
+    ...HARD_SOUNDS, ...OPIUM_VAMP
   ],
   [NameStyle.FUNNY]: [
     'Soggy', 'Spicy', 'Derpy', 'Chubby', 'Wobbly', 'Salty', 'Grumpy', 'Lazy', 
@@ -382,7 +406,7 @@ export const ADJECTIVES: Record<NameStyle, string[]> = {
     'Cute', 'Precious', 'Gentle', 'Kind', 'Shy', 'Quiet', 'Rosy',
     'Fruity', 'Flower', 'Little', 'Small', 'Petite', 'Mini',
     'Angel', 'Doll', 'Love', 'Heart', 'Kiss', 'Hug', 'Xo',
-    ...COQUETTE, ...FABRIC, ...PREPPY
+    ...COQUETTE, ...FABRIC, ...PREPPY, ...SOFT_SOUNDS
   ],
   [NameStyle.EDGY]: [
     'Cursed', 'Broken', 'Lost', 'Dead', 'Grim', 'Fallen', 'Hollow', 'Void', 
@@ -394,7 +418,7 @@ export const ADJECTIVES: Record<NameStyle, string[]> = {
     'Tragic', 'Gloom', 'Bleak', 'Dire', 'Sinister', 'Vamp', 'Opium',
     'Goth', 'Emo', 'Punk', 'Noir', 'Ash', 'Dust', 'Rot', 'Decay',
     'Deadly', 'Killer', 'Murder', 'Death', 'Die', 'Kill', 'End',
-    ...GRUNGE, ...URBAN
+    ...GRUNGE, ...URBAN, ...OPIUM_VAMP
   ],
   [NameStyle.AESTHETIC]: [
     'pure', 'soft', 'calm', 'retro', 'vintage', 'lofi', 'pale', 'divine', 
@@ -408,7 +432,7 @@ export const ADJECTIVES: Record<NameStyle, string[]> = {
     'poet', 'art', 'film', 'cam', 'polaroid', 'vinyl', 'cd', 'tape',
     'Petal', 'Bloom', 'Leaf', 'Stem', 'Root', 'Seed', 'Soil', 'Dirt', 'Mud', 
     'Rock', 'Stone', 'Gem', 'Jewel', 'Opal', 'Ruby', 'Jade', 'Onyx', 'Pearl',
-    ...FABRIC
+    ...FABRIC, ...SOFT_SOUNDS, ...ACUBI_Y2K, ...FOREIGN_COOL
   ],
   [NameStyle.OG]: [
     'Guy', 'Boy', 'Man', 'Girl', 'God', 'Dog', 'Cat', 'Fox', 'Bot', 'Ace', 
@@ -417,7 +441,7 @@ export const ADJECTIVES: Record<NameStyle, string[]> = {
     'One', 'Two', 'Red', 'Blue', 'Big', 'Lil',
     'Sky', 'Sea', 'Air', 'Ash', 'Ink', 'Oil', 'Gas', 'Gem', 'Orb', 'Arc', 'Era', 'Ego',
     'Run', 'Fly', 'Sit', 'Hit', 'Cut', 'Mix', 'Fix', 'Top', 'Pop', 'Win', 'Sin',
-    ...SHORT_ABSTRACT
+    ...SHORT_ABSTRACT, ...LATIN_ROOTS, ...FOREIGN_COOL
   ],
   [NameStyle.MIXED]: []
 };
@@ -434,7 +458,7 @@ export const NOUNS: Record<NameStyle, string[]> = {
     'Aura', 'Sigma', 'Rizz', 'Lock', 'Vandal', 'Raider', 'Bandit', 'Revenant',
     'Ronin', 'Shogun', 'Sensei', 'Kage', 'Shinobi', 'Samurai', 'Yakuza',
     'Cobra', 'Python', 'Mamba', 'Serpent', 'Hydra', 'Drake', 'Wyvern',
-    ...URBAN, ...MATH, ...SHORT_ABSTRACT, ...TECH
+    ...URBAN, ...MATH, ...SHORT_ABSTRACT, ...TECH, ...BLOKECORE, ...HARD_SOUNDS
   ],
   [NameStyle.FUNNY]: [
     'Potato', 'Banana', 'Noodle', 'Toaster', 'Fridge', 'Pickle', 'Waffle', 'Pancake',
@@ -465,20 +489,21 @@ export const NOUNS: Record<NameStyle, string[]> = {
     'Traitor', 'Liar', 'Cheat', 'Thief', 'Killer', 'Psycho', 'Maniac', 'Lunatic',
     'Vamp', 'Narcist', 'Rick', 'Raf', 'Carti', 'Goth', 'Scare', 'Fright',
     'Corpse', 'Skull', 'Bone', 'Grave', 'Tomb', 'Coffin', 'Crypt', 'Morgue',
-    ...URBAN, ...GRUNGE
+    ...URBAN, ...GRUNGE, ...LATIN_ROOTS
   ],
   [NameStyle.AESTHETIC]: [
-    'Vibe', 'Mood', 'Soul', 'Mind', 'Thought', 'Dream', 'Wish', 'Hope', 'Faith',
-    'Love', 'Life', 'World', 'Space', 'Time', 'Light', 'Dark', 'Night', 'Day',
-    'Sky', 'Sea', 'Ocean', 'River', 'Lake', 'Forest', 'Tree', 'Leaf', 'Flower',
-    'Garden', 'Field', 'Meadow', 'Mountain', 'Hill', 'Valley', 'Desert', 'Sand',
-    'Dust', 'Wind', 'Breeze', 'Air', 'Cloud', 'Mist', 'Fog', 'Rain', 'Storm',
-    'Thunder', 'Lightning', 'Star', 'Moon', 'Sun', 'Planet', 'Galaxy', 'Universe',
-    'Aura', 'Icon', 'Muse', 'Grace', 'Petal', 'Bloom', 'Blossom', 'Fern', 'Ivy', 'Moss', 'Willow',
-    'Tea', 'Coffee', 'Book', 'Page', 'Poem', 'Song', 'Note', 'Letter', 'Word',
+    'pure', 'soft', 'calm', 'retro', 'vintage', 'lofi', 'pale', 'divine', 
+    'rare', 'silk', 'velvet', 'dim', 'lost', 'fair', 'warm', 'luxe', 
+    'bliss', 'haze', 'muse', 'nova', 'sol',
+    'sage', 'teal', 'beige', 'fawn', 'dove', 'swan', 'mist', 'fog',
+    'dew', 'rain', 'snow', 'wind', 'air', 'sky', 'cloud',
+    'ethereal', 'serene', 'tranquil', 'lucid', 'dreamy', 'faded',
+    'nostalgic', 'golden', 'silver', 'ivory', 'ebony', 'classic',
+    'coquette', 'dollette', 'angelic', 'iconic', 'floral', 'leafy',
+    'poet', 'art', 'film', 'cam', 'polaroid', 'vinyl', 'cd', 'tape',
     'Petal', 'Bloom', 'Leaf', 'Stem', 'Root', 'Seed', 'Soil', 'Dirt', 'Mud', 
     'Rock', 'Stone', 'Gem', 'Jewel', 'Opal', 'Ruby', 'Jade', 'Onyx', 'Pearl',
-    ...FABRIC
+    ...FABRIC, ...SOFT_SOUNDS
   ],
   [NameStyle.OG]: [
     'Guy', 'Boy', 'Man', 'Girl', 'God', 'Dog', 'Cat', 'Fox', 'Bot', 'Ace', 
@@ -487,7 +512,7 @@ export const NOUNS: Record<NameStyle, string[]> = {
     'One', 'Two', 'Red', 'Blue', 'Big', 'Lil',
     'Sky', 'Sea', 'Air', 'Ash', 'Ink', 'Oil', 'Gas', 'Gem', 'Orb', 'Arc', 'Era', 'Ego',
     'Run', 'Fly', 'Sit', 'Hit', 'Cut', 'Mix', 'Fix', 'Top', 'Pop', 'Win', 'Sin',
-    ...SHORT_ABSTRACT
+    ...SHORT_ABSTRACT, ...LATIN_ROOTS, ...FOREIGN_COOL
   ],
   [NameStyle.MIXED]: []
 };
